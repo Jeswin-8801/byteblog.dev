@@ -1,0 +1,65 @@
+services:
+  postgres-db:
+    image: postgres:latest
+    restart: unless-stopped
+    env_file: ./.env
+    ports:
+      - "$POSTGRESDB_LOCAL_PORT:$POSTGRESDB_DOCKER_PORT"
+    environment:
+      POSTGRES_USER: $POSTGRESDB_USER
+      POSTGRES_PASSWORD: $POSTGRESDB_PASSWORD
+      POSTGRES_DB: $POSTGRES_DB
+
+  pg-admin:
+    image: dpage/pgadmin4
+    restart: unless-stopped
+    depends_on:
+      - postgres-db
+    env_file: ./.env
+    ports:
+      - "$PGADMIN_LOCAL_PORT:$PGADMIN_DOCKER_PORT"
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=$PGADMIN_DEFAULT_EMAIL
+      - PGADMIN_DEFAULT_PASSWORD=$PGADMIN_DEFAULT_PASSWORD
+      - PGADMIN_CONFIG_SERVER_MODE=False
+      - PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED=False
+      - PGADMIN_CONFIG_SERVER_MODE=False
+    entrypoint: >
+      /bin/sh -c '
+      chmod 600 /tmp/pgpass;
+      /entrypoint.sh'
+    user: root
+    configs:
+      - source: servers.json
+        target: /pgadmin4/servers.json
+      - source: pgpass
+        target: /tmp/pgpass
+      - source: preferences.json
+        target: /pgadmin4/preferences.json
+
+configs:
+  pgpass:
+    content: postgres-db:$POSTGRESDB_DOCKER_PORT:*:$POSTGRESDB_USER:$POSTGRESDB_PASSWORD
+  servers.json:
+    content: >-
+      {
+        "Servers": {
+          "1": {
+            "Name": "Code Node Server",
+            "Group": "Servers",
+            "Port": ${POSTGRESDB_DOCKER_PORT},
+            "Username": "${POSTGRESDB_USER}",
+            "Host": "postgres-db",
+            "MaintenanceDB": "postgres",
+            "PassFile": "/tmp/pgpass",
+            "SSLMode": "prefer"
+          }
+        }
+      }
+  preferences.json:
+    content: >-
+      {
+        "preferences": {
+          "misc:themes:theme": "dark"
+        }
+      }
