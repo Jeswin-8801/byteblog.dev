@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: byteBlog
+
+  datasource:
+    url: postgres-db:${POSTGRESDB_DOCKER_PORT}:*:${POSTGRESDB_USER}:${POSTGRESDB_PASSWORD}
+    username: ${POSTGRESDB_USER}
+    password: ${POSTGRESDB_PASSWORD}
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect

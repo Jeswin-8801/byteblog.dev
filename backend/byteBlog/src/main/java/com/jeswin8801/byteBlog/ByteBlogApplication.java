@@ -1,13 +1,13 @@
-package com.jeswin8801.code_node;
+package com.jeswin8801.byteBlog;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class CodeNodeApplication {
+public class ByteBlogApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(CodeNodeApplication.class, args);
+		SpringApplication.run(ByteBlogApplication.class, args);
 	}
 
 }

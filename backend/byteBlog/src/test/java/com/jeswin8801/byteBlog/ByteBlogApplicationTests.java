@@ -1,10 +1,10 @@
-package com.jeswin8801.code_node;
+package com.jeswin8801.byteBlog;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class CodeNodeApplicationTests {
+class ByteBlogApplicationTests {
 
 	@Test
 	void contextLoads() {
