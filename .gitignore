@@ -10,3 +10,6 @@ mvnw*
 *.iws
 *.iml
 *.ipr
+
+### minio ###
+/backend/minio/data/*
