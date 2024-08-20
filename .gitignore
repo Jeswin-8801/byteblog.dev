@@ -12,4 +12,5 @@ mvnw*
 *.ipr
 
 ### minio ###
-/backend/minio/data/*
+.minio*
+byte-blog-bucket
