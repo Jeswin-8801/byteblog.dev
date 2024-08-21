@@ -61,7 +61,6 @@ services:
     entrypoint: >
       /bin/sh -c '
         /usr/bin/mc alias set minio http://minio:${MINIO_SERVER_PORT} ${USER} ${PASSWORD}                                                   # setup Minio client
-        cat /tmp/LifecycleManagementAdmin.json | /usr/bin/mc admin policy create minio LifecycleAdminPolicy /dev/stdin
         /usr/bin/mc mb minio/${MINIO_BUCKET} || true                                                                                        # create bucket
         /usr/bin/mc anonymous set public minio/${MINIO_BUCKET}                                                                              # make the bucket public
         /usr/bin/mc ilm import minio/${MINIO_BUCKET} < /tmp/lifecycle.json                                                                  # adding lifecycle config for bucket to extend file expiry

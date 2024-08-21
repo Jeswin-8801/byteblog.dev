@@ -1,0 +1,14 @@
+{
+  "Rules": [
+    {
+      "ID": "ExpireOldFiles",
+      "Status": "Enabled",
+      "Filter": {
+        "Prefix": ""
+      },
+      "Expiration": {
+        "Days": 1825
+      }
+    }
+  ]
+}
