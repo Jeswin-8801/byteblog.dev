@@ -1,15 +1,75 @@
+server:
+  port: 8080
+
+# jdbc and jpa config
 spring:
   application:
     name: byteBlog
 
   datasource:
-    url: postgres-db:${POSTGRESDB_DOCKER_PORT}:*:${POSTGRESDB_USER}:${POSTGRESDB_PASSWORD}
-    username: ${POSTGRESDB_USER}
-    password: ${POSTGRESDB_PASSWORD}
+    url: jdbc:postgresql://localhost:8181/byte-blog-db
+    username: Jeswin
+    password: byteBlog
 
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.PostgreSQLDialect
+        jdbc:
+          lob:
+            non_contextual_creation: true
+
+  # Spring security oauth2 config
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            clientId: <<ClientID>>
+            clientSecret: <<ClientSecret>>
+            redirectUri: "{baseUrl}/oauth2/callback/{registrationId}"
+            scope: email, profile
+
+          github:
+            clientId: <<ClientID>>
+            clientSecret: <<ClientSecret>>
+            redirectUri: "{baseUrl}/oauth2/callback/{registrationId}"
+            scope: user, user:email
+
+
+# logging config
+logging:
+  level:
+    root: INFO
+    org:
+      springframework:
+        web: DEBUG
+        security: DEBUG
+
+
+# App Custom Properties
+web:
+  mail:
+    defaultEmailAddress: example@gmail.com
+    verificationCodeExpirationSeconds: 1800 # 30 minutes
+
+  jwt:
+    secretKey: e6bcddc69a11952c32268df66ecd70e809de558a8c3c03e892e0ea9a9b7ef5458fc2dbfe1322b9cf42a8d089b86270e53b06c26437f96ba68c88bb360cdea1522f481974edbe9f4a6de4915d9193258ecd65b9f88ec1f31dee3d95b35245ca1a37edb36e299f5b3dc5c42f19327c4e3efdeee757b8cd783e4f0069e6ba4fc39898bbd3ae53d99f2ba926e811de094b939437133a4ee2a60d328858764054ba74a091ebbeb56afd437229eab7ab668b74fee7faf73862bee30298d4107fcb49e4202c1c33eaad820531d9c17d9a9a99b7bdaab9e1adfaff965745e5da975078883eb8e90d2acfa855df87f031d26cc2c784461e2aa39e8712aa1f8eafa49f1465a5c4ba5234c2cf2e7e4d19f2d7e9521a3a361a12ed892fba8e37fe436678383fcd65dfea9af9b328f5cc3ba6fdb96b7bfb43d5d7cc645083e5584fa8cc49cc84960b3b77bc934751f3b10adb1d9ca2c194829bee49a240e27b6ce9cda82a9b029e8e90708c5aa1de36896239552e1fa4d37ed6f6174776a2159bced3741d598229dd457654e60402012b72311011faccb75c5a4714a3177d0b865770bd2b877a41a0d246b24a416896720361d549b6347ec96a55dd677e55b7ec1636c395a4b34558427d86471cc0bd3033d2820c6da5656eb48f60c6975b4350eea8a4ecfb8010daf59d6433f996edb4310f79769ab4c79890108b3b3b379e84fc9641c3b959
+    isSecretKeyBase64Encoded: false
+    expirationMillis: 3600000
+    shortLivedMillis: 120000
+
+  cors:
+    allowed-origins: http://localhost:8080,http://localhost:5173
+    allowed-methods: GET, POST, PUT, DELETE
+    allowed-headers: "*"
+    exposed-headers: "*"
+
+  oauth2:
+    authorizedRedirectOrigins: http://localhost:8080,http://localhost:5173
+    cookieExpireSeconds: 120
+
+  defaults:
+    defaultPageStart: 0
+    defaultPageSize: 50

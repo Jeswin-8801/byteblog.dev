@@ -52,7 +52,7 @@ services:
     command: server /data --console-address ":${MINIO_CONSOLE_PORT}"
 
   minio-setup:
-    image: minio/mc
+    image: minio/minio
     depends_on:
         - minio
     restart: no
@@ -60,6 +60,8 @@ services:
       - ./backend/minio/config:/tmp
     entrypoint: >
       /bin/sh -c '
+        isAlive() { curl -sf http://minio:9000/minio/health/live; }                                                                         # check if Minio is alive
+        while ! isAlive; do sleep 0.1; done                                                                                                 # wait until Minio is alive
         /usr/bin/mc alias set minio http://minio:${MINIO_SERVER_PORT} ${USER} ${PASSWORD}                                                   # setup Minio client
         /usr/bin/mc mb minio/${MINIO_BUCKET} || true                                                                                        # create bucket
         /usr/bin/mc anonymous set public minio/${MINIO_BUCKET}                                                                              # make the bucket public
