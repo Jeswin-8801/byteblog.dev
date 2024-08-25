@@ -1,7 +1,7 @@
 package com.jeswin8801.byteBlog.security.oauth2;
 
 import com.jeswin8801.byteBlog.entities.converters.UserMapper;
-import com.jeswin8801.byteBlog.entities.dto.UserDto;
+import com.jeswin8801.byteBlog.entities.dto.user.UserDto;
 import com.jeswin8801.byteBlog.entities.model.Role;
 import com.jeswin8801.byteBlog.entities.model.User;
 import com.jeswin8801.byteBlog.entities.model.enums.AuthProvider;
@@ -11,7 +11,6 @@ import com.jeswin8801.byteBlog.security.oauth2.providers.abstracts.OAuth2UserInf
 import com.jeswin8801.byteBlog.security.util.SecurityUtil;
 import com.jeswin8801.byteBlog.service.webapp.user.abstracts.UserService;
 import com.jeswin8801.byteBlog.util.OAuth2Util;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.AuthenticationException;
@@ -22,11 +21,11 @@ import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -90,15 +89,18 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
         if (!StringUtils.hasText(userEmail))
             throw new InternalAuthenticationServiceException("Sorry, Couldn't retrieve your email from Provider " + clientRegistrationId + ". Email not available or Private by default");
 
-        // Determine is this [ Login ] or [ New Sign up ]
-        // Sign In (email will be present in our database)  OR Sign Up ( if you don't have user email, we need to register user, and save email into db)
-        Optional<UserDto> fetchedUser = userService.findUserByEmail(userEmail);
-        if (fetchedUser.isEmpty())
-            fetchedUser = Optional.of(registerNewOAuthUser(userRequest, oAuth2UserInfo));
+        UserDto userDto = userService.findUserByEmail(userEmail);
 
-        UserDto userDto = fetchedUser.get();
+        // Determine whether this is [ Sign up ] or [ New Sign up ]
+        // Sign Up (if the given email is not associated with another user account, register user, and save to db)
+        if (ObjectUtils.isEmpty(userDto))
+            registerNewOAuthUser(userRequest, oAuth2UserInfo);
+
+        // If account exists i.e. userDto is not null, Sign In
+        // Below code gets executed regardless of Sign in or Sign up as it conforms to both flows
+
         if (userDto.getAuthProvider().equals(authProvider))
-            updateExistingOAuthUser(userDto, oAuth2UserInfo);
+            updateExistingOAuthUser(userDto, oAuth2UserInfo); // updates just the name and profile_pic associated with the External Account as they as subject to changes
         else
             throw new InternalAuthenticationServiceException(
                     String.format("Sorry, this email is linked with \"%s\" account. Please use your \"%s\" account to login.",
@@ -112,7 +114,7 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
         return UserDetailsImpl.build(userEntity, grantedAuthorities, user.getAttributes());
     }
 
-    private UserDto registerNewOAuthUser(OAuth2UserRequest oAuth2UserRequest,
+    private void registerNewOAuthUser(OAuth2UserRequest oAuth2UserRequest,
                                          OAuth2UserInfo userInfo) {
 
         UserDto userDTO = new UserDto();
@@ -134,7 +136,7 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
         );
         userDTO.setEmailVerified(true);
 
-        return userService.createUser(userDTO);
+        userService.createUser(userDTO);
     }
 
     private void updateExistingOAuthUser(UserDto existingUserDTO,
@@ -143,9 +145,6 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
         existingUserDTO.setFullName(oAuth2UserInfo.getName());
         existingUserDTO.setProfileImageUrl(oAuth2UserInfo.getImageUrl());
 
-        BeanUtils.copyProperties(
-                userService.updateUser(existingUserDTO),
-                existingUserDTO
-        );
+        userService.updateUser(existingUserDTO);
     }
 }

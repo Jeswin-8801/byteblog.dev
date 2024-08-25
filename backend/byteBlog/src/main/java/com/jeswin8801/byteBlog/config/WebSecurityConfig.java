@@ -10,11 +10,14 @@ import com.jeswin8801.byteBlog.security.oauth2.dao.OAuth2AuthenticationSuccessHa
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -39,6 +42,7 @@ public class WebSecurityConfig {
     // OAuth2UserService - To process OAuth user SignUp/SignIn request
     private final UserDetailsServiceImpl userDetailsService;
     private final OAuth2UserService oAuth2UserService;
+    private final PasswordEncoder passwordEncoder;
 
     // AuthenticationEntryPointImpl - Unauthorized Access handler
     // JWTAuthenticationFilter - Retrieves request JWT token and, validate and set Authentication
@@ -50,10 +54,11 @@ public class WebSecurityConfig {
     private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
     private final OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler;
 
-    public WebSecurityConfig(ApplicationProperties properties, UserDetailsServiceImpl userDetailsService, OAuth2UserService oAuth2UserService, AuthenticationEntryPointImpl authenticationEntryPoint, JWTAuthenticationFilter jwtAuthenticationFilter, HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository, OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler, OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler) {
+    public WebSecurityConfig(ApplicationProperties properties, UserDetailsServiceImpl userDetailsService, OAuth2UserService oAuth2UserService, PasswordEncoder passwordEncoder, AuthenticationEntryPointImpl authenticationEntryPoint, JWTAuthenticationFilter jwtAuthenticationFilter, HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository, OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler, OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler) {
         this.properties = properties;
         this.userDetailsService = userDetailsService;
         this.oAuth2UserService = oAuth2UserService;
+        this.passwordEncoder = passwordEncoder;
         this.authenticationEntryPoint = authenticationEntryPoint;
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
         this.httpCookieOAuth2AuthorizationRequestRepository = httpCookieOAuth2AuthorizationRequestRepository;
@@ -128,5 +133,23 @@ public class WebSecurityConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
+    }
+
+//    @Bean
+//    public AuthenticationManager authenticationManager() throws Exception {
+//        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+//        authProvider.setUserDetailsService(this.userDetailsService);
+//        authProvider.setPasswordEncoder(this.passwordEncoder);
+//
+//        return new ProviderManager(authProvider);
+//    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
+        authenticationManagerBuilder
+                .userDetailsService(userDetailsService)
+                .passwordEncoder(passwordEncoder);
+
+        return authenticationManagerBuilder.build();
     }
 }

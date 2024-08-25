@@ -1,4 +1,4 @@
-package com.jeswin8801.byteBlog.entities.dto;
+package com.jeswin8801.byteBlog.entities.dto.user;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.jeswin8801.byteBlog.entities.model.Role;
@@ -20,9 +20,9 @@ public class UserDto {
     @JsonProperty("full-name")
     private String fullName;
 
-    private String username;
-
     private String email;
+
+    private String password;
 
     @JsonProperty("email-verified")
     private boolean emailVerified;

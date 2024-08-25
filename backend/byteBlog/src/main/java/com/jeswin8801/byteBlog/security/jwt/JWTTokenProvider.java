@@ -2,7 +2,7 @@ package com.jeswin8801.byteBlog.security.jwt;
 
 import com.jeswin8801.byteBlog.config.ApplicationProperties;
 import com.jeswin8801.byteBlog.entities.converters.UserMapper;
-import com.jeswin8801.byteBlog.entities.dto.UserDto;
+import com.jeswin8801.byteBlog.entities.dto.user.UserDto;
 import com.jeswin8801.byteBlog.entities.model.User;
 import com.jeswin8801.byteBlog.security.entity.UserDetailsImpl;
 import com.jeswin8801.byteBlog.security.util.SecurityUtil;

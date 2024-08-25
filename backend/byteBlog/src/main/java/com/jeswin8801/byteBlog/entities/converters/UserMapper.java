@@ -1,7 +1,7 @@
 package com.jeswin8801.byteBlog.entities.converters;
 
 import com.jeswin8801.byteBlog.entities.converters.abstracts.GenericMapper;
-import com.jeswin8801.byteBlog.entities.dto.UserDto;
+import com.jeswin8801.byteBlog.entities.dto.user.UserDto;
 import com.jeswin8801.byteBlog.entities.model.User;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;

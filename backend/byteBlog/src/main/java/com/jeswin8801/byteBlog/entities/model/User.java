@@ -4,8 +4,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.jeswin8801.byteBlog.entities.model.enums.AuthProvider;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.Size;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.Instant;
 import java.util.HashSet;
@@ -13,10 +13,10 @@ import java.util.Set;
 
 @Data
 @Entity
+@NoArgsConstructor
 @Table(
         name = "users",
         uniqueConstraints = {
-                @UniqueConstraint(columnNames = "username"),
                 @UniqueConstraint(columnNames = "email")
         }
 )
@@ -29,13 +29,7 @@ public class User {
     @Column(nullable = false, name = "full_name")
     private String fullName;
 
-    @Column(nullable = false)
-    @Size(max = 20)
-    private String username;
-
     @JsonProperty(value = "password", access = JsonProperty.Access.WRITE_ONLY)
-    @Column(nullable = false, length = 64)
-    @Size(min = 64)   // sha264 hashed password
     private String password;
 
     @Column(nullable = false)
@@ -67,14 +61,4 @@ public class User {
 
     @Column(name = "verification_code_expires_at")
     private Instant verificationCodeExpiresAt;
-
-    public User() {
-        // ...
-    }
-
-    public User(String username, String password, String email) {
-        this.username = username;
-        this.password = password;
-        this.email = email;
-    }
 }

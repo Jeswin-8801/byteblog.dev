@@ -1,7 +1,7 @@
 package com.jeswin8801.byteBlog.security.entity;
 
 import com.jeswin8801.byteBlog.repository.UserRepository;
-import com.jeswin8801.byteBlog.util.exceptions.AuthExceptions;
+import com.jeswin8801.byteBlog.util.exceptions.enums.AuthExceptions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
