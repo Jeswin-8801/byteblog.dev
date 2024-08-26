@@ -6,7 +6,7 @@ public interface UserService {
 
     UserDto findUserByEmail(String email);
 
-    Long getUserIdFromEmail(String email);
+    String getUserIdFromEmail(String email);
 
     void createUser(UserDto userDto);
 

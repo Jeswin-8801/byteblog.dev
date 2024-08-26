@@ -5,7 +5,6 @@ import com.jeswin8801.byteBlog.entities.dto.auth.LoginRequestDto;
 import com.jeswin8801.byteBlog.entities.dto.auth.RegisterUserRequestDto;
 import com.jeswin8801.byteBlog.entities.dto.user.UserDto;
 import com.jeswin8801.byteBlog.entities.model.enums.AuthProvider;
-import com.jeswin8801.byteBlog.repository.RefreshTokenRepository;
 import com.jeswin8801.byteBlog.security.jwt.JWTTokenProvider;
 import com.jeswin8801.byteBlog.service.auth.abstracts.AuthenticationService;
 import com.jeswin8801.byteBlog.service.webapp.user.abstracts.UserService;
@@ -27,7 +26,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     public AuthenticationServiceImpl(AuthenticationManager authenticationManager,
                                      UserService userService,
-                                     JWTTokenProvider jwtTokenProvider, RefreshTokenRepository tokenRepository) {
+                                     JWTTokenProvider jwtTokenProvider) {
         this.authenticationManager = authenticationManager;
         this.userService = userService;
         this.jwtTokenProvider = jwtTokenProvider;

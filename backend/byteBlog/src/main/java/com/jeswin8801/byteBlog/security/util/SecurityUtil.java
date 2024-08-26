@@ -82,7 +82,7 @@ public class SecurityUtil {
     /**
      * Get current user id
      */
-    public Optional<Long> getCurrentUserId() {
+    public Optional<String> getCurrentUserId() {
         return Optional.ofNullable(getCurrentUserPrinciple())
                 .map(UserDetailsImpl::getUser)
                 .map(User::getId);

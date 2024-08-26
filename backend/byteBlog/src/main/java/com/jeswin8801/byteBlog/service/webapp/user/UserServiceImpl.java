@@ -52,7 +52,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Long getUserIdFromEmail(String email) {
+    public String getUserIdFromEmail(String email) {
 
         return userRepository
                 .findIdByEmail(email)

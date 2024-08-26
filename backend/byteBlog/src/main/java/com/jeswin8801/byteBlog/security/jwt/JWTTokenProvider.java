@@ -75,7 +75,7 @@ public class JWTTokenProvider {
         Date validity = new Date(now.getTime() + accessTokenDurationMillis);
 
         String token = Jwts.builder()
-                .subject(userPrincipal.getUser().getId().toString())
+                .subject(userPrincipal.getUser().getId())
                 .issuer(properties.getIssuer())
                 .claims(claims)
                 .issuedAt(now)
