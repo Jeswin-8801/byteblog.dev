@@ -59,7 +59,7 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
     private UserService userService;
 
     @Autowired
-    private UserMapper userMapper;
+    private UserMapper<UserDto> userMapper;
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
@@ -115,7 +115,7 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
     }
 
     private void registerNewOAuthUser(OAuth2UserRequest oAuth2UserRequest,
-                                         OAuth2UserInfo userInfo) {
+                                      OAuth2UserInfo userInfo) {
 
         UserDto userDTO = new UserDto();
         userDTO.setFullName(userInfo.getName());

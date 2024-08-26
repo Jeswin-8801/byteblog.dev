@@ -12,5 +12,6 @@ mvnw*
 *.ipr
 
 ### minio ###
+.mc
 .minio*
 byte-blog-bucket

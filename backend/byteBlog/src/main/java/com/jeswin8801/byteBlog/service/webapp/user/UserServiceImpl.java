@@ -26,12 +26,12 @@ import java.util.Set;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
-    private final UserMapper userMapper;
+    private final UserMapper<UserDto> userMapper;
     private final PasswordEncoder passwordEncoder;
     private final EmailService emailService;
     private final ApplicationProperties properties;
 
-    public UserServiceImpl(UserRepository userRepository, UserMapper userMapper, PasswordEncoder passwordEncoder, EmailService emailService, ApplicationProperties properties) {
+    public UserServiceImpl(UserRepository userRepository, UserMapper<UserDto> userMapper, PasswordEncoder passwordEncoder, EmailService emailService, ApplicationProperties properties) {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
         this.passwordEncoder = passwordEncoder;
@@ -46,8 +46,19 @@ public class UserServiceImpl implements UserService {
                 userRepository.findByEmail(email)
                         .orElseThrow(
                                 () -> new ResourceNotFoundException(UserExceptions.USER_RECORD_NOT_FOUND.getMessage())
-                        )
+                        ),
+                UserDto.class
         );
+    }
+
+    @Override
+    public Long getUserIdFromEmail(String email) {
+
+        return userRepository
+                .findIdByEmail(email)
+                .orElseThrow(
+                        () -> new ResourceNotFoundException(UserExceptions.USER_RECORD_NOT_FOUND.getMessage())
+                );
     }
 
     @Override

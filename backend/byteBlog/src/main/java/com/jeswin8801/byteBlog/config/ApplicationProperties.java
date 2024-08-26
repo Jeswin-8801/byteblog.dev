@@ -15,6 +15,8 @@ public class ApplicationProperties {
         log.info("Application Properties Initialized");
     }
 
+    private String issuer;
+
     // Mail config
     private Mail mail = new Mail();
 
@@ -46,9 +48,10 @@ public class ApplicationProperties {
 
     @Data
     public static class Jwt {
-        private String secretKey;
+        private String accessTokenSecret, refreshTokenSecret;
         private boolean isSecretKeyBase64Encoded = false;
-        private long expirationMillis = 864000000L; // 10 days
+        private long accessTokenDurationMillis = 43200000L; // 1/2 day
+        private long refreshTokenDurationMillis = 86400000L; // 1 day
         // For short-lived tokens and cookies
         private int shortLivedMillis = 120000; // Two minutes
     }

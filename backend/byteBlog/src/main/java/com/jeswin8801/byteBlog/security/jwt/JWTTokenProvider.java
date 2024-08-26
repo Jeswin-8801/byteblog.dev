@@ -2,7 +2,7 @@ package com.jeswin8801.byteBlog.security.jwt;
 
 import com.jeswin8801.byteBlog.config.ApplicationProperties;
 import com.jeswin8801.byteBlog.entities.converters.UserMapper;
-import com.jeswin8801.byteBlog.entities.dto.user.UserDto;
+import com.jeswin8801.byteBlog.entities.dto.user.AccessTokenClaimsUserDto;
 import com.jeswin8801.byteBlog.entities.model.User;
 import com.jeswin8801.byteBlog.security.entity.UserDetailsImpl;
 import com.jeswin8801.byteBlog.security.util.SecurityUtil;
@@ -36,72 +36,67 @@ public class JWTTokenProvider {
     private static final String BEARER_TOKEN_START = "Bearer ";
 
     // Initialized from configuration properties
-    private Key secretKey;
-    private long validityInMilliseconds;
+    private Key accessTokenSecret;
+    private long accessTokenDurationMillis;
 
     @Autowired
     private ApplicationProperties properties;
 
     @Autowired
-    private UserMapper userMapper;
+    private UserMapper<AccessTokenClaimsUserDto> userMapper;
 
     @PostConstruct
     protected void init() {
 
-        secretKey = Keys.hmacShaKeyFor(
-                Decoders.BASE64.decode(
-                        properties.getJwt().isSecretKeyBase64Encoded() ?
-                                properties.getJwt().getSecretKey() :
-                                Base64.getEncoder().encodeToString(properties.getJwt().getSecretKey().getBytes())
-                )
+        accessTokenSecret = convertStringSecretToKey(
+                properties.getJwt().getAccessTokenSecret()
         );
 
-        validityInMilliseconds = properties.getJwt().getExpirationMillis();
+        accessTokenDurationMillis = properties.getJwt().getAccessTokenDurationMillis();
     }
 
-    public String generateJWTToken(Authentication authentication) {
+    public String generateJWTAccessToken(Authentication authentication) {
 
         UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
 
-        String authoritiesJson = AppUtil.toJson(userPrincipal.getAuthorities());
-        String attributesJson = AppUtil.toJson(userPrincipal.getAttributes());
-        String userJson = AppUtil.toJson(
-                userMapper.toDto(
-                        userPrincipal.getUser()
+        Claims claims = Jwts.claims()
+                .add(
+                        new HashMap<>() {{
+                            put("user",
+                                    userMapper.toDto(userPrincipal.getUser(), AccessTokenClaimsUserDto.class)
+                            );
+                            put("authorities", userPrincipal.getAuthorities());
+                            put("attributes", userPrincipal.getAttributes());
+                        }}
                 )
-        );
-
-        Claims claims = Jwts.claims().build();
-        claims.putAll(
-                new HashMap<>() {{
-                    claims.put("email", userPrincipal.getEmail());
-                    claims.put("user", userJson);
-                    claims.put("authorities", authoritiesJson);
-                    claims.put("attributes", attributesJson);
-                }}
-        );
+                .build();
 
         Date now = new Date();
-        Date validity = new Date(now.getTime() + validityInMilliseconds);
+        Date validity = new Date(now.getTime() + accessTokenDurationMillis);
 
-        return Jwts.builder()
-                .subject(userPrincipal.getEmail())
+        String token = Jwts.builder()
+                .subject(userPrincipal.getUser().getId().toString())
+                .issuer(properties.getIssuer())
                 .claims(claims)
                 .issuedAt(now)
                 .expiration(validity)
-                .signWith(secretKey)
+                .signWith(accessTokenSecret)
                 .compact();
+
+        log.info("token: {}\ntoken payload: {}", token, claims.toString());
+
+        return token;
     }
 
     public Authentication getAuthenticationFromToken(String token) {
 
         Claims body = Jwts.parser()
-                .verifyWith((SecretKey) secretKey).build()
+                .verifyWith((SecretKey) accessTokenSecret).build()
                 .parse(token).accept(Jws.CLAIMS)
                 .getPayload();
 
         // Parsing Claims Data
-        UserDto userDto = AppUtil.fromJson(body.get("user").toString(), UserDto.class);
+        AccessTokenClaimsUserDto userDto = AppUtil.fromJson(body.get("user").toString(), AccessTokenClaimsUserDto.class);
         User userEntity = userMapper.toEntity(userDto);
 
         Set<String> authoritiesSet = AppUtil.fromJson(body.get("authorities").toString(), (Class<Set<String>>) (Class<?>) Set.class);
@@ -115,7 +110,7 @@ public class JWTTokenProvider {
         UserDetailsImpl userDetails = UserDetailsImpl.build(userEntity, grantedAuthorities, attributes);
         return new UsernamePasswordAuthenticationToken(
                 userDetails,
-                "",
+                null,
                 userDetails.getAuthorities()
         );
     }
@@ -134,7 +129,7 @@ public class JWTTokenProvider {
 
         try {
             Jws<Claims> claims = Jwts.parser()
-                    .verifyWith((SecretKey) secretKey)
+                    .verifyWith((SecretKey) accessTokenSecret)
                     .build()
                     .parseSignedClaims(token);
 
@@ -153,6 +148,16 @@ public class JWTTokenProvider {
             log.error("JWT token compact of handler are invalid trace: ", exception);
         }
         return false;
+    }
+
+    private Key convertStringSecretToKey(String secretKey) {
+        return Keys.hmacShaKeyFor(
+                Decoders.BASE64.decode(
+                        properties.getJwt().isSecretKeyBase64Encoded() ?
+                                secretKey :
+                                Base64.getEncoder().encodeToString(secretKey.getBytes())
+                )
+        );
     }
 
 }
