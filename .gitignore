@@ -15,3 +15,8 @@ mvnw*
 .mc
 .minio*
 byte-blog-bucket
+
+### Angular ###
+node_modules/
+.angular/
+.vscode/

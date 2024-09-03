@@ -1,0 +1,335 @@
+<head>
+  <link
+    rel="stylesheet"
+    type="text/css"
+    href="https://cdn.sstatic.net/Shared/stacks.css?v=619122b796ae"
+  />
+  <link
+    rel="stylesheet"
+    type="text/css"
+    href="https://cdn.sstatic.net/Sites/stackoverflow/primary.css?v=02dcb5186b90"
+  />
+</head>
+
+<body>
+  <header class="s-topbar ps-fixed t0 l0">
+    <div class="s-topbar--container">
+      <a href="https://stackoverflow.com" class="s-topbar--logo">
+        <span class="-img _glyph">Stack Overflow</span>
+      </a>
+
+      <form
+        id="search"
+        role="search"
+        action="/search"
+        class="s-topbar--searchbar"
+        autocomplete="off"
+      >
+        <div class="s-topbar--searchbar--input-group">
+          <input
+            type="text"
+            role="combobox"
+            placeholder="Search&#x2026;"
+            value=""
+            autocomplete="off"
+            maxlength="240"
+            class="s-input"
+          />
+          <svg
+            aria-hidden="true"
+            class="s-input-icon"
+            width="18"
+            height="18"
+            viewBox="0 0 18 18"
+          >
+            <path
+              d="m18 16.5-5.14-5.18h-.35a7 7 0 1 0-1.19 1.19v.35L16.5 18zM12 7A5 5 0 1 1 2 7a5 5 0 0 1 10 0"
+            />
+          </svg>
+          <div
+            class="s-popover p0 wmx100 wmn4 sm:wmn-initial"
+            id="top-search"
+            role="menu"
+          >
+            <div class="s-popover--arrow"></div>
+            <div class="s-popover--content">
+              <div class="search-results"></div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="d-flex ai-center jc-center sm:fd-column-reverse">
+      <div
+        class="flex--item fs-body2 mr48 sm:mr0 mb128 sm:mb0 sm:pl24 sm:pr24 wmx4"
+      >
+        <!-- icon -->
+        <svg aria-hidden="true" width="253" height="50" viewBox="0 0 253 50">
+          <g clip-path="url(#LogoLga)">
+            <path
+              fill="#BCBBBB"
+              d="M35.86 32.18v13.15h-31V32.18H.2V50h40.31V32.18z"
+            ></path>
+            <path
+              fill="#F48024"
+              d="M9.14 41.09H31.6v-4.25H9.14zm.44-10.15 21.83 4.58.9-4.36-21.83-4.58zm2.88-10.46 20.2 9.43 1.9-4.04-20.22-9.43zm5.61-9.93 17.16 14.28 2.87-3.41L20.9 7.14zM29.12 0l-3.6 2.65 13.3 17.92 3.6-2.65z"
+            ></path>
+            <path
+              fill="var(--black-600)"
+              d="m57.9 31.08-2.87-.26c-2.26-.17-3.12-1.1-3.12-2.6 0-1.83 1.39-2.96 4-2.96 1.84 0 3.46.44 4.74 1.42l1.7-1.7c-1.59-1.3-3.87-1.92-6.42-1.92-3.82 0-6.57 1.97-6.57 5.24 0 2.96 1.85 4.52 5.32 4.8l2.96.27c2.05.17 2.98 1.04 2.98 2.6 0 2.12-1.82 3.16-4.75 3.16-2.23 0-4.14-.58-5.56-2.06l-1.73 1.74c1.97 1.88 4.31 2.58 7.32 2.58 4.31 0 7.27-2 7.27-5.44 0-3.36-2.15-4.58-5.27-4.87m22.35-8.02c-2.87 0-4.66.58-6.26 2.58-.03.03 1.71 1.7 1.71 1.7 1.04-1.47 2.23-2.02 4.52-2.02 3.27 0 4.57 1.3 4.57 3.91v1.7h-5.38c-4 0-6.17 2.03-6.17 5.16a5 5 0 0 0 1.33 3.62c1.13 1.16 2.58 1.62 5.04 1.62 2.4 0 3.7-.46 5.15-1.91v1.7h2.6V29c.04-3.85-2.3-5.94-7.11-5.94m4.54 11.76q0 2.22-.9 3.1c-1.13 1.1-2.46 1.18-4 1.18-2.83 0-4.1-.98-4.1-3.04 0-2.05 1.3-3.15 4-3.15h5zm12.85-9.44c1.71 0 2.75.52 4.11 2l1.74-1.71c-1.82-1.97-3.39-2.6-5.85-2.6-4.51 0-7.9 3.03-7.9 9.14 0 6.1 3.42 9.15 7.9 9.15 2.46 0 4.03-.67 5.88-2.66l-1.77-1.71c-1.33 1.47-2.4 2.02-4.1 2.02-1.74 0-3.2-.7-4.15-2.02-.84-1.16-1.15-2.55-1.15-4.8 0-2.27.31-3.63 1.15-4.81.96-1.3 2.4-2 4.14-2m22.38-2.11h-3.27l-8.1 7.87V15.31h-2.61v25.85h2.6v-6.52l3.19-3.18 5.99 9.7h3.24l-7.4-11.52zm12.3-.93a7.7 7.7 0 0 0-5.76 2.29c-1.68 1.73-2.11 3.85-2.11 7.2 0 3.4.43 5.5 2.11 7.24a7.6 7.6 0 0 0 5.76 2.29 7.7 7.7 0 0 0 5.8-2.29c1.67-1.73 2.1-3.85 2.1-7.23 0-3.36-.43-5.48-2.1-7.21a7.7 7.7 0 0 0-5.8-2.29m2.17 14.01c-.55.55-1.24.81-2.17.81q-1.37-.02-2.14-.8c-.96-.96-1.07-2.61-1.07-4.55s.11-3.54 1.07-4.5a2.8 2.8 0 0 1 2.14-.8q1.4.02 2.17.8c.96.96 1.07 2.59 1.07 4.5 0 1.94-.11 3.59-1.07 4.54m18.07-13.8-3.77 11.48L145 22.54h-4.86L147 41.16h3.65l6.83-18.62zm12.8-.21c-4.84 0-8.11 3.42-8.11 9.5 0 7.52 4.22 9.52 8.6 9.52a8.9 8.9 0 0 0 7.06-2.92l-2.81-2.75a5.1 5.1 0 0 1-4.23 1.73c-2.6 0-4.08-1.73-4.08-4.14h11.64V31.2c.03-5.1-2.9-8.86-8.08-8.86m-3.54 7.76c.03-.81.15-1.33.44-2a3.2 3.2 0 0 1 3.1-1.94c1.55 0 2.6.81 3.09 1.94.29.67.4 1.19.43 2zm18.5-5.76v-1.8h-4.55v18.62h4.63v-11.2c0-2.35 1.57-3.42 3.02-3.42 1.13 0 1.73.37 2.46 1.1l3.5-3.53a5.6 5.6 0 0 0-4.4-1.74 6.2 6.2 0 0 0-4.66 1.97m10.5-3.74v20.53h4.64V26.45h3.44v-3.53h-3.41v-2.03c0-1.07.55-1.68 1.65-1.68h1.8v-3.93h-2.64c-3.82 0-5.47 2.69-5.47 5.32m27.19 1.74a7.7 7.7 0 0 0-5.76 2.29c-1.68 1.73-2.12 3.85-2.12 7.2 0 3.4.44 5.5 2.12 7.24a7.6 7.6 0 0 0 5.76 2.29 7.7 7.7 0 0 0 5.79-2.29c1.68-1.73 2.11-3.85 2.11-7.23 0-3.36-.43-5.48-2.11-7.21a7.7 7.7 0 0 0-5.8-2.29m2.2 14.01q-.8.82-2.17.81-1.38-.02-2.14-.8c-.96-.96-1.08-2.61-1.08-4.55s.12-3.54 1.08-4.5a2.8 2.8 0 0 1 2.14-.8q1.38.02 2.17.8c.95.96 1.07 2.59 1.07 4.5 0 1.94-.12 3.59-1.07 4.54m27.64-13.8-3 11.48-3.83-11.49h-3.39l-3.79 11.5-3-11.5h-4.93l5.7 18.62h3.82l3.88-11.67 3.88 11.67H247l5.74-18.62zm-42.09 12.99V15.28h-4.63v20.55c0 2.63 1.62 5.33 5.44 5.33h2.64v-3.94h-1.8c-1.18 0-1.65-.58-1.65-1.68M70.4 26.1l2.4-2.4h-4.94v-5.9h-2.6v18.55c0 2.66 1.53 4.8 4.56 4.8h1.86V38.9h-1.4c-1.67 0-2.42-.99-2.42-2.6V26.1z"
+            ></path>
+          </g>
+          <defs>
+            <clipPath id="a">
+              <path fill="var(--white)" d="M0 0h253v50H0z"></path>
+            </clipPath>
+          </defs>
+        </svg>
+
+        <div class="d-flex mb24">
+          <div class="flex--item fc-blue-400 mr8">
+            <svg
+              width="26"
+              height="26"
+              class="svg-icon mtn2"
+              viewBox="0 0 24 23"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M4.99999 18.4002L0.799988 22.6002V3.0002C0.799988 1.4602 2.05999 0.200195 3.59999 0.200195H20.4C21.9251 0.200195 23.2 1.47513 23.2 3.0002V15.6002C23.2 17.1253 21.9251 18.4002 20.4 18.4002H4.99999ZM15.85 12.8422C16.8553 11.6798 17.222 10.2446 17.222 8.7262C17.222 6.41444 16.2318 4.22493 13.9933 3.36333C12.6987 2.86508 11.0646 2.86755 9.7695 3.36246C7.60473 4.18971 6.38577 6.4455 6.52599 8.7262C6.52599 10.5322 7.01599 11.9322 7.96799 12.9262C9.01575 13.9543 10.4925 14.5087 11.958 14.4242C12.826 14.4242 13.638 14.2702 14.352 13.9482C15.262 14.5642 15.752 14.9002 15.836 14.9282C16.158 15.1102 16.48 15.2502 16.816 15.3482L17.642 13.7662C17.0047 13.5428 16.4016 13.2318 15.85 12.8422ZM14.072 11.5822C13.4355 11.1003 12.7267 10.7223 11.972 10.4622L11.342 11.7222C11.804 11.8902 12.266 12.1282 12.714 12.4222C12.434 12.5202 12.126 12.5762 11.804 12.5762C10.95 12.5762 10.236 12.2542 9.67599 11.6242C8.467 10.2339 8.46692 7.26063 9.67599 5.8702C10.7974 4.60837 12.9647 4.60789 14.086 5.8702C15.3491 7.29117 15.2966 10.1127 14.072 11.5822Z"
+                fill="#1B75D0"
+              ></path>
+            </svg>
+          </div>
+          <div class="flex--item">Get unstuck - ask a question!</div>
+        </div>
+
+        <div class="d-flex mb24">
+          <div class="flex--item fc-blue-400 mr8">
+            <svg width="26" height="26" class="svg-icon mtn2">
+              <path
+                d="M14.8 3a2 2 0 00-1.4.6l-10 10a2 2 0 000 2.8l8.2 8.2c.8.8 2 .8 2.8 0l10-10c.4-.4.6-.9.6-1.4V5a2 2 0 00-2-2h-8.2zm5.2 7a2 2 0 110-4 2 2 0 010 4z"
+              ></path>
+              <path
+                opacity=".5"
+                d="M13 0a2 2 0 00-1.4.6l-10 10a2 2 0 000 2.8c.1-.2.3-.6.6-.8l10-10a2 2 0 011.4-.6h9.6a2 2 0 00-2-2H13z"
+              ></path>
+            </svg>
+          </div>
+          <div class="flex--item">
+            Save your favorite posts, tags and filters
+          </div>
+        </div>
+
+        <div class="d-flex mb24">
+          <div class="flex--item fc-blue-400 mr8">
+            <svg width="26" height="26" class="svg-icon mtn2">
+              <path
+                d="M21 4V2H5v2H1v5c0 2 2 4 4 4v1c0 2.5 3 4 7 4v3H7s-1.2 2.3-1.2 3h14.4c0-.6-1.2-3-1.2-3h-5v-3c4 0 7-1.5 7-4v-1c2 0 4-2 4-4V4h-4zM5 11c-1 0-2-1-2-2V6h2v5zm11.5 2.7l-3.5-2-3.5 1.9L11 9.8 7.2 7.5h4.4L13 3.8l1.4 3.7h4L15.3 10l1.4 3.7h-.1zM23 9c0 1-1 2-2 2V6h2v3z"
+              ></path>
+            </svg>
+          </div>
+          <div class="flex--item">Answer questions and earn reputation</div>
+        </div>
+      </div>
+
+      <div class="flex--item flex--item5 fl-shrink0">
+        <div
+          class="wmx4 ta-center fs-title mx-auto mb24 d-none md:d-block sm:mb0"
+        ></div>
+        <div
+          id="formContainer"
+          class="mx-auto mb24 p48 sm:p32 bg-white bar-lg bs-xl"
+        >
+          <form
+            id="login-form"
+            class="d-flex fd-column gs12 gsy"
+            action="/users/signup?ssrc=blog&amp;returnurl=https%3a%2f%2fstackoverflow.blog%2f"
+            method="POST"
+          >
+            <input
+              type="hidden"
+              name="fkey"
+              value="de0dac72f0eb604836b6a1713551af80c483bd664f53f2a887351152ea7c8136"
+            />
+            <input type="hidden" name="ssrc" value="blog" />
+            <input type="hidden" name="legalLinksShown" value="1" />
+
+            <h1 class="flex--item fs-headline1 fw-bold lh-xs mb8 ws-nowrap">
+              Create your account
+            </h1>
+
+            <div class="flex--item js-terms fs-caption fc-black-400 ta-left">
+              By clicking “Sign up”, you agree to our
+              <a
+                href="https://stackoverflow.com/legal/terms-of-service/public"
+                name="tos"
+                target="_blank"
+                class="-link"
+                >terms of service</a
+              >
+              and acknowledge you have read our
+              <a
+                href="https://stackoverflow.com/legal/privacy-policy"
+                name="privacy"
+                target="_blank"
+                class="-link"
+                >privacy policy</a
+              >.<input type="hidden" name="legalLinksShown" value="1" />
+            </div>
+
+            <div class="flex--item d-flex fd-column gs4 gsy js-auth-item">
+              <label class="flex--item s-label" for="email">Email</label>
+              <div class="d-flex ps-relative">
+                <input
+                  class="s-input"
+                  id="email"
+                  type="email"
+                  size="30"
+                  maxlength="100"
+                  name="email"
+                />
+              </div>
+              <p class="flex--item s-input-message js-error-message d-none"></p>
+            </div>
+            <div
+              class="flex--item d-flex fd-column-reverse gs4 gsy js-auth-item"
+            >
+              <p class="fs-caption fc-black-400 mt4 mb4">
+                Must contain 8+ characters, including at least 1 letter and 1
+                number.
+              </p>
+              <p class="flex--item s-input-message js-error-message d-none"></p>
+
+              <div class="d-flex ps-relative js-password">
+                <input
+                  class="flex--item s-input"
+                  type="password"
+                  autocomplete="new-password"
+                  name="password"
+                  id="password"
+                />
+                <svg
+                  aria-hidden="true"
+                  class="ps-absolute r8 t8 c-pointer js-show-password svg-icon iconEyeOffSm"
+                  width="14"
+                  height="14"
+                  viewBox="0 0 14 14"
+                >
+                  <path
+                    d="M3.52 7.38 1.58 9.26A12 12 0 0 1 0 7s2.63-5.14 7.05-5.14q.99.01 1.86.32L7.44 3.6 7 3.57a3.5 3.5 0 0 0-3.48 3.81M5.3 9.99c.5.28 1.1.44 1.71.44 1.94 0 3.5-1.53 3.5-3.43q-.01-.94-.47-1.72L8.7 6.6q.05.2.05.4a1.73 1.73 0 0 1-2.13 1.67zm6.23-6.19A13 13 0 0 1 14 7s-2.62 5.14-6.95 5.14A6 6 0 0 1 4 11.3L2.27 13l-1.4-1.36L11.9 1l1.23 1.2z"
+                  ></path>
+                </svg>
+                <svg
+                  aria-hidden="true"
+                  class="ps-absolute r8 t8 c-pointer d-none js-hide-password svg-icon iconEyeSm"
+                  width="14"
+                  height="14"
+                  viewBox="0 0 14 14"
+                >
+                  <path
+                    d="M7.05 2C2.63 2 0 7.5 0 7.5S2.63 13 7.05 13C11.38 13 14 7.5 14 7.5S11.38 2 7.05 2M7 11.17A3.6 3.6 0 0 1 3.5 7.5 3.6 3.6 0 0 1 7 3.83c1.94 0 3.5 1.65 3.5 3.67A3.57 3.57 0 0 1 7 11.17m0-1.84c.97 0 1.75-.81 1.75-1.83S7.97 5.67 7 5.67s-1.75.81-1.75 1.83S6.03 9.33 7 9.33"
+                  ></path>
+                </svg>
+              </div>
+              <div class="d-flex ai-center ps-relative jc-space-between">
+                <label class="flex--item s-label" for="password"
+                  >Password</label
+                >
+              </div>
+            </div>
+
+            <div
+              class="flex--item d-flex gs4 gsy fd-column js-auth-item pb16 bb bc-black-225"
+            >
+              <button
+                class="flex--item s-btn s-btn__filled"
+                id="submit-button"
+                name="submit-button"
+              >
+                Sign up
+              </button>
+              <p class="flex--item s-input-message js-error-message d-none"></p>
+            </div>
+
+            <input type="hidden" id="oauth_version" name="oauth_version" />
+            <input type="hidden" id="oauth_server" name="oauth_server" />
+
+            <div
+              id="openid-buttons"
+              class="flex--item d-flex flex__fl-grow1 fd-column gs8 gsy g8"
+            >
+              <button
+                class="flex--item s-btn s-btn__icon s-btn__google bar-md ba bc-black-225"
+                data-provider="google"
+                data-oauthserver="https://accounts.google.com/o/oauth2/auth"
+                data-oauthversion="2.0"
+              >
+                <svg
+                  aria-hidden="true"
+                  class="native svg-icon iconGoogle"
+                  width="18"
+                  height="18"
+                  viewBox="0 0 18 18"
+                >
+                  <path
+                    fill="#4285F4"
+                    d="M16.51 8H8.98v3h4.3c-.18 1-.74 1.48-1.6 2.04v2.01h2.6a7.8 7.8 0 0 0 2.38-5.88c0-.57-.05-.66-.15-1.18"
+                  ></path>
+                  <path
+                    fill="#34A853"
+                    d="M8.98 17c2.16 0 3.97-.72 5.3-1.94l-2.6-2a4.8 4.8 0 0 1-7.18-2.54H1.83v2.07A8 8 0 0 0 8.98 17"
+                  ></path>
+                  <path
+                    fill="#FBBC05"
+                    d="M4.5 10.52a4.8 4.8 0 0 1 0-3.04V5.41H1.83a8 8 0 0 0 0 7.18z"
+                  ></path>
+                  <path
+                    fill="#EA4335"
+                    d="M8.98 4.18c1.17 0 2.23.4 3.06 1.2l2.3-2.3A8 8 0 0 0 1.83 5.4L4.5 7.49a4.8 4.8 0 0 1 4.48-3.3"
+                  ></path>
+                </svg>
+                Sign up with Google
+              </button>
+              <button
+                class="flex--item s-btn s-btn__icon s-btn__github bar-md ba bc-black-225"
+                data-provider="github"
+                data-oauthserver="https://github.com/login/oauth/authorize"
+                data-oauthversion="2.0"
+              >
+                <svg
+                  aria-hidden="true"
+                  class="svg-icon iconGitHub"
+                  width="18"
+                  height="18"
+                  viewBox="0 0 18 18"
+                >
+                  <path
+                    fill="#010101"
+                    d="M9 1a8 8 0 0 0-2.53 15.59c.4.07.55-.17.55-.38l-.01-1.49c-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.4 7.4 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48l-.01 2.2c0 .21.15.46.55.38A8.01 8.01 0 0 0 9 1"
+                  ></path>
+                </svg>
+                Sign up with GitHub
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <div
+          class="mx-auto ta-center fs-body1 p16 mb24 w100 js-redirects sm:mb sm:bb bc-black-225 pb32 wmx5"
+        >
+          Already have an account?
+          <a
+            href="/users/login?ssrc=blog&amp;returnurl=https%3a%2f%2fstackoverflow.blog%2f"
+            name="login"
+            >Log in</a
+          >
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
