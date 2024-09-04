@@ -6,7 +6,7 @@
   >
     <a href="" class="flex items-center space-x-3 rtl:space-x-revers ml-3">
       <img
-        src="assets/byteblog.svg"
+        src="assets/favicon/byteblog.svg"
         class="size-10 rounded-sm"
         alt="Byteblog Logo"
       />
@@ -53,13 +53,17 @@
   >
     <div
       class="bg-cover hidden lg:block lg:w-1/2"
-      style="background-image: url('assets/signup-bg-img-alt.png')"
+      style="background-image: url('assets/backgrounds/background-main.png')"
     >
       <div
         class="h-full py-24 backdrop-filter backdrop-grayscale backdrop-blur-md backdrop-contrast-200"
       >
         <a href="" class="flex place-content-center pb-9">
-          <img class="size-20" src="assets/byteblog.svg" alt="Byteblog" />
+          <img
+            class="size-20"
+            src="assets/favicon/byteblog.svg"
+            alt="Byteblog"
+          />
           <span
             class="font-semibold font-serif text-5xl bg-gradient-to-r from-blue-300 via-slate-50 to-indigo-300 inline-block text-transparent bg-clip-text mb-3 p-3"
             >Byteblog</span
@@ -202,14 +206,14 @@
       </div>
 
       <div
-        class="inline-flex items-center justify-center sm:mx-auto sm:w-full sm:max-w-sm my-2"
+        class="inline-flex items-center justify-center sm:mx-auto sm:w-full sm:max-w-sm my-1"
       >
         <span class="w-1/5 border-b dark:border-gray-400 lg:w-1/4"></span>
         <span class="px-2 font-medium text-gray-400">or</span>
         <span class="w-1/5 border-b dark:border-gray-400 lg:w-1/4"></span>
       </div>
 
-      <div class="mt-2 sm:mx-auto sm:w-full sm:max-w-sm">
+      <div class="sm:mx-auto sm:w-full sm:max-w-sm">
         <form class="space-y-3" action="#" method="POST">
           <div>
             <label
@@ -273,16 +277,37 @@
           </div>
 
           <div>
+            <div class="flex items-center justify-between">
+              <label
+                for="password-confirm"
+                class="block pl-1 text-sm font-semibold leading-6 text-gray-900"
+                >Confirm Password</label
+              >
+            </div>
+            <div class="mt-1">
+              <input
+                id="password-confirm"
+                name="password-confirm"
+                type="password-confirm"
+                placeholder="••••••••"
+                autocomplete="current-password"
+                required
+                class="block w-full rounded-md border-0 px-3 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+              />
+            </div>
+          </div>
+
+          <div>
             <button
               type="submit"
-              class="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+              class="flex w-full justify-center rounded-md my-3 bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
             >
               Sign up
             </button>
           </div>
         </form>
 
-        <p class="m-10 text-center text-sm text-gray-500">
+        <p class="mt-7 mb-3 text-center text-sm text-gray-500">
           Already have an account?
           <a
             href="/login"
