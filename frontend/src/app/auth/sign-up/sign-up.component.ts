@@ -4,8 +4,7 @@ import { Component } from '@angular/core';
   selector: 'app-sign-up',
   standalone: true,
   imports: [],
-  templateUrl: './sign-up.component.html',
-  styleUrl: './sign-up.component.css'
+  templateUrl: './sign-up.component.html'
 })
 export class SignUpComponent {
 
