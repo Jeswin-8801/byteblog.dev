@@ -28,9 +28,21 @@ export class LoginComponent implements OnInit {
 
   showPassword: boolean = false;
   isAlertClosed: boolean = true;
+  isInfoMessageClosed: boolean = true;
+  infoMessageUsername: string = '';
 
   ngOnInit() {
+    this.setSignInSuccessMessage();
     this.createForm();
+  }
+
+  private setSignInSuccessMessage() {
+    this.route.queryParams.subscribe((params) => {
+      if (params['registered'] !== undefined) {
+        this.infoMessageUsername = params['registered'];
+        this.toggleInfoMessage();
+      }
+    });
   }
 
   private createForm() {
@@ -61,6 +73,10 @@ export class LoginComponent implements OnInit {
           if (response.status == 400 && this.isAlertClosed) this.toggleAlert();
         },
       });
+  }
+
+  toggleInfoMessage() {
+    this.isInfoMessageClosed = !this.isInfoMessageClosed;
   }
 
   toggleAlert() {

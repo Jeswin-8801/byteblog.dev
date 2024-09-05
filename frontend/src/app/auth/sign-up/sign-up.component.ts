@@ -65,7 +65,9 @@ export class SignUpComponent {
       .subscribe({
         next: (signUpResponse) => {
           console.log(signUpResponse);
-          this.router.navigateByUrl('/auth/login');
+          this.router.navigate(['/auth/login'], {
+            queryParams: { registered: this.username?.value },
+          });
         },
         error: (response) => {
           this.alertMessage = response.error.message;
