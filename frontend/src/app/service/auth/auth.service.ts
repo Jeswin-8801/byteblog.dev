@@ -11,6 +11,9 @@ import { User } from '../../models/user';
 import { LoginResponse } from '../../auth/login/types/login-response.type';
 import { LoginSuccess } from '../../auth/login/interfaces/login-success.interface';
 import { IS_PUBLIC } from '../../auth/auth.interceptor';
+import { SignUp } from '../../auth/sign-up/interfaces/sign-up.interface';
+import { SignUpResponse } from '../../auth/sign-up/types/sign-up-response.type';
+import { SignUpSuccess } from '../../auth/sign-up/interfaces/sign-up-success.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -41,17 +44,26 @@ export class AuthService {
         this.CONTEXT
       )
       .pipe(
-        catchError((error) => {
-          if (error.status === 401) {
-            // Handle invalid credentials
-            console.log('Invalid credentials');
-          }
-          return of();
-        }),
         tap((data) => {
           const loginSuccessData = data as LoginSuccess;
           this.storeTokens(loginSuccessData);
-          this.router.navigate(['/']);
+          this.router.navigate(['/home']);
+        })
+      );
+  }
+
+  signup(body: SignUp): Observable<SignUpResponse> {
+    return this.http
+      .post<SignUpResponse>(
+        `${environment.apiUrl}/auth/sign-up`,
+        body,
+        this.CONTEXT
+      )
+      .pipe(
+        tap((data) => {
+          const signUpSuccessData = data as SignUpSuccess;
+          console.log(signUpSuccessData.message);
+          this.router.navigate(['/auth/login']);
         })
       );
   }
