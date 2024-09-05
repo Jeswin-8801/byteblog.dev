@@ -119,6 +119,7 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
 
         UserDto userDTO = new UserDto();
         userDTO.setFullName(userInfo.getName());
+        userDTO.setUsername(userInfo.getEmail().split("@")[0]);
         userDTO.setEmail(userInfo.getEmail());
         userDTO.setAuthProvider(
                 AuthProvider.valueOf(

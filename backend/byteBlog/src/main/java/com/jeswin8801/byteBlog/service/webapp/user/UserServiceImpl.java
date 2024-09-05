@@ -11,6 +11,7 @@ import com.jeswin8801.byteBlog.repository.UserRepository;
 import com.jeswin8801.byteBlog.security.util.SecurityUtil;
 import com.jeswin8801.byteBlog.service.mail.EmailService;
 import com.jeswin8801.byteBlog.service.webapp.user.abstracts.UserService;
+import com.jeswin8801.byteBlog.util.exceptions.ResourceConflictException;
 import com.jeswin8801.byteBlog.util.exceptions.ResourceNotFoundException;
 import com.jeswin8801.byteBlog.util.exceptions.enums.UserExceptions;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -81,9 +82,13 @@ public class UserServiceImpl implements UserService {
             );
         }
 
+        // check for if an account already exists with the given username
+        if (userRepository.existsByUsername(userDto.getUsername()))
+            throw new ResourceConflictException(UserExceptions.USER_USERNAME_NOT_AVAILABLE.getMessage());
+
         // check for if an account already exists with the given email
         if (userRepository.existsByEmail(userDto.getEmail()))
-            throw new ResourceNotFoundException(UserExceptions.USER_EMAIL_NOT_AVAILABLE.getMessage());
+            throw new ResourceConflictException(UserExceptions.USER_EMAIL_NOT_AVAILABLE.getMessage());
 
         // else, create user
         User userEntity = userMapper.toEntity(userDto);

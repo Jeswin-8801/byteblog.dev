@@ -3,6 +3,7 @@ package com.jeswin8801.byteBlog.security.entity;
 import com.jeswin8801.byteBlog.entities.model.User;
 import com.jeswin8801.byteBlog.security.util.SecurityUtil;
 import lombok.Data;
+import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -19,6 +20,9 @@ import java.util.Map;
 @Data
 public class UserDetailsImpl implements OAuth2User, UserDetails {
 
+    private String username;
+
+    @Getter
     private String email;
 
     private String password;
@@ -34,11 +38,13 @@ public class UserDetailsImpl implements OAuth2User, UserDetails {
     // OAuth2 Provider attributes or custom Attributes
     private Map<String, Object> attributes;
 
-    public UserDetailsImpl(String email,
+    public UserDetailsImpl(String username,
+                           String email,
                            String password,
                            User user,
                            Collection<? extends GrantedAuthority> authorities,
                            Map<String, Object> attributes) {
+        this.username = email.split("@")[0];
         this.email = email;
         this.password = password;
         this.user = user;
@@ -52,6 +58,7 @@ public class UserDetailsImpl implements OAuth2User, UserDetails {
     public static UserDetailsImpl build(User user) {
 
         return new UserDetailsImpl(
+                user.getUsername(),
                 user.getEmail(),
                 user.getPassword(),
                 user,
@@ -103,7 +110,7 @@ public class UserDetailsImpl implements OAuth2User, UserDetails {
 
     @Override
     public String getUsername() {
-        return this.email;
+        return this.username;
     }
 
     @Override

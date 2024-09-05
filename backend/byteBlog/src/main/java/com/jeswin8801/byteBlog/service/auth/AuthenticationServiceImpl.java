@@ -1,6 +1,7 @@
 package com.jeswin8801.byteBlog.service.auth;
 
 import com.jeswin8801.byteBlog.entities.dto.GenericResponseDto;
+import com.jeswin8801.byteBlog.entities.dto.MessageResponseDto;
 import com.jeswin8801.byteBlog.entities.dto.auth.AuthResponseDto;
 import com.jeswin8801.byteBlog.entities.dto.auth.LoginRequestDto;
 import com.jeswin8801.byteBlog.entities.dto.auth.RegisterUserRequestDto;
@@ -58,7 +59,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
-    public GenericResponseDto<String> registerUser(RegisterUserRequestDto registerUserRequestDto) {
+    public GenericResponseDto<MessageResponseDto> registerUser(RegisterUserRequestDto registerUserRequestDto) {
         UserDto userDto = new UserDto();
         userDto.setUsername(registerUserRequestDto.getUsername());
         userDto.setEmail(registerUserRequestDto.getEmail());
@@ -67,9 +68,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         userService.createUser(userDto);
 
-        return GenericResponseDto.<String>builder()
+        return GenericResponseDto.<MessageResponseDto>builder()
                 .message(
-                    String.format("User \"%s\" created successfully", registerUserRequestDto.getUsername())
+                        MessageResponseDto.builder().message(
+                                String.format("User '%s' created successfully", registerUserRequestDto.getUsername())
+                        ).build()
                 )
                 .httpStatusCode(HttpStatus.CREATED)
                 .build();
