@@ -1,5 +1,7 @@
 package com.jeswin8801.byteBlog.controller;
 
+import com.jeswin8801.byteBlog.entities.dto.GenericResponseDto;
+import com.jeswin8801.byteBlog.entities.dto.auth.AuthResponseDto;
 import com.jeswin8801.byteBlog.entities.dto.auth.LoginRequestDto;
 import com.jeswin8801.byteBlog.entities.dto.auth.RegisterUserRequestDto;
 import com.jeswin8801.byteBlog.service.auth.abstracts.AuthenticationService;
@@ -24,15 +26,17 @@ public class AuthenticationController {
 
     @PostMapping("/login")
     public ResponseEntity<?> loginUser(@RequestBody LoginRequestDto requestDto) {
-        return new ResponseEntity<>(
-                authenticationService.loginUser(requestDto),
-                HttpStatus.OK
-        );
+        return GenericResponseDto.<AuthResponseDto>builder()
+                .message(
+                        authenticationService.loginUser(requestDto)
+                )
+                .httpStatusCode(HttpStatus.OK)
+                .build()
+                .getResponseEntity();
     }
 
     @PostMapping("/sign-up")
     public ResponseEntity<?> registerUser(@RequestBody RegisterUserRequestDto requestDto) {
-        authenticationService.registerUser(requestDto);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return authenticationService.registerUser(requestDto).getResponseEntity();
     }
 }

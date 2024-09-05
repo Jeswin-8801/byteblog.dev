@@ -1,9 +1,9 @@
 package com.jeswin8801.byteBlog.util.exceptions;
 
-public class ResourceNotFoundException extends RuntimeException {
+import lombok.NoArgsConstructor;
 
-    public ResourceNotFoundException() {
-    }
+@NoArgsConstructor
+public class ResourceNotFoundException extends RuntimeException {
 
     public ResourceNotFoundException(String message) {
         super(message);

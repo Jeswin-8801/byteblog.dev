@@ -1,5 +1,6 @@
 package com.jeswin8801.byteBlog.service.auth;
 
+import com.jeswin8801.byteBlog.entities.dto.GenericResponseDto;
 import com.jeswin8801.byteBlog.entities.dto.auth.AuthResponseDto;
 import com.jeswin8801.byteBlog.entities.dto.auth.LoginRequestDto;
 import com.jeswin8801.byteBlog.entities.dto.auth.RegisterUserRequestDto;
@@ -9,6 +10,7 @@ import com.jeswin8801.byteBlog.security.jwt.JWTTokenProvider;
 import com.jeswin8801.byteBlog.service.auth.abstracts.AuthenticationService;
 import com.jeswin8801.byteBlog.service.webapp.user.abstracts.UserService;
 import com.jeswin8801.byteBlog.util.exceptions.enums.AuthExceptions;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
@@ -56,13 +58,20 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
-    public void registerUser(RegisterUserRequestDto registerUserRequestDto) {
+    public GenericResponseDto<String> registerUser(RegisterUserRequestDto registerUserRequestDto) {
         UserDto userDto = new UserDto();
-        userDto.setFullName(registerUserRequestDto.getFullName());
+        userDto.setUsername(registerUserRequestDto.getUsername());
         userDto.setEmail(registerUserRequestDto.getEmail());
         userDto.setPassword(registerUserRequestDto.getPassword());
         userDto.setAuthProvider(AuthProvider.LOCAL);
 
         userService.createUser(userDto);
+
+        return GenericResponseDto.<String>builder()
+                .message(
+                    String.format("User \"%s\" created successfully", registerUserRequestDto.getUsername())
+                )
+                .httpStatusCode(HttpStatus.CREATED)
+                .build();
     }
 }

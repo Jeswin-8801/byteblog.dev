@@ -17,6 +17,8 @@ public class UserDto {
 
     private Long id;
 
+    private String username;
+
     @JsonProperty("full-name")
     private String fullName;
 

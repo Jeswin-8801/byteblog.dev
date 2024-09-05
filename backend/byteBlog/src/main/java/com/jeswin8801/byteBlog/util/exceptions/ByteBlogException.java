@@ -1,9 +1,9 @@
 package com.jeswin8801.byteBlog.util.exceptions;
 
-public class ByteBlogException extends RuntimeException {
+import lombok.NoArgsConstructor;
 
-    public ByteBlogException() {
-    }
+@NoArgsConstructor
+public class ByteBlogException extends RuntimeException {
 
     public ByteBlogException(String message) {
         super(message);

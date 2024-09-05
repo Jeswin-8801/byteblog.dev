@@ -26,7 +26,10 @@ public class User {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
-    @Column(nullable = false, name = "full_name")
+    @Column(nullable = false)
+    private String username;
+
+    @Column(name = "full_name")
     private String fullName;
 
     @JsonProperty(value = "password", access = JsonProperty.Access.WRITE_ONLY)
