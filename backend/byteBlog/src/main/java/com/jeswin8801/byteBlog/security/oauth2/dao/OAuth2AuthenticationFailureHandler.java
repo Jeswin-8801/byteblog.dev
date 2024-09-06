@@ -1,6 +1,5 @@
 package com.jeswin8801.byteBlog.security.oauth2.dao;
 
-import com.jeswin8801.byteBlog.util.OAuth2Util;
 import com.jeswin8801.byteBlog.util.WebUtil;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -12,6 +11,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
+
+import static com.jeswin8801.byteBlog.security.oauth2.enums.OauthCookieNames.REDIRECT_URI_PARAM_COOKIE_NAME;
 
 /**
  * <ol>
@@ -45,7 +46,7 @@ public class OAuth2AuthenticationFailureHandler extends SimpleUrlAuthenticationF
 
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException {
-        String targetUrl = WebUtil.getCookie(request, OAuth2Util.REDIRECT_URI_PARAM_COOKIE_NAME)
+        String targetUrl = WebUtil.getCookie(request, REDIRECT_URI_PARAM_COOKIE_NAME.getMessage())
                 .map(Cookie::getValue)
                 .orElse(("/"));
 

@@ -11,13 +11,6 @@ import java.util.Map;
 
 @UtilityClass
 public class OAuth2Util {
-    public final String OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME = "oauth2_auth_request";
-
-    /**
-     * UI-App/Web-Client will use this param to redirect flow to appropriate page
-     */
-    public final String REDIRECT_URI_PARAM_COOKIE_NAME = "redirect_uri";
-    public final String ORIGINAL_REQUEST_URI_PARAM_COOKIE_NAME = "original_request_uri";
 
     /**
      * Populate OAuth2UserInfo for specific OAuthProvider

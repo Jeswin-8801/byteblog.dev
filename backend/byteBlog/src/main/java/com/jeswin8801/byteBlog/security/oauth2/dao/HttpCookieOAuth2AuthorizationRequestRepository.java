@@ -10,7 +10,7 @@ import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequ
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
-import static com.jeswin8801.byteBlog.util.OAuth2Util.*;
+import static com.jeswin8801.byteBlog.security.oauth2.enums.OauthCookieNames.*;
 
 /**
  * Cookie based repository for storing Authorization requests with OAuth2 Authentication
@@ -30,7 +30,7 @@ public class HttpCookieOAuth2AuthorizationRequestRepository implements Authoriza
 
         Assert.notNull(request, "Request cannot be null.");
 
-        return WebUtil.getCookie(request, OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME)
+        return WebUtil.getCookie(request, OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME.getMessage())
                 .map(this::deserializeCookie)
                 .orElse(null);
     }
@@ -47,18 +47,18 @@ public class HttpCookieOAuth2AuthorizationRequestRepository implements Authoriza
         Assert.notNull(response, "Response cannot be null");
         if (authorizationRequest == null) {
 
-            WebUtil.deleteCookie(request, response, OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME);
-            WebUtil.deleteCookie(request, response, REDIRECT_URI_PARAM_COOKIE_NAME);
-            WebUtil.deleteCookie(request, response, ORIGINAL_REQUEST_URI_PARAM_COOKIE_NAME);
+            WebUtil.deleteCookie(request, response, OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME.getMessage());
+            WebUtil.deleteCookie(request, response, REDIRECT_URI_PARAM_COOKIE_NAME.getMessage());
+            WebUtil.deleteCookie(request, response, ORIGINAL_REQUEST_URI_PARAM_COOKIE_NAME.getMessage());
             return;
         }
 
         // Setting up -> authorizationRequest COOKIE, redirectUri COOKIE and originalRequestUri COOKIE
-        String redirectUri = request.getParameter(REDIRECT_URI_PARAM_COOKIE_NAME);
-        String originalRequestUri = request.getParameter(ORIGINAL_REQUEST_URI_PARAM_COOKIE_NAME);
-        WebUtil.addCookie(response, OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME, AppUtil.serialize(authorizationRequest));
-        WebUtil.addCookie(response, REDIRECT_URI_PARAM_COOKIE_NAME, redirectUri);
-        WebUtil.addCookie(response, ORIGINAL_REQUEST_URI_PARAM_COOKIE_NAME, originalRequestUri);
+        String redirectUri = request.getParameter(REDIRECT_URI_PARAM_COOKIE_NAME.getMessage());
+        String originalRequestUri = request.getParameter(ORIGINAL_REQUEST_URI_PARAM_COOKIE_NAME.getMessage());
+        WebUtil.addCookie(response, OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME.getMessage(), AppUtil.serialize(authorizationRequest));
+        WebUtil.addCookie(response, REDIRECT_URI_PARAM_COOKIE_NAME.getMessage(), redirectUri);
+        WebUtil.addCookie(response, ORIGINAL_REQUEST_URI_PARAM_COOKIE_NAME.getMessage(), originalRequestUri);
     }
 
     @Override
@@ -66,7 +66,7 @@ public class HttpCookieOAuth2AuthorizationRequestRepository implements Authoriza
                                                                  HttpServletResponse response) {
 
         OAuth2AuthorizationRequest originalRequest = loadAuthorizationRequest(request);
-        WebUtil.deleteCookie(request, response, OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME);
+        WebUtil.deleteCookie(request, response, OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME.getMessage());
         return originalRequest;
     }
 
@@ -76,8 +76,8 @@ public class HttpCookieOAuth2AuthorizationRequestRepository implements Authoriza
 
     public void removeAuthorizationRequestCookies(HttpServletRequest request,
                                                   HttpServletResponse response) {
-        WebUtil.deleteCookie(request, response, OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME);
-        WebUtil.deleteCookie(request, response, REDIRECT_URI_PARAM_COOKIE_NAME);
-        WebUtil.deleteCookie(request, response, ORIGINAL_REQUEST_URI_PARAM_COOKIE_NAME);
+        WebUtil.deleteCookie(request, response, OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME.getMessage());
+        WebUtil.deleteCookie(request, response, REDIRECT_URI_PARAM_COOKIE_NAME.getMessage());
+        WebUtil.deleteCookie(request, response, ORIGINAL_REQUEST_URI_PARAM_COOKIE_NAME.getMessage());
     }
 }

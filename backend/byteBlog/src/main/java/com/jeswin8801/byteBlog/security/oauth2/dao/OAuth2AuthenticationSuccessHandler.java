@@ -19,8 +19,8 @@ import java.net.URI;
 import java.util.Arrays;
 import java.util.Optional;
 
-import static com.jeswin8801.byteBlog.util.OAuth2Util.ORIGINAL_REQUEST_URI_PARAM_COOKIE_NAME;
-import static com.jeswin8801.byteBlog.util.OAuth2Util.REDIRECT_URI_PARAM_COOKIE_NAME;
+import static com.jeswin8801.byteBlog.security.oauth2.enums.OauthCookieNames.ORIGINAL_REQUEST_URI_PARAM_COOKIE_NAME;
+import static com.jeswin8801.byteBlog.security.oauth2.enums.OauthCookieNames.REDIRECT_URI_PARAM_COOKIE_NAME;
 
 /**
  * <ol>
@@ -76,9 +76,9 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     protected String determineTargetUrl(HttpServletRequest request,
                                         HttpServletResponse response,
                                         Authentication authentication) {
-        Optional<String> redirectUri = WebUtil.getCookie(request, REDIRECT_URI_PARAM_COOKIE_NAME)
+        Optional<String> redirectUri = WebUtil.getCookie(request, REDIRECT_URI_PARAM_COOKIE_NAME.name())
                 .map(Cookie::getValue);
-        Optional<String> originalRequestUri = WebUtil.getCookie(request, ORIGINAL_REQUEST_URI_PARAM_COOKIE_NAME)
+        Optional<String> originalRequestUri = WebUtil.getCookie(request, ORIGINAL_REQUEST_URI_PARAM_COOKIE_NAME.name())
                 .map(Cookie::getValue);
 
         if (redirectUri.isPresent() && !isRedirectOriginAuthorized(redirectUri.get())) {
@@ -91,7 +91,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
         return UriComponentsBuilder.fromUriString(targetUrl)
                 .queryParam("token", token)
-                .queryParam(ORIGINAL_REQUEST_URI_PARAM_COOKIE_NAME, originalRequestUri)
+                .queryParam(ORIGINAL_REQUEST_URI_PARAM_COOKIE_NAME.name(), originalRequestUri)
                 .build().toUriString();
     }
 
@@ -107,11 +107,8 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         return Arrays.stream(appProperties.getOAuth2().getAuthorizedRedirectOrigins())
                 .anyMatch(authorizedRedirectOrigin -> {
                     URI authorizedURI = URI.create(authorizedRedirectOrigin);
-                    if (authorizedURI.getHost().equalsIgnoreCase(clientRedirectUri.getHost())
-                            && authorizedURI.getPort() == clientRedirectUri.getPort()) {
-                        return true;
-                    }
-                    return false;
+                    return authorizedURI.getHost().equalsIgnoreCase(clientRedirectUri.getHost())
+                            && authorizedURI.getPort() == clientRedirectUri.getPort();
                 });
     }
 }
