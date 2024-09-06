@@ -43,7 +43,11 @@
           placeholder="Search..."
         />
       </div>
-      <div class="flex items-center justify-around space-x-2">
+      <div
+        class="{{
+          isLoggedIn ? 'hidden' : 'flex'
+        }} items-center justify-around space-x-2"
+      >
         <a
           href="/auth/login"
           class="text-gray-800 bg-blue-200 hover:bg-gray-50 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-4 py-2 focus:outline-none"
@@ -54,6 +58,18 @@
           class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2 focus:outline-none"
           >Sign up</a
         >
+      </div>
+      <div
+        class="{{
+          isLoggedIn ? 'flex' : 'hidden'
+        }} items-center justify-around space-x-2"
+      >
+        <button
+          (click)="logout()"
+          class="text-white bg-red-400 hover:bg-red-800 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2 focus:outline-none"
+        >
+          Logout
+        </button>
       </div>
     </div>
   </div>
