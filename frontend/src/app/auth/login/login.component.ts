@@ -55,6 +55,8 @@ export class LoginComponent implements OnInit {
   onLoginFormSubmitted() {
     // stop here if form is invalid
     if (!this.loginForm.valid) {
+      this.email?.markAsTouched();
+      this.password?.markAsTouched();
       return;
     }
 

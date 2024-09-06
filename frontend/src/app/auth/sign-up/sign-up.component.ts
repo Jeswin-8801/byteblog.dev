@@ -56,6 +56,10 @@ export class SignUpComponent {
   onSignUpFormSubmitted() {
     // stop here if form is invalid
     if (!this.signUpForm.valid) {
+      this.username?.markAsTouched();
+      this.email?.markAsTouched();
+      this.password?.markAsTouched();
+      this.password_confirm?.markAsTouched();
       return;
     }
 
