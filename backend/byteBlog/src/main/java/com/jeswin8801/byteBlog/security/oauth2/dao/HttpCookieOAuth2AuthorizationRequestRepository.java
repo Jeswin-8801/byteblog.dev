@@ -5,10 +5,12 @@ import com.jeswin8801.byteBlog.util.WebUtil;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.oauth2.client.web.AuthorizationRequestRepository;
 import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
 
 import static com.jeswin8801.byteBlog.security.oauth2.enums.OauthCookieNames.*;
 
@@ -19,6 +21,7 @@ import static com.jeswin8801.byteBlog.security.oauth2.enums.OauthCookieNames.*;
  * the authorization request. But, since our service is stateless, we can't save it in the session.
  * We'll use a cookie instead.
  */
+@Slf4j
 @Component
 public class HttpCookieOAuth2AuthorizationRequestRepository implements AuthorizationRequestRepository<OAuth2AuthorizationRequest> {
 
@@ -30,7 +33,7 @@ public class HttpCookieOAuth2AuthorizationRequestRepository implements Authoriza
 
         Assert.notNull(request, "Request cannot be null.");
 
-        return WebUtil.getCookie(request, OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME.getMessage())
+        return WebUtil.getCookie(request, OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME.getCookieName())
                 .map(this::deserializeCookie)
                 .orElse(null);
     }
@@ -47,18 +50,25 @@ public class HttpCookieOAuth2AuthorizationRequestRepository implements Authoriza
         Assert.notNull(response, "Response cannot be null");
         if (authorizationRequest == null) {
 
-            WebUtil.deleteCookie(request, response, OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME.getMessage());
-            WebUtil.deleteCookie(request, response, REDIRECT_URI_PARAM_COOKIE_NAME.getMessage());
-            WebUtil.deleteCookie(request, response, ORIGINAL_REQUEST_URI_PARAM_COOKIE_NAME.getMessage());
+            WebUtil.deleteCookie(request, response, OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME.getCookieName());
+            WebUtil.deleteCookie(request, response, REDIRECT_URI_PARAM_COOKIE_NAME.getCookieName());
+            WebUtil.deleteCookie(request, response, ORIGINAL_REQUEST_URI_PARAM_COOKIE_NAME.getCookieName());
             return;
         }
 
         // Setting up -> authorizationRequest COOKIE, redirectUri COOKIE and originalRequestUri COOKIE
-        String redirectUri = request.getParameter(REDIRECT_URI_PARAM_COOKIE_NAME.getMessage());
-        String originalRequestUri = request.getParameter(ORIGINAL_REQUEST_URI_PARAM_COOKIE_NAME.getMessage());
-        WebUtil.addCookie(response, OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME.getMessage(), AppUtil.serialize(authorizationRequest));
-        WebUtil.addCookie(response, REDIRECT_URI_PARAM_COOKIE_NAME.getMessage(), redirectUri);
-        WebUtil.addCookie(response, ORIGINAL_REQUEST_URI_PARAM_COOKIE_NAME.getMessage(), originalRequestUri);
+        WebUtil.addCookie(
+                response,
+                OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME.getCookieName(),
+                AppUtil.serialize(authorizationRequest)
+        );
+
+        String redirectUri = request.getParameter(REDIRECT_URI_PARAM_COOKIE_NAME.getCookieName());
+        String originalRequestUri = request.getParameter(ORIGINAL_REQUEST_URI_PARAM_COOKIE_NAME.getCookieName());
+        if (StringUtils.hasText(redirectUri))
+            WebUtil.addCookie(response, REDIRECT_URI_PARAM_COOKIE_NAME.getCookieName(), redirectUri);
+        if (StringUtils.hasText(originalRequestUri))
+            WebUtil.addCookie(response, ORIGINAL_REQUEST_URI_PARAM_COOKIE_NAME.getCookieName(), originalRequestUri);
     }
 
     @Override
@@ -66,7 +76,7 @@ public class HttpCookieOAuth2AuthorizationRequestRepository implements Authoriza
                                                                  HttpServletResponse response) {
 
         OAuth2AuthorizationRequest originalRequest = loadAuthorizationRequest(request);
-        WebUtil.deleteCookie(request, response, OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME.getMessage());
+        WebUtil.deleteCookie(request, response, OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME.getCookieName());
         return originalRequest;
     }
 
@@ -76,8 +86,8 @@ public class HttpCookieOAuth2AuthorizationRequestRepository implements Authoriza
 
     public void removeAuthorizationRequestCookies(HttpServletRequest request,
                                                   HttpServletResponse response) {
-        WebUtil.deleteCookie(request, response, OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME.getMessage());
-        WebUtil.deleteCookie(request, response, REDIRECT_URI_PARAM_COOKIE_NAME.getMessage());
-        WebUtil.deleteCookie(request, response, ORIGINAL_REQUEST_URI_PARAM_COOKIE_NAME.getMessage());
+        WebUtil.deleteCookie(request, response, OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME.getCookieName());
+        WebUtil.deleteCookie(request, response, REDIRECT_URI_PARAM_COOKIE_NAME.getCookieName());
+        WebUtil.deleteCookie(request, response, ORIGINAL_REQUEST_URI_PARAM_COOKIE_NAME.getCookieName());
     }
 }

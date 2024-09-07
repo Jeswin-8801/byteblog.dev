@@ -7,6 +7,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -46,6 +47,7 @@ import static com.jeswin8801.byteBlog.security.oauth2.enums.OauthCookieNames.RED
  *      </ul>
  * </ol>
  */
+@Slf4j
 @Service
 public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
     @Autowired
@@ -104,9 +106,12 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     private boolean isRedirectOriginAuthorized(String uri) {
         URI clientRedirectUri = URI.create(uri);
 
+        log.info("clientRedirectUri: {}", clientRedirectUri);
+
         return Arrays.stream(appProperties.getOAuth2().getAuthorizedRedirectOrigins())
                 .anyMatch(authorizedRedirectOrigin -> {
                     URI authorizedURI = URI.create(authorizedRedirectOrigin);
+                    log.info("authorizedURI: {}", authorizedURI);
                     return authorizedURI.getHost().equalsIgnoreCase(clientRedirectUri.getHost())
                             && authorizedURI.getPort() == clientRedirectUri.getPort();
                 });
