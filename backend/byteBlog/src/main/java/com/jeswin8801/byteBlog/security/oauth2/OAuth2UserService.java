@@ -4,13 +4,13 @@ import com.jeswin8801.byteBlog.entities.converters.UserMapper;
 import com.jeswin8801.byteBlog.entities.dto.user.UserDto;
 import com.jeswin8801.byteBlog.entities.model.Role;
 import com.jeswin8801.byteBlog.entities.model.User;
-import com.jeswin8801.byteBlog.entities.model.enums.AuthProvider;
 import com.jeswin8801.byteBlog.entities.model.enums.UserPrivilege;
 import com.jeswin8801.byteBlog.security.entity.UserDetailsImpl;
 import com.jeswin8801.byteBlog.security.oauth2.providers.abstracts.OAuth2UserInfo;
 import com.jeswin8801.byteBlog.security.util.SecurityUtil;
 import com.jeswin8801.byteBlog.service.webapp.user.abstracts.UserService;
 import com.jeswin8801.byteBlog.util.OAuth2Util;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.AuthenticationException;
@@ -52,6 +52,7 @@ import java.util.Set;
  *     <li>On completion "processOAuth2User()" Flow Jumps to either <b><i>OAuth2AuthenticationSuccessHandler</i></b> or <b><i>OAuth2AuthenticationFailureHandler</i></b></li>
  * </ol>
  */
+@Slf4j
 @Service
 public class OAuth2UserService extends DefaultOAuth2UserService {
 
@@ -68,10 +69,10 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
 
         try {
             return processOAuth2User(userRequest, oAuth2User);
-        } catch (AuthenticationException ex) {
-            throw ex;
-        } catch (Exception ex) {
-            throw new InternalAuthenticationServiceException(ex.getMessage(), ex.getCause());
+        } catch (AuthenticationException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new InternalAuthenticationServiceException(e.getMessage(), e.getCause());
         }
     }
 
@@ -79,12 +80,11 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
                                          OAuth2User user) {
 
         // Mapped OAuth2User to specific OAuth2UserInfo for that registration id
-        // clientRegistrationId - (google, facebook, gitHub, or Custom Auth Provider - ( keyClock, okta, authServer etc.)
+        // clientRegistrationId is also the provider id - (google, facebook, gitHub, or Custom Auth Provider - ( keyClock, okta, authServer etc.)
         String clientRegistrationId = userRequest.getClientRegistration().getRegistrationId();
         OAuth2UserInfo oAuth2UserInfo = OAuth2Util.getOAuth2UserInfo(clientRegistrationId, user.getAttributes());
 
         // Check if the email is provided by the OAuthProvider
-        AuthProvider authProvider = AuthProvider.valueOf(clientRegistrationId.toLowerCase());
         String userEmail = oAuth2UserInfo.getEmail();
         if (!StringUtils.hasText(userEmail))
             throw new InternalAuthenticationServiceException("Sorry, Couldn't retrieve your email from Provider " + clientRegistrationId + ". Email not available or Private by default");
@@ -93,19 +93,18 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
 
         // Determine whether this is [ Sign up ] or [ New Sign up ]
         // Sign Up (if the given email is not associated with another user account, register user, and save to db)
-        if (ObjectUtils.isEmpty(userDto))
+        if (ObjectUtils.isEmpty(userDto)) {
             registerNewOAuthUser(userRequest, oAuth2UserInfo);
+        } else if (userDto.getAuthProvider().equals(clientRegistrationId)) {
+            // If account exists i.e. userDto is not null, Sign In
+            // Below code gets executed regardless of Sign in or Sign up as it conforms to both flows
 
-        // If account exists i.e. userDto is not null, Sign In
-        // Below code gets executed regardless of Sign in or Sign up as it conforms to both flows
-
-        if (userDto.getAuthProvider().equals(authProvider))
-            updateExistingOAuthUser(userDto, oAuth2UserInfo); // updates just the name and profile_pic associated with the External Account as they as subject to changes
-        else
+            updateExistingOAuthUserInfo(userDto, oAuth2UserInfo); // updates just the name and profile_pic associated with the External Account as they as subject to changes
+        } else
             throw new InternalAuthenticationServiceException(
                     String.format("Sorry, this email is linked with \"%s\" account. Please use your \"%s\" account to login.",
-                            userDto.getAuthProvider().name(),
-                            userDto.getAuthProvider().name())
+                            userDto.getAuthProvider(),
+                            userDto.getAuthProvider())
             );
 
         List<GrantedAuthority> grantedAuthorities = new ArrayList<>(user.getAuthorities());
@@ -121,12 +120,11 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
         userDTO.setFullName(userInfo.getName());
         userDTO.setUsername(userInfo.getEmail().split("@")[0]);
         userDTO.setEmail(userInfo.getEmail());
+        userDTO.setProfileImageUrl(userDTO.getProfileImageUrl());
         userDTO.setAuthProvider(
-                AuthProvider.valueOf(
-                        oAuth2UserRequest
-                                .getClientRegistration()
-                                .getRegistrationId().toUpperCase()
-                )
+                oAuth2UserRequest
+                        .getClientRegistration()
+                        .getRegistrationId()
         );
         userDTO.setRegisteredProviderId(userInfo.getId());
         userDTO.setRoles(Set.of(
@@ -137,15 +135,29 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
         );
         userDTO.setEmailVerified(true);
 
+        log.info("Registering new OAuth user: {}", userDTO.getEmail());
+
         userService.createUser(userDTO);
     }
 
-    private void updateExistingOAuthUser(UserDto existingUserDTO,
-                                         OAuth2UserInfo oAuth2UserInfo) {
+    private void updateExistingOAuthUserInfo(UserDto existingUserDTO,
+                                             OAuth2UserInfo oAuth2UserInfo) {
+        boolean update = false;
+        if (!existingUserDTO.getFullName().equals(oAuth2UserInfo.getName())) {
+            existingUserDTO.setFullName(oAuth2UserInfo.getName());
+            update = true;
+        }
+        if (
+                !StringUtils.hasText(existingUserDTO.getProfileImageUrl()) ||
+                        !existingUserDTO.getProfileImageUrl().equals(oAuth2UserInfo.getImageUrl())
+        ) {
+            existingUserDTO.setProfileImageUrl(oAuth2UserInfo.getImageUrl());
+            update = true;
+        }
 
-        existingUserDTO.setFullName(oAuth2UserInfo.getName());
-        existingUserDTO.setProfileImageUrl(oAuth2UserInfo.getImageUrl());
-
-        userService.updateUser(existingUserDTO);
+        if (update) {
+            log.info("Found changes in OAuth user info (name | profile pic); updating user info in DB");
+            userService.updateUser(existingUserDTO);
+        }
     }
 }

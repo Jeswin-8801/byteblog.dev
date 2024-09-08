@@ -53,12 +53,14 @@ public class OAuth2AuthenticationFailureHandler extends SimpleUrlAuthenticationF
                 .orElse(("/"));
 
         targetUrl = UriComponentsBuilder.fromUriString(targetUrl)
-                .queryParam("error", exception.getLocalizedMessage())
+                .queryParam(
+                        "error",
+                        exception.getLocalizedMessage().replaceAll(
+                        "[\\[\\]]", "")
+                )
                 .build().toUriString();
 
-        log.info("targetUrl {}", targetUrl);
-
-        httpCookieOAuth2AuthorizationRequestRepository.removeAuthorizationRequestCookies(request, response);
+        httpCookieOAuth2AuthorizationRequestRepository.removeAuthorizationRequest(request, response);
         getRedirectStrategy().sendRedirect(request, response, targetUrl);
     }
 }

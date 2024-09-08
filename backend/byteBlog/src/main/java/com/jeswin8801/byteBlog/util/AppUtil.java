@@ -1,10 +1,17 @@
 package com.jeswin8801.byteBlog.util;
 
+import com.esotericsoftware.kryo.Kryo;
+import com.esotericsoftware.kryo.io.Input;
+import com.esotericsoftware.kryo.io.Output;
+import com.esotericsoftware.kryo.serializers.JavaSerializer;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.experimental.UtilityClass;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
 @UtilityClass
@@ -12,17 +19,28 @@ public class AppUtil {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
+    private final Kryo kryo = new Kryo();
+
     /**
-     * Serializes an object
+     * Serializes an object to
      */
-    public <T> String serialize(T object) {
+    public <T> String serialize(T object, Class<T> className) {
+        kryo.register(className, new JavaSerializer());
+
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        Output output = new Output(byteArrayOutputStream);
+
+        kryo.writeObject(output, object);
+        byte[] serializedObject = byteArrayOutputStream.toByteArray();
+
+        output.close();
         try {
-            return Base64.getUrlEncoder().encodeToString(
-                    objectMapper.writeValueAsBytes(object)
-            );
-        } catch (JsonProcessingException exception) {
-            throw new RuntimeException(exception);
+            byteArrayOutputStream.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
+
+        return Base64.getUrlEncoder().encodeToString(serializedObject);
     }
 
     /**
@@ -30,14 +48,24 @@ public class AppUtil {
      */
     public <T> T deserialize(String serializedObject,
                              Class<T> className) {
+        kryo.register(className, new JavaSerializer());
+
+        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(
+                Base64.getUrlDecoder().decode(
+                        serializedObject.getBytes(StandardCharsets.UTF_8)
+                )
+        );
+        Input input = new Input(byteArrayInputStream);
+
+        T deserializedObject = kryo.readObject(input, className);
+        input.close();
         try {
-            return objectMapper.readValue(
-                    Base64.getUrlDecoder().decode(serializedObject),
-                    className
-            );
-        } catch (IOException exception) {
-            throw new RuntimeException(exception);
+            byteArrayInputStream.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
+
+        return deserializedObject;
     }
 
     /**
@@ -47,8 +75,8 @@ public class AppUtil {
 
         try {
             return objectMapper.writeValueAsString(object);
-        } catch (JsonProcessingException exception) {
-            throw new RuntimeException(exception);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -59,8 +87,8 @@ public class AppUtil {
                                  Class<T> clazz) {
         try {
             return objectMapper.readValue(json, clazz);
-        } catch (IOException exception) {
-            throw new RuntimeException(exception);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 

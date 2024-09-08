@@ -17,9 +17,9 @@ public class OAuth2Util {
      */
     public OAuth2UserInfo getOAuth2UserInfo(String registrationId,
                                             Map<String, Object> attributes) {
-        if (registrationId.equalsIgnoreCase(AuthProvider.GOOGLE.name()))
+        if (registrationId.equalsIgnoreCase(AuthProvider.GOOGLE.getProvider()))
             return new GoogleOAuth2UserInfo(attributes);
-        else if (registrationId.equalsIgnoreCase(AuthProvider.GITHUB.name()))
+        else if (registrationId.equalsIgnoreCase(AuthProvider.GITHUB.getProvider()))
             return new GithubOAuth2UserInfo(attributes);
         else
             throw new InternalAuthenticationServiceException("Login with " + registrationId + " is not supported.");

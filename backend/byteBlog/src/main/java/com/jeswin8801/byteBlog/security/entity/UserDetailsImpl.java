@@ -38,8 +38,7 @@ public class UserDetailsImpl implements OAuth2User, UserDetails {
     // OAuth2 Provider attributes or custom Attributes
     private Map<String, Object> attributes;
 
-    public UserDetailsImpl(String username,
-                           String email,
+    public UserDetailsImpl(String email,
                            String password,
                            User user,
                            Collection<? extends GrantedAuthority> authorities,
@@ -58,7 +57,6 @@ public class UserDetailsImpl implements OAuth2User, UserDetails {
     public static UserDetailsImpl build(User user) {
 
         return new UserDetailsImpl(
-                user.getUsername(),
                 user.getEmail(),
                 user.getPassword(),
                 user,

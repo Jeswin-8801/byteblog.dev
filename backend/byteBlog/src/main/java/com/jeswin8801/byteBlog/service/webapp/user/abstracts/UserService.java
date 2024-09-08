@@ -8,7 +8,7 @@ public interface UserService {
 
     String getUserIdFromEmail(String email);
 
-    void    createUser(UserDto userDto);
+    void createUser(UserDto userDto);
 
     void updateUser(UserDto userDTO);
 }

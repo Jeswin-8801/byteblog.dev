@@ -14,6 +14,7 @@ import com.jeswin8801.byteBlog.service.webapp.user.abstracts.UserService;
 import com.jeswin8801.byteBlog.util.exceptions.ResourceConflictException;
 import com.jeswin8801.byteBlog.util.exceptions.ResourceNotFoundException;
 import com.jeswin8801.byteBlog.util.exceptions.enums.UserExceptions;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +23,7 @@ import org.springframework.util.StringUtils;
 
 import java.util.Set;
 
+@Slf4j
 @Service
 @Transactional
 public class UserServiceImpl implements UserService {
@@ -43,13 +45,16 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto findUserByEmail(String email) {
 
-        return userMapper.toDto(
-                userRepository.findByEmail(email)
-                        .orElseThrow(
-                                () -> new ResourceNotFoundException(UserExceptions.USER_RECORD_NOT_FOUND.getMessage())
-                        ),
-                UserDto.class
-        );
+        User user = userRepository.findByEmail(email)
+                .orElse(null);
+
+        if (!ObjectUtils.isEmpty(user))
+            return userMapper.toDto(
+                    user,
+                    UserDto.class
+            );
+
+        return null;
     }
 
     @Override
@@ -57,9 +62,7 @@ public class UserServiceImpl implements UserService {
 
         return userRepository
                 .findIdByEmail(email)
-                .orElseThrow(
-                        () -> new ResourceNotFoundException(UserExceptions.USER_RECORD_NOT_FOUND.getMessage())
-                );
+                .orElse(null);
     }
 
     @Override
@@ -75,7 +78,7 @@ public class UserServiceImpl implements UserService {
         }
 
         // check for if Auth provider is local (jwt auth) is present, and if so password is processed
-        if (userDto.getAuthProvider().equals(AuthProvider.LOCAL) &&
+        if (userDto.getAuthProvider().equals(AuthProvider.LOCAL.getProvider()) &&
                 StringUtils.hasText(userDto.getPassword())) {
             userDto.setPassword(
                     passwordEncoder.encode(userDto.getPassword())
@@ -93,6 +96,8 @@ public class UserServiceImpl implements UserService {
         // else, create user
         User userEntity = userMapper.toEntity(userDto);
         userRepository.save(userEntity);
+
+        log.info("User {} created successfully", userDto.getEmail());
     }
 
     @Override

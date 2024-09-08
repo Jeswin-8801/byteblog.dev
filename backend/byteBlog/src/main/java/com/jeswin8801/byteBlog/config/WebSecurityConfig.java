@@ -11,8 +11,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.ProviderManager;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -43,7 +42,6 @@ public class WebSecurityConfig {
     // OAuth2UserService - To process OAuth user SignUp/SignIn request
     private final UserDetailsServiceImpl userDetailsService;
     private final OAuth2UserService oAuth2UserService;
-    private final PasswordEncoder passwordEncoder;
 
     // AuthenticationEntryPointImpl - Unauthorized Access handler
     // JWTAuthenticationFilter - Retrieves request JWT token and, validate and set Authentication
@@ -59,7 +57,6 @@ public class WebSecurityConfig {
         this.properties = properties;
         this.userDetailsService = userDetailsService;
         this.oAuth2UserService = oAuth2UserService;
-        this.passwordEncoder = passwordEncoder;
         this.authenticationEntryPoint = authenticationEntryPoint;
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
         this.httpCookieOAuth2AuthorizationRequestRepository = httpCookieOAuth2AuthorizationRequestRepository;
@@ -81,7 +78,6 @@ public class WebSecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
-                .authenticationManager(authenticationManager())
                 .exceptionHandling((exception) -> exception
                         .authenticationEntryPoint(authenticationEntryPoint)
                 )
@@ -139,20 +135,7 @@ public class WebSecurityConfig {
 
 
     @Bean
-    public AuthenticationManager authenticationManager() {
-        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-        authProvider.setUserDetailsService(this.userDetailsService);
-        authProvider.setPasswordEncoder(this.passwordEncoder);
-
-        return new ProviderManager(authProvider);
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
     }
-
-//    @Bean
-//    public AuthenticationManager authenticationManager(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
-//        authenticationManagerBuilder
-//                .userDetailsService(userDetailsService)
-//                .passwordEncoder(passwordEncoder);
-//
-//        return authenticationManagerBuilder.build();
-//    }
 }

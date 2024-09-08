@@ -1,7 +1,6 @@
 package com.jeswin8801.byteBlog.entities.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.jeswin8801.byteBlog.entities.model.enums.AuthProvider;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import lombok.Data;
@@ -47,8 +46,7 @@ public class User {
     private String profileImageUrl;
 
     @Column(name = "auth_provider")
-    @Enumerated(EnumType.STRING)
-    private AuthProvider authProvider;
+    private String authProvider;
 
     @Column(name = "registered_provider_id")
     private String registeredProviderId;

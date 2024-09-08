@@ -2,7 +2,6 @@ package com.jeswin8801.byteBlog.entities.dto.user;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.jeswin8801.byteBlog.entities.model.Role;
-import com.jeswin8801.byteBlog.entities.model.enums.AuthProvider;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,7 +14,7 @@ import java.util.Set;
 @AllArgsConstructor
 public class UserDto {
 
-    private Long id;
+    private String id;
 
     private String username;
 
@@ -33,7 +32,7 @@ public class UserDto {
     private String profileImageUrl;
 
     @JsonProperty("auth-provider")
-    private AuthProvider authProvider;
+    private String authProvider;
 
     @JsonProperty("registered-provider-id")
     private String registeredProviderId;

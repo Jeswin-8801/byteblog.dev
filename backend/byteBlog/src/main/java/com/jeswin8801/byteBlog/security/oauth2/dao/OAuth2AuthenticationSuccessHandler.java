@@ -78,9 +78,9 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     protected String determineTargetUrl(HttpServletRequest request,
                                         HttpServletResponse response,
                                         Authentication authentication) {
-        Optional<String> redirectUri = WebUtil.getCookie(request, REDIRECT_URI_PARAM_COOKIE_NAME.name())
+        Optional<String> redirectUri = WebUtil.getCookie(request, REDIRECT_URI_PARAM_COOKIE_NAME.getCookieName())
                 .map(Cookie::getValue);
-        Optional<String> originalRequestUri = WebUtil.getCookie(request, ORIGINAL_REQUEST_URI_PARAM_COOKIE_NAME.name())
+        Optional<String> originalRequestUri = WebUtil.getCookie(request, ORIGINAL_REQUEST_URI_PARAM_COOKIE_NAME.getCookieName())
                 .map(Cookie::getValue);
 
         if (redirectUri.isPresent() && !isRedirectOriginAuthorized(redirectUri.get())) {
@@ -91,16 +91,21 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
         String token = jwtTokenProvider.generateJWTAccessToken(authentication);
 
-        return UriComponentsBuilder.fromUriString(targetUrl)
-                .queryParam("token", token)
-                .queryParam(ORIGINAL_REQUEST_URI_PARAM_COOKIE_NAME.name(), originalRequestUri)
-                .build().toUriString();
+        if (originalRequestUri.isPresent())
+            return UriComponentsBuilder.fromUriString(targetUrl)
+                    .queryParam("token", token)
+                    .queryParam(ORIGINAL_REQUEST_URI_PARAM_COOKIE_NAME.getCookieName(), originalRequestUri)
+                    .build().toUriString();
+        else
+            return UriComponentsBuilder.fromUriString(targetUrl)
+                    .queryParam("token", token)
+                    .build().toUriString();
     }
 
     protected void clearAuthenticationAttributes(HttpServletRequest request,
                                                  HttpServletResponse response) {
         super.clearAuthenticationAttributes(request);
-        httpCookieOAuth2AuthorizationRequestRepository.removeAuthorizationRequestCookies(request, response);
+        httpCookieOAuth2AuthorizationRequestRepository.removeAuthorizationRequest(request, response);
     }
 
     private boolean isRedirectOriginAuthorized(String uri) {
