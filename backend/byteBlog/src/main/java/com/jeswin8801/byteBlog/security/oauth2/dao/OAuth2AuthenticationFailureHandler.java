@@ -4,6 +4,7 @@ import com.jeswin8801.byteBlog.util.WebUtil;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
@@ -38,6 +39,7 @@ import static com.jeswin8801.byteBlog.security.oauth2.enums.OauthCookieNames.RED
  *      </ul>
  * </ol>
  */
+@Slf4j
 @Service
 public class OAuth2AuthenticationFailureHandler extends SimpleUrlAuthenticationFailureHandler {
 
@@ -46,13 +48,15 @@ public class OAuth2AuthenticationFailureHandler extends SimpleUrlAuthenticationF
 
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException {
-        String targetUrl = WebUtil.getCookie(request, REDIRECT_URI_PARAM_COOKIE_NAME.getMessage())
+        String targetUrl = WebUtil.getCookie(request, REDIRECT_URI_PARAM_COOKIE_NAME.getCookieName())
                 .map(Cookie::getValue)
                 .orElse(("/"));
 
         targetUrl = UriComponentsBuilder.fromUriString(targetUrl)
                 .queryParam("error", exception.getLocalizedMessage())
                 .build().toUriString();
+
+        log.info("targetUrl {}", targetUrl);
 
         httpCookieOAuth2AuthorizationRequestRepository.removeAuthorizationRequestCookies(request, response);
         getRedirectStrategy().sendRedirect(request, response, targetUrl);

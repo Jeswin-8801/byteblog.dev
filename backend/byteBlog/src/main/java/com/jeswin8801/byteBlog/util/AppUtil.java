@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.experimental.UtilityClass;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.Base64;
 
 @UtilityClass
@@ -33,7 +32,7 @@ public class AppUtil {
                              Class<T> className) {
         try {
             return objectMapper.readValue(
-                    Base64.getDecoder().decode(serializedObject),
+                    Base64.getUrlDecoder().decode(serializedObject),
                     className
             );
         } catch (IOException exception) {

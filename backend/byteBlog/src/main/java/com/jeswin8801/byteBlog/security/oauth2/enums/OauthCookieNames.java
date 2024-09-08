@@ -12,9 +12,9 @@ public enum OauthCookieNames {
     REDIRECT_URI_PARAM_COOKIE_NAME("redirect_uri"),
     ORIGINAL_REQUEST_URI_PARAM_COOKIE_NAME("original_request_uri");
 
-    private final String message;
+    private final String cookieName;
 
-    OauthCookieNames(String message) {
-        this.message = message;
+    OauthCookieNames(String cookieName) {
+        this.cookieName = cookieName;
     }
 }
