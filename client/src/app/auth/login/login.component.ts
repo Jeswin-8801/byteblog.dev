@@ -12,7 +12,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { Login } from './interfaces/login.interface';
 import { AuthService } from '../../service/auth/auth.service';
-import { environment } from '../../../environments/environment';
+import { AppConstants } from '../../common/app.constants';
 
 @Component({
   selector: 'app-login',
@@ -29,15 +29,32 @@ export class LoginComponent {
 
   showPassword: boolean = false;
   isAlertClosed: boolean = true;
+  alertMessage: string = '';
   isInfoMessageClosed: boolean = true;
   infoMessageUsername: string = '';
 
   ngOnInit() {
-    this.setSignInSuccessMessage();
+    this.processOauthRequestResponse();
+    this.setSignUpSuccessMessage();
     this.createForm();
   }
 
-  private setSignInSuccessMessage() {
+  private processOauthRequestResponse() {
+    this.route.queryParams.subscribe((params) => {
+      if (params['token'] !== undefined) {
+        this.authService.storeTokens(params['token']);
+        this.router.navigateByUrl('/home');
+      } else if (params['error'] !== undefined) {
+        console.error(
+          'OAuth authentication failed with error: ' + params['error']
+        );
+        this.toggleAlert();
+        this.alertMessage = 'OAuth Authentication Unsuccessfull';
+      }
+    });
+  }
+
+  private setSignUpSuccessMessage() {
     this.route.queryParams.subscribe((params) => {
       if (params['registered'] !== undefined) {
         this.infoMessageUsername = params['registered'];
@@ -73,17 +90,20 @@ export class LoginComponent {
           this.router.navigateByUrl(returnUrl);
         },
         error: (response) => {
-          if (response.status == 400 && this.isAlertClosed) this.toggleAlert();
+          if (response.status == 400 && this.isAlertClosed) {
+            this.toggleAlert();
+            this.alertMessage = 'Incorrect email or password provided';
+          }
         },
       });
   }
 
   githubSignInOnClickRedirect() {
-    window.open(environment.apiUrl + `/oauth2/authorize/github`, '_self');
+    window.open(AppConstants.GITHUB_OAUTH_URL + AppConstants.LOGIN, '_self');
   }
 
   googleSignInOnClickRedirect() {
-    window.open(environment.apiUrl + `/oauth2/authorize/google`, '_self');
+    window.open(AppConstants.GOOGLE_OAUTH_URL + AppConstants.LOGIN, '_self');
   }
 
   toggleInfoMessage() {

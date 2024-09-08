@@ -46,7 +46,7 @@ export class AuthService {
       .pipe(
         tap((data) => {
           const loginSuccessData = data as LoginSuccess;
-          this.storeTokens(loginSuccessData);
+          this.storeTokens(loginSuccessData.token);
           this.router.navigate(['/home']);
         })
       );
@@ -73,7 +73,7 @@ export class AuthService {
     this.router.navigate(['/auth/login']);
   }
 
-  storeTokens(data: LoginSuccess): void {
-    localStorage.setItem('token', data.token);
+  storeTokens(data: string): void {
+    localStorage.setItem('token', data);
   }
 }

@@ -8,7 +8,6 @@ import { AuthService } from '../service/auth/auth.service';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   if (inject(AuthService).isAuthenticated()) {
-    console.log(req);
     const authRequest = addAuthorizationHeader(req);
     return next(authRequest);
   }

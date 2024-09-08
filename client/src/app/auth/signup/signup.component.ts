@@ -10,11 +10,12 @@ import {
   Validators,
 } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { SignUp } from './interfaces/sign-up.interface';
 import { AuthService } from '../../service/auth/auth.service';
 import { environment } from '../../../environments/environment';
+import { AppConstants } from '../../common/app.constants';
 
 @Component({
   selector: 'app-signup',
@@ -25,6 +26,7 @@ import { environment } from '../../../environments/environment';
 export class SignupComponent {
   private readonly authService = inject(AuthService);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   signUpForm!: FormGroup;
 
@@ -33,7 +35,23 @@ export class SignupComponent {
   alertMessage: string = '';
 
   ngOnInit() {
+    this.processOauthRequestResponse();
     this.createForm();
+  }
+
+  private processOauthRequestResponse() {
+    this.route.queryParams.subscribe((params) => {
+      if (params['token'] !== undefined) {
+        this.authService.storeTokens(params['token']);
+        this.router.navigateByUrl('/home');
+      } else if (params['error'] !== undefined) {
+        console.error(
+          'OAuth authentication failed with error: ' + params['error']
+        );
+        this.toggleAlert();
+        this.alertMessage = 'OAuth Authentication Unsuccessfull';
+      }
+    });
   }
 
   private createForm() {
@@ -108,11 +126,11 @@ export class SignupComponent {
   }
 
   githubSignUpOnClickRedirect() {
-    window.open(environment.apiUrl + `/oauth2/authorize/github`, '_self');
+    window.open(AppConstants.GITHUB_OAUTH_URL + AppConstants.SIGNUP, '_self');
   }
 
   googleSignUpOnClickRedirect() {
-    window.open(environment.apiUrl + `/oauth2/authorize/google`, '_self');
+    window.open(AppConstants.GOOGLE_OAUTH_URL + AppConstants.SIGNUP, '_self');
   }
 
   toggleAlert() {
