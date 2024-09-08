@@ -12,6 +12,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { Login } from './interfaces/login.interface';
 import { AuthService } from '../../service/auth/auth.service';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-login',
@@ -75,6 +76,14 @@ export class LoginComponent {
           if (response.status == 400 && this.isAlertClosed) this.toggleAlert();
         },
       });
+  }
+
+  githubSignInOnClickRedirect() {
+    window.open(environment.apiUrl + `/oauth2/authorize/github`, '_self');
+  }
+
+  googleSignInOnClickRedirect() {
+    window.open(environment.apiUrl + `/oauth2/authorize/google`, '_self');
   }
 
   toggleInfoMessage() {

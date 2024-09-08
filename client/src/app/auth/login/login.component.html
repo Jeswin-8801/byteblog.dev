@@ -135,7 +135,7 @@
     </h2>
 
     <button
-      type="button"
+      (click)="githubSignInOnClickRedirect()"
       class="w-full px-4 py-3 rounded-lg bg-[#24292F] mt-10 hover:bg-[#24292F]/90 mb-4"
     >
       <div class="relative flex items-center space-x-4 justify-center">
@@ -157,6 +157,7 @@
 
     <button
       type="button"
+      (click)="googleSignInOnClickRedirect()"
       class="w-full px-4 py-3 mb-2 rounded-lg hover:bg-gradient-to-tr focus:outline-none bg-gradient-to-r from-white to-cyan-200"
     >
       <div class="relative flex items-center space-x-4 justify-center">

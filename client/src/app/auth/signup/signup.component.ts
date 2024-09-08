@@ -14,6 +14,7 @@ import { Router } from '@angular/router';
 
 import { SignUp } from './interfaces/sign-up.interface';
 import { AuthService } from '../../service/auth/auth.service';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-signup',
@@ -104,6 +105,14 @@ export class SignupComponent {
         return null;
       }
     };
+  }
+
+  githubSignUpOnClickRedirect() {
+    window.open(environment.apiUrl + `/oauth2/authorize/github`, '_self');
+  }
+
+  googleSignUpOnClickRedirect() {
+    window.open(environment.apiUrl + `/oauth2/authorize/google`, '_self');
   }
 
   toggleAlert() {
