@@ -14,7 +14,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import { SignUp } from './interfaces/sign-up.interface';
 import { AuthService } from '../../service/auth/auth.service';
-import { environment } from '../../../environments/environment';
 import { AppConstants } from '../../common/app.constants';
 
 @Component({
