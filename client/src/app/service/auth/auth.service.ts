@@ -13,6 +13,7 @@ import { SignUp } from '../../auth/signup/interfaces/sign-up.interface';
 import { SignUpResponse } from '../../auth/signup/types/sign-up-response.type';
 import { SignUpSuccess } from '../../auth/signup/interfaces/sign-up-success.interface';
 import { environment } from '../../../environments/environment';
+import { ObjectMapper } from 'json-object-mapper';
 
 @Injectable({
   providedIn: 'root',
@@ -29,7 +30,14 @@ export class AuthService {
 
   get user(): WritableSignal<User | null> {
     const token = localStorage.getItem('token');
-    return signal(token ? this.jwtHelper.decodeToken(token) : null);
+    return signal(
+      token
+        ? ObjectMapper.deserialize(
+            User,
+            this.jwtHelper.decodeToken(token)['user']
+          )
+        : null
+    );
   }
 
   isAuthenticated(): boolean {

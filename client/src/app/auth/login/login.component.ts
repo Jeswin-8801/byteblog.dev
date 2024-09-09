@@ -13,11 +13,21 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Login } from './interfaces/login.interface';
 import { AuthService } from '../../service/auth/auth.service';
 import { AppConstants } from '../../common/app.constants';
+import { LoginError } from './interfaces/login-error.interface';
+import { AlertModalComponent } from '../../components/alert-modal/alert-modal.component';
+import { AlertModal } from '../../components/alert-modal/alert-modal';
+import { NavbarComponent } from '../../components/navbar/navbar.component';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [FormsModule, ReactiveFormsModule, CommonModule],
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    CommonModule,
+    AlertModalComponent,
+    NavbarComponent,
+  ],
   templateUrl: './login.component.html',
 })
 export class LoginComponent {
@@ -27,11 +37,12 @@ export class LoginComponent {
   private readonly router = inject(Router);
   loginForm!: FormGroup;
 
+  alertModal: AlertModal = new AlertModal();
+  isAlertModalClosed: boolean = true;
+
   showPassword: boolean = false;
   isAlertClosed: boolean = true;
   alertMessage: string = '';
-  isInfoMessageClosed: boolean = true;
-  infoMessageUsername: string = '';
 
   ngOnInit() {
     this.processOauthRequestResponse();
@@ -46,10 +57,13 @@ export class LoginComponent {
         this.router.navigateByUrl('/home');
       } else if (params['error'] !== undefined) {
         console.error(
-          'OAuth authentication failed with error: ' + params['error']
+          'OAuth authentication failed with error: ',
+          params['error']
         );
         this.toggleAlert();
-        this.alertMessage = 'OAuth Authentication Unsuccessfull';
+        if ((params['error'] as string).endsWith('exists'))
+          this.alertMessage = params['error'];
+        else this.alertMessage = 'OAuth Authentication Unsuccessfull';
       }
     });
   }
@@ -57,8 +71,19 @@ export class LoginComponent {
   private setSignUpSuccessMessage() {
     this.route.queryParams.subscribe((params) => {
       if (params['registered'] !== undefined) {
-        this.infoMessageUsername = params['registered'];
-        this.toggleInfoMessage();
+        this.toggleAlertModal();
+
+        this.alertModal.set(
+          false,
+          'Account created',
+          'A new account has been created with the username ' +
+            AlertModalComponent.getHighlightedText(params['registered']) +
+            '. Please confirm your email to proceed.',
+          false,
+          true,
+          'OK',
+          ''
+        );
       }
     });
   }
@@ -90,9 +115,27 @@ export class LoginComponent {
           this.router.navigateByUrl(returnUrl);
         },
         error: (response) => {
-          if (response.status == 400 && this.isAlertClosed) {
-            this.toggleAlert();
-            this.alertMessage = 'Incorrect email or password provided';
+          const errorResponse = response.error as LoginError;
+          errorResponse.code = response.status;
+
+          if (this.isAlertClosed) {
+            console.error('error occured on login', errorResponse);
+
+            if (errorResponse.code == 404) {
+              this.alertModal.set(
+                true,
+                'Warning',
+                errorResponse.message,
+                true,
+                true,
+                'Sign Up',
+                '/auth/sign-up'
+              );
+              this.toggleAlertModal();
+            } else {
+              this.alertMessage = errorResponse.message;
+              this.toggleAlert();
+            }
           }
         },
       });
@@ -106,8 +149,8 @@ export class LoginComponent {
     window.open(AppConstants.GOOGLE_OAUTH_URL + AppConstants.LOGIN, '_self');
   }
 
-  toggleInfoMessage() {
-    this.isInfoMessageClosed = !this.isInfoMessageClosed;
+  toggleAlertModal() {
+    this.isAlertModalClosed = !this.isAlertModalClosed;
   }
 
   toggleAlert() {

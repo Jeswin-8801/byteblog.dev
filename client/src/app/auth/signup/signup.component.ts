@@ -15,11 +15,12 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { SignUp } from './interfaces/sign-up.interface';
 import { AuthService } from '../../service/auth/auth.service';
 import { AppConstants } from '../../common/app.constants';
+import { NavbarComponent } from '../../components/navbar/navbar.component';
 
 @Component({
   selector: 'app-signup',
   standalone: true,
-  imports: [FormsModule, ReactiveFormsModule, CommonModule],
+  imports: [FormsModule, ReactiveFormsModule, CommonModule, NavbarComponent],
   templateUrl: './signup.component.html',
 })
 export class SignupComponent {
@@ -42,7 +43,13 @@ export class SignupComponent {
     this.route.queryParams.subscribe((params) => {
       if (params['token'] !== undefined) {
         this.authService.storeTokens(params['token']);
-        this.router.navigateByUrl('/home');
+
+        const user = this.authService.user();
+        this.router.navigate(['/home'], {
+          queryParams: {
+            registered: 'Success',
+          },
+        });
       } else if (params['error'] !== undefined) {
         console.error(
           'OAuth authentication failed with error: ' + params['error']

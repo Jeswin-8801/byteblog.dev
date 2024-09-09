@@ -1,47 +1,4 @@
-<nav
-  class="bg-gray-50 fixed w-full z-20 top-0 start-0 border-b border-blue-100"
->
-  <div
-    class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-1"
-  >
-    <a href="" class="flex items-center space-x-3 rtl:space-x-revers ml-3">
-      <img src="byteblog.svg" class="size-10 rounded-sm" alt="Byteblog Logo" />
-      <span
-        class="font-bold font-serif text-2xl bg-gradient-to-r from-slate-900 to-indigo-800 inline-block text-transparent bg-clip-text mb-1"
-        >Byteblog</span
-      >
-    </a>
-    <div class="flex md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
-      <div class="relative hidden md:block w-96 mr-10">
-        <div
-          class="absolute inset-y-1 start-0 flex items-center ps-3 pointer-events-none"
-        >
-          <svg
-            class="size-5 text-gray-500 dark:text-gray-400"
-            aria-hidden="true"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 20 20"
-          >
-            <path
-              stroke="currentColor"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
-            />
-          </svg>
-        </div>
-        <input
-          type="text"
-          id="search-navbar"
-          class="block w-full mt-1 mb-1 p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-white"
-          placeholder="Search..."
-        />
-      </div>
-    </div>
-  </div>
-</nav>
+<app-navbar [isAuthPage]="true"></app-navbar>
 
 <div
   class="landscape:h-full h-fit bg-gradient-to-r from-indigo-100 to-blue-300 flex py-20"

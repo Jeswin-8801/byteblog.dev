@@ -1,10 +1,11 @@
 import { Routes } from '@angular/router';
-import { LandingComponent } from './landing/landing.component';
+
 import { LoginComponent } from './auth/login/login.component';
 import { accountGuard } from './auth/guard/account.guard';
 import { SignupComponent } from './auth/signup/signup.component';
-import { HomeComponent } from './blog/home/home.component';
-import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
+import { HomeComponent } from './pages/blog/home/home.component';
+import { PageNotFoundComponent } from './pages/page-not-found/page-not-found.component';
+import { LandingComponent } from './pages/landing/landing.component';
 
 export const routes: Routes = [
   {
