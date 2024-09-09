@@ -4,12 +4,16 @@ import com.jeswin8801.byteBlog.entities.converters.UserMapper;
 import com.jeswin8801.byteBlog.entities.dto.user.UserDto;
 import com.jeswin8801.byteBlog.entities.model.Role;
 import com.jeswin8801.byteBlog.entities.model.User;
+import com.jeswin8801.byteBlog.entities.model.enums.AuthProvider;
 import com.jeswin8801.byteBlog.entities.model.enums.UserPrivilege;
 import com.jeswin8801.byteBlog.security.entity.UserDetailsImpl;
 import com.jeswin8801.byteBlog.security.oauth2.providers.abstracts.OAuth2UserInfo;
 import com.jeswin8801.byteBlog.security.util.SecurityUtil;
 import com.jeswin8801.byteBlog.service.webapp.user.abstracts.UserService;
+import com.jeswin8801.byteBlog.util.AppUtil;
 import com.jeswin8801.byteBlog.util.OAuth2Util;
+import com.jeswin8801.byteBlog.util.exceptions.ByteBlogException;
+import com.jeswin8801.byteBlog.util.exceptions.enums.UserExceptions;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
@@ -91,10 +95,14 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
 
         UserDto userDto = userService.findUserByEmail(userEmail);
 
+        // Check if an entry with the oauth user email exists in the db with provider LOCAL
+        if (!ObjectUtils.isEmpty(userDto) && userDto.getAuthProvider().equals(AuthProvider.LOCAL.getProvider()))
+            throw new ByteBlogException(UserExceptions.USER_EMAIL_NOT_AVAILABLE.getMessage());
+
         // Determine whether this is [ Sign up ] or [ New Sign up ]
         // Sign Up (if the given email is not associated with another user account, register user, and save to db)
         if (ObjectUtils.isEmpty(userDto)) {
-            registerNewOAuthUser(userRequest, oAuth2UserInfo);
+            userDto = registerNewOAuthUser(userRequest, oAuth2UserInfo);
         } else if (userDto.getAuthProvider().equals(clientRegistrationId)) {
             // If account exists i.e. userDto is not null, Sign In
             // Below code gets executed regardless of Sign in or Sign up as it conforms to both flows
@@ -113,14 +121,14 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
         return UserDetailsImpl.build(userEntity, grantedAuthorities, user.getAttributes());
     }
 
-    private void registerNewOAuthUser(OAuth2UserRequest oAuth2UserRequest,
+    private UserDto registerNewOAuthUser(OAuth2UserRequest oAuth2UserRequest,
                                       OAuth2UserInfo userInfo) {
 
         UserDto userDTO = new UserDto();
         userDTO.setFullName(userInfo.getName());
-        userDTO.setUsername(userInfo.getEmail().split("@")[0]);
+        userDTO.setUsername(userInfo.getName().split(" ")[0] + "_" + AppUtil.generateAlphanumericString().substring(0, 4));
         userDTO.setEmail(userInfo.getEmail());
-        userDTO.setProfileImageUrl(userDTO.getProfileImageUrl());
+        userDTO.setProfileImageUrl(userInfo.getImageUrl());
         userDTO.setAuthProvider(
                 oAuth2UserRequest
                         .getClientRegistration()
@@ -138,6 +146,8 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
         log.info("Registering new OAuth user: {}", userDTO.getEmail());
 
         userService.createUser(userDTO);
+
+        return userDTO;
     }
 
     private void updateExistingOAuthUserInfo(UserDto existingUserDTO,

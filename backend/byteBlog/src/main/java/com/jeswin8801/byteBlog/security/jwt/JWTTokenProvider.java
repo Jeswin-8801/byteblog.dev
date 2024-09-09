@@ -2,6 +2,7 @@ package com.jeswin8801.byteBlog.security.jwt;
 
 import com.jeswin8801.byteBlog.config.ApplicationProperties;
 import com.jeswin8801.byteBlog.entities.converters.UserMapper;
+import com.jeswin8801.byteBlog.entities.dto.auth.JwtClaimsUserInfoDto;
 import com.jeswin8801.byteBlog.entities.dto.user.AccessTokenClaimsUserDto;
 import com.jeswin8801.byteBlog.entities.model.User;
 import com.jeswin8801.byteBlog.security.entity.UserDetailsImpl;
@@ -43,7 +44,10 @@ public class JWTTokenProvider {
     private ApplicationProperties properties;
 
     @Autowired
-    private UserMapper<AccessTokenClaimsUserDto> userMapper;
+    private UserMapper<AccessTokenClaimsUserDto> accessTokenClaimsUserDtoUserMapper;
+
+    @Autowired
+    private UserMapper<JwtClaimsUserInfoDto> jwtClaimsUserInfoDtoUserMapper;
 
     @PostConstruct
     protected void init() {
@@ -63,7 +67,7 @@ public class JWTTokenProvider {
                 .add(
                         new HashMap<>() {{
                             put("user",
-                                    userMapper.toDto(userPrincipal.getUser(), AccessTokenClaimsUserDto.class)
+                                    jwtClaimsUserInfoDtoUserMapper.toDto(userPrincipal.getUser(), JwtClaimsUserInfoDto.class)
                             );
                             put("authorities", userPrincipal.getAuthorities());
                             put("attributes", userPrincipal.getAttributes());
@@ -97,7 +101,7 @@ public class JWTTokenProvider {
 
         // Parsing Claims Data
         AccessTokenClaimsUserDto userDto = AppUtil.fromJson(body.get("user").toString(), AccessTokenClaimsUserDto.class);
-        User userEntity = userMapper.toEntity(userDto);
+        User userEntity = accessTokenClaimsUserDtoUserMapper.toEntity(userDto);
 
         Set<String> authoritiesSet = AppUtil.fromJson(body.get("authorities").toString(), (Class<Set<String>>) (Class<?>) Set.class);
         Collection<? extends GrantedAuthority> grantedAuthorities = SecurityUtil.convertRolesSetToGrantedAuthorityList(
