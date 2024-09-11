@@ -6,6 +6,8 @@ import { SignupComponent } from './auth/signup/signup.component';
 import { HomeComponent } from './pages/blog/home/home.component';
 import { PageNotFoundComponent } from './pages/page-not-found/page-not-found.component';
 import { LandingComponent } from './pages/landing/landing.component';
+import { SettingsComponent } from './pages/settings/settings.component';
+import { authGuard } from './auth/guard/auth.guard';
 
 export const routes: Routes = [
   {
@@ -25,6 +27,11 @@ export const routes: Routes = [
   {
     path: 'home',
     component: HomeComponent,
+  },
+  {
+    path: 'settings',
+    component: SettingsComponent,
+    canActivate: [authGuard],
   },
   {
     path: '**',

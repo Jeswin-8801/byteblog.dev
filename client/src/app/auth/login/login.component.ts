@@ -17,6 +17,9 @@ import { LoginError } from './interfaces/login-error.interface';
 import { AlertModalComponent } from '../../components/alert-modal/alert-modal.component';
 import { AlertModal } from '../../components/alert-modal/alert-modal';
 import { NavbarComponent } from '../../components/navbar/navbar.component';
+import { Utility } from '../../utility/utility';
+import { AlertModalService } from '../../components/alert-modal/alert-modal.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-login',
@@ -32,9 +35,11 @@ import { NavbarComponent } from '../../components/navbar/navbar.component';
 })
 export class LoginComponent {
   private readonly authService = inject(AuthService);
+  private readonly alertModalService = inject(AlertModalService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
+  subscription!: Subscription;
   loginForm!: FormGroup;
 
   alertModal: AlertModal = new AlertModal();
@@ -45,6 +50,12 @@ export class LoginComponent {
   alertMessage: string = '';
 
   ngOnInit() {
+    this.subscription = this.alertModalService.clickPrimary$.subscribe(
+      (isClicked) => {
+        if (isClicked && this.alertModal.isPrimaryButtonSubscribedToService)
+          this.redirectToSignUp();
+      }
+    );
     this.processOauthRequestResponse();
     this.setSignUpSuccessMessage();
     this.createForm();
@@ -77,12 +88,12 @@ export class LoginComponent {
           false,
           'Account created',
           'A new account has been created with the username ' +
-            AlertModalComponent.getHighlightedText(params['registered']) +
+            Utility.getHighlightedText(params['registered']) +
             '. Please confirm your email to proceed.',
           false,
           true,
           'OK',
-          ''
+          false
         );
       }
     });
@@ -129,7 +140,7 @@ export class LoginComponent {
                 true,
                 true,
                 'Sign Up',
-                '/auth/sign-up'
+                true
               );
               this.toggleAlertModal();
             } else {
@@ -139,6 +150,10 @@ export class LoginComponent {
           }
         },
       });
+  }
+
+  private redirectToSignUp() {
+    this.router.navigateByUrl('/auth/sign-up');
   }
 
   githubSignInOnClickRedirect() {
@@ -167,5 +182,10 @@ export class LoginComponent {
 
   get password() {
     return this.loginForm.get('password');
+  }
+
+  ngOnDestroy() {
+    // prevent memory leak when component destroyed
+    this.subscription.unsubscribe();
   }
 }

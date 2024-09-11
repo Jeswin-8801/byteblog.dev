@@ -16,6 +16,8 @@ export class NavbarComponent {
   @ViewChild('userIconButton') userIconButton!: ElementRef;
 
   @Input() isAuthPage: boolean = false;
+  @Input() isNavbarFixed: boolean = true;
+  @Input() isThemeDark: boolean = true;
   isLoggedIn: boolean = false;
   showUserIconDropdown: boolean = false;
   showMobileMenu: boolean = false;

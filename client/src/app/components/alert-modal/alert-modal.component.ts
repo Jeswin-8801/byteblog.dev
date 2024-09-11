@@ -1,7 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, Input } from '@angular/core';
+import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { AlertModal } from './alert-modal';
 import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { AlertModalService } from './alert-modal.service';
 
 @Component({
   selector: 'app-alert-modal',
@@ -11,25 +13,20 @@ import { Router } from '@angular/router';
 })
 export class AlertModalComponent {
   private readonly router = inject(Router);
+  private readonly alertModalService = inject(AlertModalService);
 
   @Input() isClosed: boolean = true;
+  @Output() isClosedChange = new EventEmitter<boolean>();
+
   @Input() alertModal!: AlertModal;
 
   toggleAlert() {
     this.isClosed = !this.isClosed;
+    this.isClosedChange.emit(this.isClosed);
   }
 
-  buttonPrimaryRedirect() {
-    if (this.alertModal.primaryButtonRedirectLink!.length > 0)
-      this.router.navigateByUrl(this.alertModal.primaryButtonRedirectLink!);
-    else this.toggleAlert();
-  }
-
-  public static getHighlightedText(text: string) {
-    return (
-      '<span class="max-w-lg text-base font-semibold font-serif leading-normal text-gray-900">' +
-      text +
-      '</span>'
-    );
+  togglePrimaryButton() {
+    this.alertModalService.emitValue(true);
+    this.toggleAlert();
   }
 }

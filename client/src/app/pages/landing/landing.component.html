@@ -3,6 +3,10 @@
   style="background-image: url('backgrounds/background-main.png')"
 >
   <app-navbar></app-navbar>
+  <app-alert-modal
+    [alertModal]="alertModal"
+    [isClosed]="isAlertModalClosed"
+  ></app-alert-modal>
   <section
     class="h-screen flex flex-wrap px-8 align-middle justify-center items-center"
   >

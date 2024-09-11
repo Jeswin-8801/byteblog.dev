@@ -6,7 +6,8 @@ export class AlertModal {
   showButtonCancel?: boolean;
   showButtonPrimary?: boolean;
   buttonPrimaryText?: string;
-  primaryButtonRedirectLink?: string;
+
+  isPrimaryButtonSubscribedToService?: boolean;
 
   set(
     isWarning: boolean,
@@ -15,7 +16,7 @@ export class AlertModal {
     showButtonCancel: boolean,
     showButtonPrimary: boolean,
     buttonPrimaryText: string,
-    primaryButtonRedirectLink: string
+    isPrimaryButtonSubscribedToService: boolean
   ) {
     this.isWarning = isWarning;
     this.headerMessage = headerMessage;
@@ -23,6 +24,7 @@ export class AlertModal {
     this.showButtonCancel = showButtonCancel;
     this.showButtonPrimary = showButtonPrimary;
     this.buttonPrimaryText = buttonPrimaryText;
-    this.primaryButtonRedirectLink = primaryButtonRedirectLink;
+    this.isPrimaryButtonSubscribedToService =
+      isPrimaryButtonSubscribedToService;
   }
 }

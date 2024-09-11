@@ -1,5 +1,7 @@
 <nav
-  class="bg-gray-900/85 backdrop-filter backdrop-blur-lg fixed w-full z-20 top-0 start-0"
+  class="{{ isNavbarFixed ? 'fixed' : '' }} {{
+    isThemeDark ? 'bg-slate-900/90' : 'bg-gray-200/90'
+  }} backdrop-filter backdrop-blur-md w-full z-20 top-0 start-0"
 >
   <div class="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
     <div class="relative flex h-16 items-center justify-between">
@@ -61,16 +63,25 @@
         </a>
         <div class="hidden sm:ml-6 sm:block">
           <div class="flex space-x-4">
-            <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
+            <!-- Current: "text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
             <a
-              href="#"
-              class="rounded-md bg-gray-900 px-3 py-2 text-sm font-medium text-white"
+              href="/home"
+              class="rounded-md px-3 py-2 text-sm font-bold  {{
+                isThemeDark
+                  ? 'text-gray-50 hover:bg-gray-700 hover:text-white'
+                  : 'text-gray-800 hover:bg-blue-200 hover:text-black'
+              }}"
               aria-current="page"
               >Explore</a
             >
             <a
               href="#"
-              class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
+              *ngIf="isLoggedIn"
+              class="rounded-md px-3 py-2 text-sm font-bold {{
+                isThemeDark
+                  ? 'text-gray-50 hover:bg-gray-700 hover:text-white'
+                  : 'text-gray-800 hover:bg-blue-200 hover:text-black'
+              }}"
               >My Blogs</a
             >
           </div>
@@ -133,7 +144,7 @@
                 aria-haspopup="true"
               >
                 <span
-                  class="top-0 left-6 absolute w-3.5 h-3.5 bg-green-400 border-2 border-white dark:border-gray-800 rounded-full"
+                  class="top-0 left-6 absolute w-3.5 h-3.5 bg-green-500 border-2 border-white dark:border-gray-800 rounded-full"
                 ></span>
                 <span class="absolute -inset-1.5"></span>
                 <span class="sr-only">Open user menu</span>
@@ -168,7 +179,7 @@
               >
                 <li>
                   <a
-                    href="#"
+                    href="/settings"
                     class="block px-4 mx-2 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-slate-800 dark:hover:text-slate-100"
                     >Settings</a
                   >
@@ -194,16 +205,25 @@
   <!-- Mobile menu, show/hide based on menu state. -->
   <div *ngIf="showMobileMenu" class="sm:hidden" id="mobile-menu">
     <div class="space-y-1 px-2 pb-3 pt-2">
-      <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
+      <!-- Current: "text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
       <a
-        href="#"
-        class="rounded-md bg-gray-900 px-3 py-2 text-sm font-medium text-white"
+        href="/home"
+        class="rounded-md px-3 py-2 text-sm font-bold {{
+          isThemeDark
+            ? 'text-gray-300 hover:bg-gray-700 hover:text-white'
+            : 'text-gray-800 hover:bg-blue-200 hover:text-black'
+        }}"
         aria-current="page"
         >Explore</a
       >
       <a
         href="#"
-        class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
+        *ngIf="isLoggedIn"
+        class="rounded-md px-3 py-2 text-sm font-bold {{
+          isThemeDark
+            ? 'text-gray-300 hover:bg-gray-700 hover:text-white'
+            : 'text-gray-800 hover:bg-blue-200 hover:text-black'
+        }}"
         >My Blogs</a
       >
     </div>

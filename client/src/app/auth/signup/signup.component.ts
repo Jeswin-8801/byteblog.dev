@@ -16,6 +16,7 @@ import { SignUp } from './interfaces/sign-up.interface';
 import { AuthService } from '../../service/auth/auth.service';
 import { AppConstants } from '../../common/app.constants';
 import { NavbarComponent } from '../../components/navbar/navbar.component';
+import { Utility } from '../../utility/utility';
 
 @Component({
   selector: 'app-signup',
@@ -73,7 +74,7 @@ export class SignupComponent {
         password_confirm: new FormControl('', [Validators.required]),
       },
       {
-        validators: this.matchValidator('password', 'password_confirm'),
+        validators: Utility.matchValidator('password', 'password_confirm'),
       }
     );
   }
@@ -103,32 +104,6 @@ export class SignupComponent {
           if (this.isAlertClosed) this.toggleAlert();
         },
       });
-  }
-
-  matchValidator(
-    controlName: string,
-    matchingControlName: string
-  ): ValidatorFn {
-    return (abstractControl: AbstractControl) => {
-      const control = abstractControl.get(controlName);
-      const matchingControl = abstractControl.get(matchingControlName);
-
-      if (
-        matchingControl!.errors &&
-        !matchingControl!.errors?.['confirmedValidator']
-      ) {
-        return null;
-      }
-
-      if (control!.value !== matchingControl!.value) {
-        const error = { confirmedValidator: 'Passwords do not match.' };
-        matchingControl!.setErrors(error);
-        return error;
-      } else {
-        matchingControl!.setErrors(null);
-        return null;
-      }
-    };
   }
 
   githubSignUpOnClickRedirect() {

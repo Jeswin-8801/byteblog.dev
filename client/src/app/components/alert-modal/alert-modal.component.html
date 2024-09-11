@@ -81,7 +81,7 @@
           <button
             type="button"
             *ngIf="alertModal.showButtonPrimary"
-            (click)="buttonPrimaryRedirect()"
+            (click)="togglePrimaryButton()"
             class="{{
               alertModal.isWarning
                 ? 'bg-red-600 hover:bg-red-500'

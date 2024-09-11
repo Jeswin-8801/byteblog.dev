@@ -3,6 +3,7 @@ import { inject, Injectable, signal, WritableSignal } from '@angular/core';
 import { Router } from '@angular/router';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { Observable, tap } from 'rxjs';
+import { ObjectMapper } from 'json-object-mapper';
 
 import { User } from '../../models/user';
 import { IS_PUBLIC } from '../../auth/auth.interceptor';
@@ -13,7 +14,6 @@ import { SignUp } from '../../auth/signup/interfaces/sign-up.interface';
 import { SignUpResponse } from '../../auth/signup/types/sign-up-response.type';
 import { SignUpSuccess } from '../../auth/signup/interfaces/sign-up-success.interface';
 import { environment } from '../../../environments/environment';
-import { ObjectMapper } from 'json-object-mapper';
 
 @Injectable({
   providedIn: 'root',
@@ -71,14 +71,17 @@ export class AuthService {
         tap((data) => {
           const signUpSuccessData = data as SignUpSuccess;
           console.log(signUpSuccessData.message);
-          this.router.navigate(['/auth/login']);
         })
       );
   }
 
   logout(): void {
-    localStorage.removeItem('token');
+    this.removeTokens();
     this.router.navigate(['/auth/login']);
+  }
+
+  removeTokens() {
+    localStorage.removeItem('token');
   }
 
   storeTokens(data: string): void {
