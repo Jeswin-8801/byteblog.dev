@@ -105,7 +105,7 @@ public class ExceptionHandlerController {
                                 exception.getMessage()
                         ).build()
                 )
-                .httpStatusCode(HttpStatus.INTERNAL_SERVER_ERROR)
+                .httpStatusCode(exception.getHttpStatus())
                 .build().getResponseEntity();
     }
 

@@ -16,6 +16,7 @@ import com.jeswin8801.byteBlog.util.exceptions.ByteBlogException;
 import com.jeswin8801.byteBlog.util.exceptions.enums.UserExceptions;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
@@ -97,7 +98,7 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
 
         // Check if an entry with the oauth user email exists in the db with provider LOCAL
         if (!ObjectUtils.isEmpty(userDto) && userDto.getAuthProvider().equals(AuthProvider.LOCAL.getProvider()))
-            throw new ByteBlogException(UserExceptions.USER_EMAIL_NOT_AVAILABLE.getMessage());
+            throw new ByteBlogException(UserExceptions.USER_EMAIL_NOT_AVAILABLE.getMessage(), HttpStatus.CONFLICT);
 
         // Determine whether this is [ Sign up ] or [ New Sign up ]
         // Sign Up (if the given email is not associated with another user account, register user, and save to db)

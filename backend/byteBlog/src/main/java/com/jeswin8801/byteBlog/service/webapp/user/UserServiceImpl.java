@@ -2,6 +2,9 @@ package com.jeswin8801.byteBlog.service.webapp.user;
 
 import com.jeswin8801.byteBlog.config.ApplicationProperties;
 import com.jeswin8801.byteBlog.entities.converters.UserMapper;
+import com.jeswin8801.byteBlog.entities.dto.GenericResponseDto;
+import com.jeswin8801.byteBlog.entities.dto.MessageResponseDto;
+import com.jeswin8801.byteBlog.entities.dto.user.ChangePasswordRequestDto;
 import com.jeswin8801.byteBlog.entities.dto.user.UserDto;
 import com.jeswin8801.byteBlog.entities.model.Role;
 import com.jeswin8801.byteBlog.entities.model.User;
@@ -11,10 +14,12 @@ import com.jeswin8801.byteBlog.repository.UserRepository;
 import com.jeswin8801.byteBlog.security.util.SecurityUtil;
 import com.jeswin8801.byteBlog.service.mail.EmailService;
 import com.jeswin8801.byteBlog.service.webapp.user.abstracts.UserService;
+import com.jeswin8801.byteBlog.util.exceptions.ByteBlogException;
 import com.jeswin8801.byteBlog.util.exceptions.ResourceConflictException;
 import com.jeswin8801.byteBlog.util.exceptions.ResourceNotFoundException;
 import com.jeswin8801.byteBlog.util.exceptions.enums.UserExceptions;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -108,5 +113,49 @@ public class UserServiceImpl implements UserService {
         userEntity.setFullName(userDTO.getFullName());
         userEntity.setProfileImageUrl(userDTO.getProfileImageUrl());
         userRepository.save(userEntity);
+    }
+
+    @Override
+    public GenericResponseDto<MessageResponseDto> updatePassword(ChangePasswordRequestDto changePasswordRequestDto) {
+
+        User user = userRepository.findById(
+                    changePasswordRequestDto.getId()
+                )
+                .orElse(null);
+
+        if (ObjectUtils.isEmpty(user)) {
+            log.error("No user found with the id: {}", changePasswordRequestDto.getId());
+            throw new ByteBlogException(UserExceptions.INVALID_PASSWORD_RESET_REQUEST.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+
+        // check if current password and the password provided match
+        if (
+                !passwordEncoder.matches(changePasswordRequestDto.getCurrentPassword(), user.getPassword())
+        ) {
+            log.error("Password mismatch");
+            throw new ByteBlogException(UserExceptions.PASSWORD_MISMATCH.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+
+        userRepository.updatePassword(
+                passwordEncoder.encode(changePasswordRequestDto.getNewPassword()),
+                changePasswordRequestDto.getId()
+        );
+
+        return new GenericResponseDto<>(MessageResponseDto.builder().message("Password updated successfully").build(), HttpStatus.OK);
+    }
+
+    @Override
+    public GenericResponseDto<MessageResponseDto> deleteUser(String id) {
+        // check if id exists
+        User user = userRepository.findById(id).orElse(null);
+
+        if (ObjectUtils.isEmpty(user)) {
+            log.error("No user found with the id: {}", id);
+            throw new ByteBlogException(UserExceptions.USER_RECORD_NOT_FOUND.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+
+        userRepository.deleteById(id);
+
+        return new GenericResponseDto<>(MessageResponseDto.builder().message("Account deleted successfully").build(), HttpStatus.OK);
     }
 }

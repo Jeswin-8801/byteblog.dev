@@ -3,6 +3,7 @@ package com.jeswin8801.byteBlog.util;
 import com.jeswin8801.byteBlog.util.exceptions.ByteBlogException;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.convert.converter.ConverterFactory;
+import org.springframework.http.HttpStatus;
 
 public class StringToEnumConverter implements ConverterFactory<String, Enum> {
 
@@ -12,7 +13,7 @@ public class StringToEnumConverter implements ConverterFactory<String, Enum> {
             try {
                 return (T) Enum.valueOf(targetType, source.toUpperCase());
             } catch (Exception e) {
-                throw new ByteBlogException(e.getMessage());
+                throw new ByteBlogException(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
             }
         };
     }
