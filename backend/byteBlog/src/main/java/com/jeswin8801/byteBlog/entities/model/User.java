@@ -5,11 +5,12 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.Instant;
-import java.util.HashSet;
 import java.util.Set;
 
 @Data
@@ -53,12 +54,18 @@ public class User {
     @Column(name = "registered_provider_id")
     private String registeredProviderId;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToMany(
+            fetch = FetchType.EAGER,
+            cascade = {
+                    CascadeType.PERSIST,
+                    CascadeType.MERGE
+            }
+    )
     @JoinTable(name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
     @OnDelete(action = OnDeleteAction.CASCADE)
-    private Set<Role> roles = new HashSet<>();
+    private Set<Role> roles;
 
     // Will be using same verificationCode and verificationCodeExpiresAt for both (email-verification and password reset)
     @Column(name = "verification_code")
@@ -66,4 +73,20 @@ public class User {
 
     @Column(name = "verification_code_expires_at")
     private Instant verificationCodeExpiresAt;
+
+    @CreationTimestamp
+    @Column(name = "created_on")
+    private Instant createdOn;
+
+    @UpdateTimestamp
+    @Column(name = "last_updated_on")
+    private Instant lastUpdatedOn;
+
+    @OneToOne(
+            mappedBy = "user",
+            orphanRemoval = true,
+            cascade = CascadeType.ALL,
+            fetch = FetchType.LAZY
+    )
+    private RefreshToken refreshToken;
 }

@@ -94,7 +94,11 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
         if (!StringUtils.hasText(userEmail))
             throw new InternalAuthenticationServiceException("Sorry, Couldn't retrieve your email from Provider " + clientRegistrationId + ". Email not available or Private by default");
 
-        UserDto userDto = userService.findUserByEmail(userEmail);
+        UserDto userDto = null;
+
+        User userTemp = userService.findUserByEmail(userEmail);
+        if (!ObjectUtils.isEmpty(userTemp))
+            userDto = userMapper.toDto(userTemp, UserDto.class);
 
         // Check if an entry with the oauth user email exists in the db with provider LOCAL
         if (!ObjectUtils.isEmpty(userDto) && userDto.getAuthProvider().equals(AuthProvider.LOCAL.getProvider()))
@@ -104,6 +108,7 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
         // Sign Up (if the given email is not associated with another user account, register user, and save to db)
         if (ObjectUtils.isEmpty(userDto)) {
             userDto = registerNewOAuthUser(userRequest, oAuth2UserInfo);
+            userDto.setId(userService.findUserByEmail(userEmail).getId()); // update the automatically added id field upon saving user entry
         } else if (userDto.getAuthProvider().equals(clientRegistrationId)) {
             // If account exists i.e. userDto is not null, Sign In
             // Below code gets executed regardless of Sign in or Sign up as it conforms to both flows
@@ -123,7 +128,7 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
     }
 
     private UserDto registerNewOAuthUser(OAuth2UserRequest oAuth2UserRequest,
-                                      OAuth2UserInfo userInfo) {
+                                         OAuth2UserInfo userInfo) {
 
         UserDto userDTO = new UserDto();
         userDTO.setFullName(userInfo.getName());

@@ -8,6 +8,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -35,25 +36,28 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
     private JWTTokenProvider jwtTokenProvider;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException {
 
         try {
+            if (request.getServletPath().equals("/auth/token/refresh")) {
+                filterChain.doFilter(request, response); // ignore authentication
+            } else {
+                String jwt = jwtTokenProvider.getBearerTokenFromRequestHeader(request);
 
-            String jwt = jwtTokenProvider.getBearerTokenFromRequestHeader(request);
-
-            if (StringUtils.hasText(jwt) && this.jwtTokenProvider.validateJWTToken(jwt)) {
-                Authentication authentication = this.jwtTokenProvider.getAuthenticationFromToken(jwt);
-                SecurityContextHolder.getContext().setAuthentication(authentication);
+                if (StringUtils.hasText(jwt) && this.jwtTokenProvider.validateJWTToken(jwt, TokenType.ACCESS)) {
+                    Authentication authentication = this.jwtTokenProvider.getAuthenticationFromToken(jwt, TokenType.ACCESS);
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                }
+                filterChain.doFilter(request, response);
             }
-
-            filterChain.doFilter(request, response);
 
         } catch (ExpiredJwtException exception) {
 
             log.info("Security exception Expired JWT token for user {} - {}", exception.getClaims().getSubject(), exception.getMessage());
             response.sendError(HttpStatus.NETWORK_AUTHENTICATION_REQUIRED.value(), "Expired JWT token");
 
-        } catch (SignatureException | MalformedJwtException | UnsupportedJwtException | IllegalArgumentException exception) {
+        } catch (SignatureException | MalformedJwtException | UnsupportedJwtException |
+                 IllegalArgumentException exception) {
 
             log.info("Security exception {} ", exception.getMessage());
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);

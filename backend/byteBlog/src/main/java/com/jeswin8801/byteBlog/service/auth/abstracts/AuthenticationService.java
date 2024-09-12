@@ -10,4 +10,6 @@ public interface AuthenticationService {
     AuthResponseDto loginUser(LoginRequestDto loginRequestDto);
 
     GenericResponseDto<MessageResponseDto> registerUser(RegisterUserRequestDto registerUserRequestDto);
+
+    MessageResponseDto logoutUser(String id);
 }

@@ -6,13 +6,16 @@ import com.jeswin8801.byteBlog.entities.dto.auth.AuthResponseDto;
 import com.jeswin8801.byteBlog.entities.dto.auth.LoginRequestDto;
 import com.jeswin8801.byteBlog.entities.dto.auth.RegisterUserRequestDto;
 import com.jeswin8801.byteBlog.entities.dto.user.UserDto;
+import com.jeswin8801.byteBlog.entities.model.User;
 import com.jeswin8801.byteBlog.entities.model.enums.AuthProvider;
-import com.jeswin8801.byteBlog.security.jwt.JWTTokenProvider;
 import com.jeswin8801.byteBlog.service.auth.abstracts.AuthenticationService;
+import com.jeswin8801.byteBlog.service.auth.abstracts.RefreshTokenService;
 import com.jeswin8801.byteBlog.service.webapp.user.abstracts.UserService;
+import com.jeswin8801.byteBlog.util.exceptions.ByteBlogException;
 import com.jeswin8801.byteBlog.util.exceptions.ResourceNotFoundException;
 import com.jeswin8801.byteBlog.util.exceptions.enums.AuthExceptions;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -21,30 +24,31 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
+
+import java.util.Objects;
 
 @Slf4j
 @Service
 public class AuthenticationServiceImpl implements AuthenticationService {
 
-    private final AuthenticationManager authenticationManager;
-    private final UserService userService;
-    private final JWTTokenProvider jwtTokenProvider;
+    @Autowired
+    private AuthenticationManager authenticationManager;
 
-    public AuthenticationServiceImpl(AuthenticationManager authenticationManager,
-                                     UserService userService,
-                                     JWTTokenProvider jwtTokenProvider) {
-        this.authenticationManager = authenticationManager;
-        this.userService = userService;
-        this.jwtTokenProvider = jwtTokenProvider;
-    }
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private RefreshTokenService refreshTokenService;
 
     @Override
     public AuthResponseDto loginUser(LoginRequestDto loginRequestDto) {
 
         try {
+
+            User user = userService.findUserByEmail(loginRequestDto.getEmail());
             // check for if an account with the given email exists
-            if(ObjectUtils.isEmpty(userService.findUserByEmail(loginRequestDto.getEmail())))
+            if (Objects.isNull(user))
                 throw new ResourceNotFoundException(AuthExceptions.USER_WITH_EMAIL_NOT_FOUND.getMessage());
 
             Authentication authentication = authenticationManager.authenticate(
@@ -54,11 +58,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                     )
             );
 
-            return AuthResponseDto.builder()
-                    .accessToken(
-                            jwtTokenProvider.generateJWTAccessToken(authentication)
-                    )
-                    .build();
+            return refreshTokenService.constructAuthResponseForLogin(authentication, user);
         } catch (AuthenticationException exception) {
             if (exception instanceof DisabledException)
                 throw new BadCredentialsException(AuthExceptions.ACCOUNT_NOT_ACTIVATED.getMessage());
@@ -88,5 +88,16 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .build();
     }
 
+    @Override
+    public MessageResponseDto logoutUser(String id) {
+        if (!StringUtils.hasText(id))
+            throw new ByteBlogException("No user-id provided", HttpStatus.BAD_REQUEST);
+        User user = userService.findUserById(id);
+        String refreshToken = user.getRefreshToken().getRefreshToken();
+        refreshTokenService.blacklistRefreshToken(refreshToken);
 
+        refreshTokenService.deleteRefreshTokenFromRefreshTokenTable(refreshToken, user);
+
+        return MessageResponseDto.builder().message("Successfully logged out user").build();
+    }
 }

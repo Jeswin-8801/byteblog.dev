@@ -9,6 +9,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.util.ObjectUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -23,6 +24,8 @@ public class SecurityUtil {
      */
     public Collection<? extends GrantedAuthority> convertRolesSetToGrantedAuthorityList(Set<Role> roles) {
         Collection<GrantedAuthority> authorities = new HashSet<>();
+        if (ObjectUtils.isEmpty(roles))
+                return authorities;
         for (Role role : roles) {
             GrantedAuthority grantedAuthority = new SimpleGrantedAuthority(role.getPrivilege().name());
             authorities.add(grantedAuthority);
@@ -46,14 +49,15 @@ public class SecurityUtil {
         }};
     }
 
-    public Set<Role> setOfStringToSetOfRoles(Set<String> roles) {
+    public Set<Role> setOfStringToSetOfRoles(Set<Map<String, String>> roles) {
         return new HashSet<>() {{
-            for (String role : roles)
+            for (Map<String, String> role : roles) {
                 add(
                         new Role(
-                                Enum.valueOf(UserPrivilege.class, role)
+                                Enum.valueOf(UserPrivilege.class, role.get("authority"))
                         )
                 );
+            }
         }};
     }
 

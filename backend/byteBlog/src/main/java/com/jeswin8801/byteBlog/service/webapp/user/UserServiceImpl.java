@@ -6,11 +6,17 @@ import com.jeswin8801.byteBlog.entities.dto.GenericResponseDto;
 import com.jeswin8801.byteBlog.entities.dto.MessageResponseDto;
 import com.jeswin8801.byteBlog.entities.dto.user.ChangePasswordRequestDto;
 import com.jeswin8801.byteBlog.entities.dto.user.UserDto;
+import com.jeswin8801.byteBlog.entities.model.RefreshToken;
+import com.jeswin8801.byteBlog.entities.model.RefreshTokenBlacklist;
 import com.jeswin8801.byteBlog.entities.model.Role;
 import com.jeswin8801.byteBlog.entities.model.User;
 import com.jeswin8801.byteBlog.entities.model.enums.AuthProvider;
 import com.jeswin8801.byteBlog.entities.model.enums.UserPrivilege;
+import com.jeswin8801.byteBlog.repository.RefreshTokenRepository;
+import com.jeswin8801.byteBlog.repository.TokenBlacklistRepository;
 import com.jeswin8801.byteBlog.repository.UserRepository;
+import com.jeswin8801.byteBlog.security.jwt.JWTTokenProvider;
+import com.jeswin8801.byteBlog.security.jwt.TokenType;
 import com.jeswin8801.byteBlog.security.util.SecurityUtil;
 import com.jeswin8801.byteBlog.service.mail.EmailService;
 import com.jeswin8801.byteBlog.service.webapp.user.abstracts.UserService;
@@ -19,6 +25,7 @@ import com.jeswin8801.byteBlog.util.exceptions.ResourceConflictException;
 import com.jeswin8801.byteBlog.util.exceptions.ResourceNotFoundException;
 import com.jeswin8801.byteBlog.util.exceptions.enums.UserExceptions;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -26,6 +33,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
+import java.util.Objects;
 import java.util.Set;
 
 @Slf4j
@@ -33,40 +41,41 @@ import java.util.Set;
 @Transactional
 public class UserServiceImpl implements UserService {
 
-    private final UserRepository userRepository;
-    private final UserMapper<UserDto> userMapper;
-    private final PasswordEncoder passwordEncoder;
-    private final EmailService emailService;
-    private final ApplicationProperties properties;
+    @Autowired
+    private UserRepository userRepository;
 
-    public UserServiceImpl(UserRepository userRepository, UserMapper<UserDto> userMapper, PasswordEncoder passwordEncoder, EmailService emailService, ApplicationProperties properties) {
-        this.userRepository = userRepository;
-        this.userMapper = userMapper;
-        this.passwordEncoder = passwordEncoder;
-        this.emailService = emailService;
-        this.properties = properties;
-    }
+    @Autowired
+    private RefreshTokenRepository refreshTokenRepository;
+
+    @Autowired
+    private TokenBlacklistRepository tokenBlacklistRepository;
+
+    @Autowired
+    private JWTTokenProvider jwtTokenProvider;
+
+    @Autowired
+    private UserMapper<UserDto> userMapper;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private EmailService emailService;
+
+    @Autowired
+    private ApplicationProperties properties;
 
     @Override
-    public UserDto findUserByEmail(String email) {
+    public User findUserByEmail(String email) {
 
-        User user = userRepository.findByEmail(email)
+        return userRepository.findByEmail(email)
                 .orElse(null);
-
-        if (!ObjectUtils.isEmpty(user))
-            return userMapper.toDto(
-                    user,
-                    UserDto.class
-            );
-
-        return null;
     }
 
     @Override
-    public String getUserIdFromEmail(String email) {
-
+    public User findUserById(String id) {
         return userRepository
-                .findIdByEmail(email)
+                .findById(id)
                 .orElse(null);
     }
 
@@ -119,11 +128,11 @@ public class UserServiceImpl implements UserService {
     public GenericResponseDto<MessageResponseDto> updatePassword(ChangePasswordRequestDto changePasswordRequestDto) {
 
         User user = userRepository.findById(
-                    changePasswordRequestDto.getId()
+                        changePasswordRequestDto.getId()
                 )
                 .orElse(null);
 
-        if (ObjectUtils.isEmpty(user)) {
+        if (Objects.isNull(user)) {
             log.error("No user found with the id: {}", changePasswordRequestDto.getId());
             throw new ByteBlogException(UserExceptions.INVALID_PASSWORD_RESET_REQUEST.getMessage(), HttpStatus.BAD_REQUEST);
         }
@@ -149,10 +158,22 @@ public class UserServiceImpl implements UserService {
         // check if id exists
         User user = userRepository.findById(id).orElse(null);
 
-        if (ObjectUtils.isEmpty(user)) {
-            log.error("No user found with the id: {}", id);
+        if (Objects.isNull(user)) {
+            log.error("No user found with the given id");
             throw new ByteBlogException(UserExceptions.USER_RECORD_NOT_FOUND.getMessage(), HttpStatus.BAD_REQUEST);
         }
+
+        // retrieve refresh token associated with user
+        RefreshToken refreshTokenEntity = refreshTokenRepository.findByUser(user);
+        // blacklist token
+        tokenBlacklistRepository.save(
+                RefreshTokenBlacklist.builder()
+                        .refreshToken(refreshTokenEntity.getRefreshToken())
+                        .expiry(
+                                jwtTokenProvider.getTokenExpiry(refreshTokenEntity.getRefreshToken(), TokenType.REFRESH).toInstant()
+                        )
+                        .build()
+        );
 
         userRepository.deleteById(id);
 

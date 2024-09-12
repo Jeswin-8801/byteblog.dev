@@ -1,7 +1,11 @@
 package com.jeswin8801.byteBlog.security.oauth2.dao;
 
 import com.jeswin8801.byteBlog.config.ApplicationProperties;
+import com.jeswin8801.byteBlog.entities.model.User;
 import com.jeswin8801.byteBlog.security.jwt.JWTTokenProvider;
+import com.jeswin8801.byteBlog.security.jwt.TokenType;
+import com.jeswin8801.byteBlog.service.auth.abstracts.RefreshTokenService;
+import com.jeswin8801.byteBlog.service.webapp.user.abstracts.UserService;
 import com.jeswin8801.byteBlog.util.WebUtil;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -59,6 +63,12 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     @Autowired
     private ApplicationProperties appProperties;
 
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private RefreshTokenService refreshTokenService;
+
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request,
                                         HttpServletResponse response,
@@ -87,19 +97,21 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
             throw new BadRequestException("Sorry! We've got an Unauthorized Redirect URI and can't proceed with the authentication");
         }
 
+        String accessToken = jwtTokenProvider.generateToken(authentication, TokenType.ACCESS);
+        String refreshToken = jwtTokenProvider.generateToken(authentication, TokenType.REFRESH);
+
+        String userEmail = jwtTokenProvider.getSubjectFromToken(refreshToken, TokenType.REFRESH);
+        User user = userService.findUserByEmail(userEmail);
+
+        refreshTokenService.processRefreshToken(refreshToken, user);
+
         String targetUrl = redirectUri.orElse(getDefaultTargetUrl());
 
-        String token = jwtTokenProvider.generateJWTAccessToken(authentication);
-
-        if (originalRequestUri.isPresent())
-            return UriComponentsBuilder.fromUriString(targetUrl)
-                    .queryParam("token", token)
-                    .queryParam(ORIGINAL_REQUEST_URI_PARAM_COOKIE_NAME.getCookieName(), originalRequestUri)
-                    .build().toUriString();
-        else
-            return UriComponentsBuilder.fromUriString(targetUrl)
-                    .queryParam("token", token)
-                    .build().toUriString();
+        return UriComponentsBuilder.fromUriString(targetUrl)
+                .queryParam("access-token", accessToken)
+                .queryParam("refresh-token", refreshToken)
+                .queryParam(ORIGINAL_REQUEST_URI_PARAM_COOKIE_NAME.getCookieName(), originalRequestUri)
+                .build().toUriString();
     }
 
     protected void clearAuthenticationAttributes(HttpServletRequest request,

@@ -4,12 +4,13 @@ import com.jeswin8801.byteBlog.entities.dto.GenericResponseDto;
 import com.jeswin8801.byteBlog.entities.dto.MessageResponseDto;
 import com.jeswin8801.byteBlog.entities.dto.user.ChangePasswordRequestDto;
 import com.jeswin8801.byteBlog.entities.dto.user.UserDto;
+import com.jeswin8801.byteBlog.entities.model.User;
 
 public interface UserService {
 
-    UserDto findUserByEmail(String email);
+    User findUserByEmail(String email);
 
-    String getUserIdFromEmail(String email);
+    User findUserById(String id);
 
     void createUser(UserDto userDto);
 

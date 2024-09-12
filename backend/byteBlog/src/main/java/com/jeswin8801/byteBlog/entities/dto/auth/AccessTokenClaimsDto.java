@@ -1,6 +1,5 @@
 package com.jeswin8801.byteBlog.entities.dto.auth;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,9 +9,6 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class AuthResponseDto {
-    @JsonProperty("access-token")
-    private String accessToken;
-    @JsonProperty("refresh-token")
-    private String refreshToken;
+public class AccessTokenClaimsDto {
+    private String id;
 }
