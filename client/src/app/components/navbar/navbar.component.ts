@@ -1,7 +1,17 @@
-import { Component, ElementRef, inject, Input, ViewChild } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  ElementRef,
+  inject,
+  Input,
+  ViewChild,
+} from '@angular/core';
 import { AuthService } from '../../service/auth/auth.service';
 import { CommonModule } from '@angular/common';
 import { UtilitiesService } from '../../service/utilities/utilities.service';
+import { AppConstants } from '../../common/app.constants';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { StandardResponseDto } from '../../models/dtos/standard-response-dto';
 
 @Component({
   selector: 'app-navbar',
@@ -12,6 +22,7 @@ import { UtilitiesService } from '../../service/utilities/utilities.service';
 export class NavbarComponent {
   private readonly authService = inject(AuthService);
   private readonly utilitiesService = inject(UtilitiesService);
+  private readonly destroyRef = inject(DestroyRef);
 
   @ViewChild('userIconButton') userIconButton!: ElementRef;
 
@@ -28,7 +39,7 @@ export class NavbarComponent {
   ngOnInit() {
     this.setUserDetails();
     this.setDocumentClickListner();
-    this.isLoggedIn = this.authService.isAuthenticated();
+    this.isLoggedIn = this.authService.isRefreshTokenValid();
   }
 
   private setUserDetails() {
@@ -62,6 +73,13 @@ export class NavbarComponent {
   }
 
   logout() {
-    this.authService.logout();
+    this.authService
+      .logout(AppConstants.LOGOUT)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        error: (response) => {
+          console.log(response as StandardResponseDto);
+        },
+      });
   }
 }

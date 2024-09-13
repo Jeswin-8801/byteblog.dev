@@ -4,11 +4,12 @@ import { CommonModule } from '@angular/common';
 import { AuthService } from '../../service/auth/auth.service';
 import { User } from '../../models/user';
 import { AccountsComponent } from './accounts/accounts.component';
+import { ProfileComponent } from './profile/profile.component';
 
 @Component({
   selector: 'app-settings',
   standalone: true,
-  imports: [CommonModule, NavbarComponent, AccountsComponent],
+  imports: [CommonModule, NavbarComponent, AccountsComponent, ProfileComponent],
   templateUrl: './settings.component.html',
 })
 export class SettingsComponent {

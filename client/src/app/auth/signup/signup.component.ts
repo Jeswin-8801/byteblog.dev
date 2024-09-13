@@ -42,8 +42,19 @@ export class SignupComponent {
 
   private processOauthRequestResponse() {
     this.route.queryParams.subscribe((params) => {
-      if (params['token'] !== undefined) {
-        this.authService.storeTokens(params['token']);
+      if (
+        params[AppConstants.ACCESS_TOKEN] !== undefined &&
+        params[AppConstants.REFRESH_TOKEN] !== undefined
+      ) {
+        this.authService.storeTokens(
+          AppConstants.ACCESS_TOKEN,
+          params[AppConstants.ACCESS_TOKEN]
+        );
+        this.authService.storeTokens(
+          AppConstants.REFRESH_TOKEN,
+          params[AppConstants.REFRESH_TOKEN]
+        );
+        this.router.navigateByUrl('/home');
 
         const user = this.authService.user();
         this.router.navigate(['/home'], {

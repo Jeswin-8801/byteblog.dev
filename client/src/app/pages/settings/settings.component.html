@@ -1,5 +1,5 @@
 <app-navbar [isNavbarFixed]="false" [isThemeDark]="false"></app-navbar>
-<div class="bg-gradient-to-tr from-gray-50 to-rose-200">
+<div class="bg-gradient-to-tr from-gray-50 to-blue-200">
   <div class="mx-4 pb-14 max-w-7xl sm:mx-8 xl:mx-auto text-gray-900">
     <h1
       class="border-b border-stone-400 text-gray-700 p-5 text-4xl font-semibold"
@@ -86,7 +86,11 @@
       <div
         class="min-w-7xl col-span-8 overflow-hidden rounded-xl sm:bg-gray-50 sm:px-8 sm:shadow"
       >
-        <app-accounts [user]="user"></app-accounts>
+        <app-accounts
+          *ngIf="selectedSection === 'Accounts'"
+          [user]="user"
+        ></app-accounts>
+        <app-profile *ngIf="selectedSection === 'Profile'"></app-profile>
       </div>
     </div>
   </div>

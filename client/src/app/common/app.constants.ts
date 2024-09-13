@@ -15,4 +15,10 @@ export class AppConstants {
     this.OAUTH2_URL + this.PROVIDER_GOOGLE + this.REDIRECT_URL;
   public static GITHUB_OAUTH_URL =
     this.OAUTH2_URL + this.PROVIDER_GITHUB + this.REDIRECT_URL;
+
+  public static ACCESS_TOKEN = 'access-token';
+  public static REFRESH_TOKEN = 'refresh-token';
+
+  public static LOGOUT = 'logout';
+  public static REFRESH_TOKEN_EXPIRY_REDIRECT = 'refresh-token-expired';
 }

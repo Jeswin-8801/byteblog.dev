@@ -1,4 +1,4 @@
-import { HttpClient, HttpContext } from '@angular/common/http';
+import { HttpBackend, HttpClient, HttpContext } from '@angular/common/http';
 import { inject, Injectable, signal, WritableSignal } from '@angular/core';
 import { Router } from '@angular/router';
 import { JwtHelperService } from '@auth0/angular-jwt';
@@ -9,11 +9,14 @@ import { User } from '../../models/user';
 import { IS_PUBLIC } from '../../auth/auth.interceptor';
 import { Login } from '../../auth/login/interfaces/login.interface';
 import { LoginResponse } from '../../auth/login/types/login-response.type';
-import { LoginSuccess } from '../../auth/login/interfaces/login-success.interface';
 import { SignUp } from '../../auth/signup/interfaces/sign-up.interface';
 import { SignUpResponse } from '../../auth/signup/types/sign-up-response.type';
 import { SignUpSuccess } from '../../auth/signup/interfaces/sign-up-success.interface';
 import { environment } from '../../../environments/environment';
+import { AccessTokenDto } from '../../models/dtos/access-token-dto';
+import { AppConstants } from '../../common/app.constants';
+import { LoginSuccessDto } from '../../models/dtos/login-success-dto';
+import { StandardResponseDto } from '../../models/dtos/standard-response-dto';
 
 @Injectable({
   providedIn: 'root',
@@ -21,7 +24,8 @@ import { environment } from '../../../environments/environment';
 export class AuthService {
   constructor() {}
 
-  private readonly http = inject(HttpClient);
+  private readonly httpClient = inject(HttpClient);
+  private readonly httpBackend = new HttpClient(inject(HttpBackend));
   private readonly router = inject(Router);
   private readonly jwtHelper = inject(JwtHelperService);
   private readonly CONTEXT = {
@@ -29,23 +33,26 @@ export class AuthService {
   };
 
   get user(): WritableSignal<User | null> {
-    const token = localStorage.getItem('token');
     return signal(
-      token
+      this.getAccessToken()
         ? ObjectMapper.deserialize(
             User,
-            this.jwtHelper.decodeToken(token)['user']
+            this.jwtHelper.decodeToken(this.getAccessToken()!)['user']
           )
         : null
     );
   }
 
   isAuthenticated(): boolean {
-    return !this.jwtHelper.isTokenExpired();
+    return !this.jwtHelper.isTokenExpired(this.getAccessToken());
+  }
+
+  isRefreshTokenValid(): boolean {
+    return !this.jwtHelper.isTokenExpired(this.getRefreshToken());
   }
 
   login(body: Login): Observable<LoginResponse> {
-    return this.http
+    return this.httpClient
       .post<LoginResponse>(
         `${environment.apiUrl}/auth/login`,
         body,
@@ -53,15 +60,25 @@ export class AuthService {
       )
       .pipe(
         tap((data) => {
-          const loginSuccessData = data as LoginSuccess;
-          this.storeTokens(loginSuccessData.token);
+          const loginSuccessData = ObjectMapper.deserialize(
+            LoginSuccessDto,
+            data
+          );
+          this.storeTokens(
+            AppConstants.ACCESS_TOKEN,
+            loginSuccessData.accessToken!
+          );
+          this.storeTokens(
+            AppConstants.REFRESH_TOKEN,
+            loginSuccessData.refreshToken!
+          );
           this.router.navigate(['/home']);
         })
       );
   }
 
   signup(body: SignUp): Observable<SignUpResponse> {
-    return this.http
+    return this.httpClient
       .post<SignUpResponse>(
         `${environment.apiUrl}/auth/sign-up`,
         body,
@@ -75,16 +92,59 @@ export class AuthService {
       );
   }
 
-  logout(): void {
-    this.removeTokens();
-    this.router.navigate(['/auth/login']);
+  // this request will not be intercepted as it is sent using HttpBackend
+  refreshToken(): Observable<AccessTokenDto> {
+    const headers = { Authorization: `Bearer ${this.getRefreshToken()}` };
+    return this.httpBackend.get<AccessTokenDto>(
+      `${environment.apiUrl}/auth/token/refresh`,
+      {
+        headers: headers,
+      }
+    );
+  }
+
+  storeRefreshedToken(data: any) {
+    const accessTokenDto = ObjectMapper.deserialize(AccessTokenDto, data);
+    this.storeTokens(AppConstants.ACCESS_TOKEN, accessTokenDto.accessToken!);
+    console.log('Successfully refreshed token');
+  }
+
+  logout(type: string): Observable<StandardResponseDto> {
+    return this.httpClient
+      .get<StandardResponseDto>(
+        `${environment.apiUrl}/auth/sign-out?id=` + this.user()?.id
+      )
+      .pipe(
+        tap((data) => {
+          const responseData = data as StandardResponseDto;
+          console.log(responseData);
+          const email = this.user()?.email;
+          this.removeTokens();
+
+          let params = {};
+          if (type === AppConstants.LOGOUT)
+            params = { loggedOut: 'Success', user: email };
+          this.router.navigate(['/auth/login'], {
+            queryParams: params,
+          });
+        })
+      );
   }
 
   removeTokens() {
-    localStorage.removeItem('token');
+    localStorage.removeItem(AppConstants.ACCESS_TOKEN);
+    localStorage.removeItem(AppConstants.REFRESH_TOKEN);
   }
 
-  storeTokens(data: string): void {
-    localStorage.setItem('token', data);
+  storeTokens(tokenType: string, token: string): void {
+    localStorage.setItem(tokenType, token);
+  }
+
+  getAccessToken() {
+    return localStorage.getItem(AppConstants.ACCESS_TOKEN);
+  }
+
+  getRefreshToken() {
+    return localStorage.getItem(AppConstants.REFRESH_TOKEN);
   }
 }

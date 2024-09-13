@@ -1,5 +1,5 @@
 import { Component, DestroyRef, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
   FormControl,
@@ -39,11 +39,15 @@ export class LoginComponent {
   private readonly destroyRef = inject(DestroyRef);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
+  private readonly location = inject(Location);
   subscription!: Subscription;
   loginForm!: FormGroup;
 
   alertModal: AlertModal = new AlertModal();
   isAlertModalClosed: boolean = true;
+
+  isRedirect!: boolean;
+  params: string[] = [];
 
   showPassword: boolean = false;
   isAlertClosed: boolean = true;
@@ -52,19 +56,34 @@ export class LoginComponent {
   ngOnInit() {
     this.subscription = this.alertModalService.clickPrimary$.subscribe(
       (isClicked) => {
-        if (isClicked && this.alertModal.isPrimaryButtonSubscribedToService)
-          this.redirectToSignUp();
+        if (isClicked && this.alertModal.isPrimaryButtonSubscribedToService) {
+          if (this.isRedirect) this.redirectToSignUp();
+          else
+            for (const value of this.params)
+              Utility.removeQueryParams(this.location, value);
+        }
       }
     );
     this.processOauthRequestResponse();
     this.setSignUpSuccessMessage();
+    this.setSignOutSuccessMessage();
     this.createForm();
   }
 
   private processOauthRequestResponse() {
     this.route.queryParams.subscribe((params) => {
-      if (params['token'] !== undefined) {
-        this.authService.storeTokens(params['token']);
+      if (
+        params[AppConstants.ACCESS_TOKEN] !== undefined &&
+        params[AppConstants.REFRESH_TOKEN] !== undefined
+      ) {
+        this.authService.storeTokens(
+          AppConstants.ACCESS_TOKEN,
+          params[AppConstants.ACCESS_TOKEN]
+        );
+        this.authService.storeTokens(
+          AppConstants.REFRESH_TOKEN,
+          params[AppConstants.REFRESH_TOKEN]
+        );
         this.router.navigateByUrl('/home');
       } else if (params['error'] !== undefined) {
         console.error(
@@ -79,10 +98,33 @@ export class LoginComponent {
     });
   }
 
+  private setSignOutSuccessMessage() {
+    this.route.queryParams.subscribe((params) => {
+      if (params['loggedOut'] !== undefined && params['user'] !== undefined) {
+        this.toggleAlertModal();
+        this.params.push('loggedOut');
+        this.params.push('user');
+
+        this.alertModal.set(
+          false,
+          'Signed out',
+          'The account ' +
+            Utility.getHighlightedText(params['user']) +
+            ' has been successfully signed out',
+          false,
+          true,
+          'OK',
+          true
+        );
+      }
+    });
+  }
+
   private setSignUpSuccessMessage() {
     this.route.queryParams.subscribe((params) => {
       if (params['registered'] !== undefined) {
         this.toggleAlertModal();
+        this.params.push('registered');
 
         this.alertModal.set(
           false,
@@ -93,7 +135,7 @@ export class LoginComponent {
           false,
           true,
           'OK',
-          false
+          true
         );
       }
     });
@@ -119,7 +161,7 @@ export class LoginComponent {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (loginResponse) => {
-          console.log(loginResponse);
+          console.log('Login Successful');
           // get return url from query parameters or default to home page
           const returnUrl =
             this.route.snapshot.queryParams['returnUrl'] || '/home';
@@ -142,6 +184,7 @@ export class LoginComponent {
                 'Sign Up',
                 true
               );
+              this.isRedirect = true;
               this.toggleAlertModal();
             } else {
               this.alertMessage = errorResponse.message;
