@@ -6,7 +6,8 @@ import { StandardResponseDto } from '../../models/dtos/standard-response-dto';
 import { environment } from '../../../environments/environment';
 import { AuthService } from '../auth/auth.service';
 import { Router } from '@angular/router';
-import { Utility } from '../../utility/utility';
+import { User } from '../../models/user';
+import { ObjectMapper } from 'json-object-mapper';
 
 @Injectable({
   providedIn: 'root',
@@ -22,19 +23,27 @@ export class UserService {
     'application/json'
   );
 
-  changePassword(body: String): Observable<StandardResponseDto> {
-    return this.http
-      .post<StandardResponseDto>(
-        `${environment.apiUrl}/user/change-password`,
-        body,
-        { headers: this.headers }
-      )
-      .pipe(
-        tap((data) => {
-          const response = data as StandardResponseDto;
-          console.log(response.message);
-        })
-      );
+  getUserDetails(id: string): Observable<any> {
+    return this.http.get<any>(`${environment.apiUrl}/user?id=` + id).pipe(
+      tap(() => {
+        console.log('successfully retrieved user details');
+      })
+    );
+  }
+
+  updateUser(user: User, image: File): Observable<StandardResponseDto> {
+    const formData: FormData = new FormData();
+    formData.append(
+      'user',
+      new Blob([ObjectMapper.serialize(user) as string], {
+        type: 'application/json',
+      })
+    );
+    formData.append('image', image);
+    return this.http.put<StandardResponseDto>(
+      `${environment.apiUrl}/user`,
+      formData
+    );
   }
 
   deleteAccount(id: String): Observable<StandardResponseDto> {
@@ -49,6 +58,21 @@ export class UserService {
               deleted: this.authService.user()?.email,
             },
           });
+        })
+      );
+  }
+
+  changePassword(body: String): Observable<StandardResponseDto> {
+    return this.http
+      .post<StandardResponseDto>(
+        `${environment.apiUrl}/user/change-password`,
+        body,
+        { headers: this.headers }
+      )
+      .pipe(
+        tap((data) => {
+          const response = data as StandardResponseDto;
+          console.log(response.message);
         })
       );
   }

@@ -3,243 +3,276 @@
   [(isClosed)]="isAlertModalClosed"
 ></app-alert-modal>
 <div>
-  <div class="pt-4">
-    <h1 class="py-2 text-2xl font-semibold">Account settings</h1>
-  </div>
-  <hr class="mt-4 mb-8" />
-  <p class="py-2 text-xl font-semibold">Email Address</p>
-  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
-    <p class="text-gray-600">
-      Your email address is <strong>{{ user.email }}</strong>
-    </p>
-
-    <button class="inline-flex text-sm font-semibold text-red-600 decoration-2">
-      Cannot be changed once set
-    </button>
-  </div>
-  <button
-    *ngIf="user.authProvider !== 'local'"
-    type="button"
-    class="m-3 text-white {{
-      user.authProvider === 'google'
-        ? 'bg-slate-100 hover:bg-gray-900'
-        : 'bg-slate-800 hover:bg-gray-950'
-    }}  focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2"
-  >
-    <a
-      *ngIf="user.authProvider === 'google'"
-      href="https://myaccount.google.com/"
-      target="_blank"
-    >
+  <div class="pt-4 flex">
+    <div class="p-3">
       <svg
         class="size-6"
         xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 48 48"
+        viewBox="0 0 50 50"
       >
         <path
-          fill="#FFC107"
-          d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"
+          d="M 25 3 C 18.363281 3 13 8.363281 13 15 L 13 20 L 9 20 C 7.355469 20 6 21.355469 6 23 L 6 47 C 6 48.644531 7.355469 50 9 50 L 41 50 C 42.644531 50 44 48.644531 44 47 L 44 23 C 44 21.355469 42.644531 20 41 20 L 37 20 L 37 15 C 37 8.363281 31.636719 3 25 3 Z M 25 5 C 30.566406 5 35 9.433594 35 15 L 35 20 L 15 20 L 15 15 C 15 9.433594 19.433594 5 25 5 Z M 9 22 L 41 22 C 41.554688 22 42 22.445313 42 23 L 42 47 C 42 47.554688 41.554688 48 41 48 L 9 48 C 8.445313 48 8 47.554688 8 47 L 8 23 C 8 22.445313 8.445313 22 9 22 Z M 25 30 C 23.300781 30 22 31.300781 22 33 C 22 33.898438 22.398438 34.6875 23 35.1875 L 23 38 C 23 39.101563 23.898438 40 25 40 C 26.101563 40 27 39.101563 27 38 L 27 35.1875 C 27.601563 34.6875 28 33.898438 28 33 C 28 31.300781 26.699219 30 25 30 Z"
         ></path>
-        <path
-          fill="#FF3D00"
-          d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"
-        ></path>
-        <path
-          fill="#4CAF50"
-          d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"
-        ></path>
-        <path
-          fill="#1976D2"
-          d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"
-        ></path></svg
-    ></a>
-    <a
-      *ngIf="user.authProvider === 'github'"
-      href="https://github.com/"
-      target="_blank"
-      ><svg
-        xmlns="http://www.w3.org/2000/svg"
-        class="size-6"
-        viewBox="0 0 16 16"
-      >
-        <path
-          fill="#DFDFDF"
-          d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z"
-        /></svg
-    ></a>
-  </button>
-  <hr class="mt-4 mb-8" />
-  <p class="py-2 text-xl font-semibold">Password</p>
-  <div>
-    <div
-      id="alert"
-      class="{{
-        isAlertClosed ? 'hidden' : 'flex'
-      }} items-center p-4 mb-4 max-w-md text-rose-600 rounded-full bg-red-50"
-      role="alert"
-    >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        class="mr-2 h-5 w-5"
-        viewBox="0 0 20 20"
-        fill="currentColor"
-      >
-        <path
-          fill-rule="evenodd"
-          d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
-          clip-rule="evenodd"
-        />
       </svg>
-      <div class="ms-3 text-sm font-medium">{{ alertMessage }}</div>
-      <button
-        type="button"
-        (click)="toggleAlert()"
-        class="ms-auto -mx-1.5 -my-1.5 bg-red-50 text-rose-600 rounded-lg focus:ring-2 focus:ring-red-400 p-1.5 hover:bg-red-200 inline-flex items-center justify-center h-8 w-8 dark:text-red-400 dark:hover:bg-slate-50"
-        aria-label="Close"
-      >
-        <span class="sr-only">Close</span>
+    </div>
+    <h1 class="py-2 text-3xl font-extrabold">Account settings</h1>
+  </div>
+  <hr class="mt-4 mb-8" />
+  <div class="ml-3">
+    <p class="py-2 mb-4 text-2xl font-extralight">Email Address</p>
+
+    <div
+      class="flex flex-col sm:flex-row sm:items-center sm:justify-between pb-3"
+    >
+      <div class="text-gray-600 flex space-x-1">
+        <p class="pr-2 hidden sm:flex">Your email address is</p>
         <svg
-          class="w-3 h-3"
+          class="w-4 h-4 mt-1 text-gray-500 dark:text-gray-400"
           aria-hidden="true"
           xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 14 14"
+          fill="currentColor"
+          viewBox="0 0 20 16"
         >
           <path
-            stroke="currentColor"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
+            d="m10.036 8.278 9.258-7.79A1.979 1.979 0 0 0 18 0H2A1.987 1.987 0 0 0 .641.541l9.395 7.737Z"
+          />
+          <path
+            d="M11.241 9.817c-.36.275-.801.425-1.255.427-.428 0-.845-.138-1.187-.395L0 2.6V14a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V2.5l-8.759 7.317Z"
           />
         </svg>
+        <strong>{{ user.email }}</strong>
+      </div>
+
+      <button
+        class="sm:inline-flex hidden text-sm font-semibold text-red-600 decoration-2"
+      >
+        Cannot be changed once set
       </button>
     </div>
-    <form
-      [formGroup]="changePasswordForm"
-      (ngSubmit)="onChangePasswordFormSubmitted()"
+    <button
+      *ngIf="user.authProvider !== 'local'"
+      type="button"
+      class="text-white {{
+        user.authProvider === 'google'
+          ? 'bg-slate-100 hover:bg-gray-900'
+          : 'bg-slate-800 hover:bg-gray-950'
+      }}  focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2"
     >
-      <div class="flex items-center">
-        <div
-          class="flex flex-col space-y-2 sm:flex-row sm:space-y-0 sm:space-x-3"
-        >
-          <label for="current_password">
-            <span class="text-sm flex text-gray-500"
-              >Current Password
-              <p
-                class="{{
-                              current_password?.errors?.['required'] && current_password?.touched ? 'text-rose-600' : 'hidden'
-                          }} font-serif pl-1"
-              >
-                *
-              </p>
-            </span>
-            <div
-              class="{{
-                      current_password?.errors?.['required'] && current_password?.touched ? 'border-red-600' : 'focus-within:border-blue-600'
-                    }} relative flex overflow-hidden rounded-md border-2 transition"
-            >
-              <input
-                id="current_password"
-                name="current_password"
-                type="{{ showPassword ? 'text' : 'password' }}"
-                class="w-full flex-shrink appearance-none bg-white py-2 px-4 text-base text-gray-700 placeholder-gray-400 focus:outline-none"
-                placeholder="***********"
-                formControlName="current_password"
-              />
-            </div>
-          </label>
-          <label for="new_password">
-            <span class="text-sm flex text-gray-500"
-              >New Password
-              <p
-                class="{{
-                              new_password?.errors?.['required'] && new_password?.touched ? 'text-rose-600' : 'hidden'
-                          }} font-serif pl-1"
-              >
-                *
-              </p>
-            </span>
-            <div
-              class="{{
-                          new_password?.errors?.['required'] && new_password?.touched ? 'border-red-600' : 'focus-within:border-blue-600'
-                        }} relative flex overflow-hidden rounded-md border-2 transition"
-            >
-              <input
-                id="new_password"
-                name="new_password"
-                type="{{ showPassword ? 'text' : 'password' }}"
-                class="w-full flex-shrink appearance-none border-gray-300 bg-white py-2 px-4 text-base text-gray-700 placeholder-gray-400 focus:outline-none"
-                placeholder="***********"
-                formControlName="new_password"
-              />
-            </div>
-          </label>
-        </div>
+      <a
+        *ngIf="user.authProvider === 'google'"
+        href="https://myaccount.google.com/"
+        target="_blank"
+      >
         <svg
-          (click)="togglePasswordVisibility()"
+          class="size-6"
           xmlns="http://www.w3.org/2000/svg"
-          class="mt-5 ml-2 h-6 w-6 cursor-pointer text-sm font-semibold text-gray-600 underline decoration-2"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          stroke-width="2"
+          viewBox="0 0 48 48"
         >
           <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"
+            fill="#FFC107"
+            d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"
+          ></path>
+          <path
+            fill="#FF3D00"
+            d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"
+          ></path>
+          <path
+            fill="#4CAF50"
+            d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"
+          ></path>
+          <path
+            fill="#1976D2"
+            d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"
+          ></path></svg
+      ></a>
+      <a
+        *ngIf="user.authProvider === 'github'"
+        href="https://github.com/"
+        target="_blank"
+        ><svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="size-6"
+          viewBox="0 0 16 16"
+        >
+          <path
+            fill="#DFDFDF"
+            d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z"
+          /></svg
+      ></a>
+    </button>
+    <hr class="mt-4 mb-8" />
+    <p class="py-2 mb-4 text-2xl font-extralight">Password</p>
+    <div>
+      <div
+        id="alert"
+        class="{{
+          isAlertClosed ? 'hidden' : 'flex'
+        }} items-center p-4 mb-4 max-w-md text-rose-600 rounded-full bg-red-50"
+        role="alert"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="mr-2 h-5 w-5"
+          viewBox="0 0 20 20"
+          fill="currentColor"
+        >
+          <path
+            fill-rule="evenodd"
+            d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
+            clip-rule="evenodd"
           />
         </svg>
-      </div>
-      <p class="mt-2">
-        Can't remember your current password.
-        <a
-          class="text-sm font-semibold text-blue-600 underline decoration-2"
-          href="#"
-          >Recover Account</a
+        <div class="ms-3 text-sm font-medium">{{ alertMessage }}</div>
+        <button
+          type="button"
+          (click)="toggleAlert()"
+          class="ms-auto -mx-1.5 -my-1.5 bg-red-50 text-rose-600 rounded-lg focus:ring-2 focus:ring-red-400 p-1.5 hover:bg-red-200 inline-flex items-center justify-center h-8 w-8 dark:text-red-400 dark:hover:bg-slate-50"
+          aria-label="Close"
         >
+          <span class="sr-only">Close</span>
+          <svg
+            class="w-3 h-3"
+            aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 14 14"
+          >
+            <path
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
+            />
+          </svg>
+        </button>
+      </div>
+      <form
+        [formGroup]="changePasswordForm"
+        (ngSubmit)="onChangePasswordFormSubmitted()"
+      >
+        <div class="flex items-center">
+          <div
+            class="flex flex-col space-y-2 sm:flex-row sm:space-y-0 sm:space-x-3"
+          >
+            <label for="current_password">
+              <span class="text-sm flex text-gray-500"
+                >Current Password
+                <p
+                  class="{{
+                                current_password?.errors?.['required'] && current_password?.touched ? 'text-rose-600' : 'hidden'
+                            }} font-serif pl-1"
+                >
+                  *
+                </p>
+              </span>
+              <div
+                class="{{
+                        current_password?.errors?.['required'] && current_password?.touched ? 'border-red-600' : 'focus-within:border-blue-600'
+                      }} relative flex overflow-hidden rounded-md border-2 transition"
+              >
+                <input
+                  id="current_password"
+                  name="current_password"
+                  type="{{ showPassword ? 'text' : 'password' }}"
+                  class="w-full flex-shrink appearance-none bg-white py-2 px-4 text-base text-gray-700 placeholder-gray-400 focus:outline-none"
+                  placeholder="***********"
+                  formControlName="current_password"
+                />
+              </div>
+            </label>
+            <label for="new_password">
+              <span class="text-sm flex text-gray-500"
+                >New Password
+                <p
+                  class="{{
+                                new_password?.errors?.['required'] && new_password?.touched ? 'text-rose-600' : 'hidden'
+                            }} font-serif pl-1"
+                >
+                  *
+                </p>
+              </span>
+              <div
+                class="{{
+                            new_password?.errors?.['required'] && new_password?.touched ? 'border-red-600' : 'focus-within:border-blue-600'
+                          }} relative flex overflow-hidden rounded-md border-2 transition"
+              >
+                <input
+                  id="new_password"
+                  name="new_password"
+                  type="{{ showPassword ? 'text' : 'password' }}"
+                  class="w-full flex-shrink appearance-none border-gray-300 bg-white py-2 px-4 text-base text-gray-700 placeholder-gray-400 focus:outline-none"
+                  placeholder="***********"
+                  formControlName="new_password"
+                />
+              </div>
+            </label>
+          </div>
+          <svg
+            (click)="togglePasswordVisibility()"
+            xmlns="http://www.w3.org/2000/svg"
+            class="mt-5 ml-2 h-6 w-6 cursor-pointer text-sm font-semibold text-gray-600 underline decoration-2"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"
+            />
+          </svg>
+        </div>
+        <p class="mt-2">
+          Can't remember your current password.
+          <a
+            class="text-sm font-semibold text-blue-600 underline decoration-2"
+            href="#"
+            >Recover Account</a
+          >
+        </p>
+        <button
+          type="submit"
+          class="mt-4 rounded-lg bg-blue-600 px-4 py-2 text-white"
+        >
+          Save Password
+        </button>
+      </form>
+    </div>
+
+    <hr class="mt-4 mb-8" />
+
+    <div class="mb-10">
+      <p class="py-2 mb-5 text-2xl font-extralight">Delete Account</p>
+      <p
+        class="inline-flex items-center rounded-full bg-rose-100 px-4 py-1 text-rose-600"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="mr-2 h-5 w-5"
+          viewBox="0 0 20 20"
+          fill="currentColor"
+        >
+          <path
+            fill-rule="evenodd"
+            d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
+            clip-rule="evenodd"
+          />
+        </svg>
+        Proceed with caution
+      </p>
+      <p class="mt-2">
+        Make sure you have taken backup of your account in case you ever need to
+        get access to your data. We will completely wipe your data. There is no
+        way to access your account after this action.
       </p>
       <button
-        type="submit"
-        class="mt-4 rounded-lg bg-blue-600 px-4 py-2 text-white"
+        (click)="onClickConfirmDelete()"
+        class="ml-auto text-sm font-semibold text-rose-600 underline decoration-2"
       >
-        Save Password
+        Continue with deletion
       </button>
-    </form>
-  </div>
-
-  <hr class="mt-4 mb-8" />
-
-  <div class="mb-10">
-    <p class="py-2 text-xl font-semibold">Delete Account</p>
-    <p
-      class="inline-flex items-center rounded-full bg-rose-100 px-4 py-1 text-rose-600"
-    >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        class="mr-2 h-5 w-5"
-        viewBox="0 0 20 20"
-        fill="currentColor"
-      >
-        <path
-          fill-rule="evenodd"
-          d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
-          clip-rule="evenodd"
-        />
-      </svg>
-      Proceed with caution
-    </p>
-    <p class="mt-2">
-      Make sure you have taken backup of your account in case you ever need to
-      get access to your data. We will completely wipe your data. There is no
-      way to access your account after this action.
-    </p>
-    <button
-      (click)="onClickConfirmDelete()"
-      class="ml-auto text-sm font-semibold text-rose-600 underline decoration-2"
-    >
-      Continue with deletion
-    </button>
+    </div>
   </div>
 </div>

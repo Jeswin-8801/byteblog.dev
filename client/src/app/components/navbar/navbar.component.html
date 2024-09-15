@@ -144,7 +144,9 @@
                 aria-haspopup="true"
               >
                 <span
-                  class="top-0 left-6 absolute w-3.5 h-3.5 bg-green-500 border-2 border-white dark:border-gray-800 rounded-full"
+                  class="{{
+                    isOnline ? 'bg-green-500' : 'bg-rose-600'
+                  }} top-0 left-6 absolute w-3.5 h-3.5 border-2 border-white dark:border-gray-800 rounded-full"
                 ></span>
                 <span class="absolute -inset-1.5"></span>
                 <span class="sr-only">Open user menu</span>

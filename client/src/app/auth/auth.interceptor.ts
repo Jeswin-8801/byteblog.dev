@@ -5,9 +5,17 @@ import {
   HttpInterceptorFn,
   HttpRequest,
 } from '@angular/common/http';
-import { DestroyRef, inject } from '@angular/core';
+import { inject } from '@angular/core';
 import { AuthService } from '../service/auth/auth.service';
-import { catchError, from, NEVER, Observable, switchMap, timeout } from 'rxjs';
+import {
+  catchError,
+  EMPTY,
+  from,
+  NEVER,
+  Observable,
+  switchMap,
+  timeout,
+} from 'rxjs';
 import { ErrorService } from '../service/error/error.service';
 import { AlertModal } from '../components/alert-modal/alert-modal';
 
@@ -32,22 +40,21 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   return next(req).pipe(
     timeout(2000),
     catchError((error: HttpErrorResponse) => {
-      if (error.status == 401) {
-        if (!authService.isRefreshTokenValid()) {
-          let alertModal = new AlertModal();
-          alertModal.set(
-            true,
-            'Login to continue',
-            'Session expired',
-            false,
-            true,
-            'OK',
-            true
-          );
-          errorService.addErrors(alertModal);
-        }
+      if (error.status == 401 && !authService.isRefreshTokenValid()) {
+        let alertModal = new AlertModal();
+        alertModal.set(
+          true,
+          'Login to continue',
+          'Session expired',
+          false,
+          true,
+          'OK',
+          true
+        );
+        errorService.addErrors(alertModal);
+        return NEVER;
       }
-      return NEVER;
+      throw error;
     })
   ) as Observable<HttpEvent<unknown>>;
 };

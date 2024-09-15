@@ -5,7 +5,6 @@ import { JwtHelperService } from '@auth0/angular-jwt';
 import { Observable, tap } from 'rxjs';
 import { ObjectMapper } from 'json-object-mapper';
 
-import { User } from '../../models/user';
 import { IS_PUBLIC } from '../../auth/auth.interceptor';
 import { Login } from '../../auth/login/interfaces/login.interface';
 import { LoginResponse } from '../../auth/login/types/login-response.type';
@@ -17,6 +16,7 @@ import { AccessTokenDto } from '../../models/dtos/access-token-dto';
 import { AppConstants } from '../../common/app.constants';
 import { LoginSuccessDto } from '../../models/dtos/login-success-dto';
 import { StandardResponseDto } from '../../models/dtos/standard-response-dto';
+import { TokenClaimsUserDto } from '../../models/dtos/token-claims-user-dto';
 
 @Injectable({
   providedIn: 'root',
@@ -32,11 +32,11 @@ export class AuthService {
     context: new HttpContext().set(IS_PUBLIC, true),
   };
 
-  get user(): WritableSignal<User | null> {
+  get user(): WritableSignal<TokenClaimsUserDto | null> {
     return signal(
       this.getAccessToken()
         ? ObjectMapper.deserialize(
-            User,
+            TokenClaimsUserDto,
             this.jwtHelper.decodeToken(this.getAccessToken()!)['user']
           )
         : null
