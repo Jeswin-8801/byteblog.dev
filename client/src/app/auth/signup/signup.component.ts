@@ -17,6 +17,7 @@ import { AuthService } from '../../service/auth/auth.service';
 import { AppConstants } from '../../common/app.constants';
 import { NavbarComponent } from '../../components/navbar/navbar.component';
 import { Utility } from '../../utility/utility';
+import { ObjectMapper } from 'json-object-mapper';
 
 @Component({
   selector: 'app-signup',
@@ -101,7 +102,7 @@ export class SignupComponent {
     }
 
     this.authService
-      .signup(this.signUpForm.value as SignUp)
+      .signup(ObjectMapper.deserialize(SignUp, this.signUpForm.value))
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (signUpResponse) => {

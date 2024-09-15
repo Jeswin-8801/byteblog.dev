@@ -30,6 +30,7 @@ export class NavbarComponent {
   @Input() isNavbarFixed: boolean = true;
   @Input() isThemeDark: boolean = true;
   isLoggedIn: boolean = false;
+  isOnline!: boolean;
   showUserIconDropdown: boolean = false;
   showMobileMenu: boolean = false;
   userProfilePicUri: string = '/defaults/default-user-profile-pic.png';
@@ -40,6 +41,7 @@ export class NavbarComponent {
     this.setUserDetails();
     this.setDocumentClickListner();
     this.isLoggedIn = this.authService.isRefreshTokenValid();
+    this.isOnline = this.authService.user()?.isOnline as boolean;
   }
 
   private setUserDetails() {

@@ -16,7 +16,6 @@ import {
 } from '@angular/forms';
 
 import { AlertModal } from '../../../components/alert-modal/alert-modal';
-import { User } from '../../../models/user';
 import { Utility } from '../../../utility/utility';
 import { AlertModalComponent } from '../../../components/alert-modal/alert-modal.component';
 import { UserService } from '../../../service/user/user.service';
@@ -26,6 +25,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { StandardResponseDto } from '../../../models/dtos/standard-response-dto';
 import { AlertModalService } from '../../../components/alert-modal/alert-modal.service';
 import { Subscription } from 'rxjs';
+import { TokenClaimsUserDto } from '../../../models/dtos/token-claims-user-dto';
 
 @Component({
   selector: 'app-accounts',
@@ -47,7 +47,7 @@ export class AccountsComponent {
   changePasswordForm!: FormGroup;
   showPassword: boolean = false;
 
-  @Input({ required: true }) user!: User;
+  @Input({ required: true }) user!: TokenClaimsUserDto;
 
   alertModal: AlertModal = new AlertModal();
   isAlertModalClosed: boolean = true;

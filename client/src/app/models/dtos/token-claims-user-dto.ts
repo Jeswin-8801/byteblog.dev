@@ -1,7 +1,7 @@
 import { JsonProperty } from 'json-object-mapper';
-import { Role, RoleDeserializer } from './role';
+import { Role, RoleDeserializer } from '../role';
 
-export class User {
+export class TokenClaimsUserDto {
   id?: string;
 
   username?: string;
@@ -11,22 +11,14 @@ export class User {
 
   email?: string;
 
-  @JsonProperty({ name: 'email-verified' })
-  emailVerified?: boolean;
-
   @JsonProperty({ name: 'profile-image-url' })
   profileImageUrl?: string;
-
-  about?: string;
 
   @JsonProperty({ name: 'is-online' })
   isOnline?: boolean;
 
   @JsonProperty({ name: 'auth-provider' })
   authProvider?: string;
-
-  @JsonProperty({ name: 'registered-provider-id' })
-  registeredProviderId?: string;
 
   @JsonProperty({ type: Role, deserializer: RoleDeserializer })
   roles?: Role[];

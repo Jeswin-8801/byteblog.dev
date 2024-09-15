@@ -1,9 +1,11 @@
 <app-navbar [isNavbarFixed]="false" [isThemeDark]="false"></app-navbar>
-<div class="bg-gradient-to-tr from-gray-50 to-blue-200">
+<div
+  class="bg-gradient-to-br min-h-screen from-slate-100 {{
+    selectedSection === 'Accounts' ? 'to-rose-200' : 'to-blue-200'
+  }}"
+>
   <div class="mx-4 pb-14 max-w-7xl sm:mx-8 xl:mx-auto text-gray-900">
-    <h1
-      class="border-b border-stone-400 text-gray-700 p-5 text-4xl font-semibold"
-    >
+    <h1 class="border-b border-stone-300 text-gray-700 p-5 text-4xl font-light">
       Settings
     </h1>
     <div class="grid grid-cols-8 pt-3 sm:grid-cols-10">
@@ -84,7 +86,7 @@
         </ul>
       </div>
       <div
-        class="min-w-7xl col-span-8 overflow-hidden rounded-xl sm:bg-gray-50 sm:px-8 sm:shadow"
+        class="min-w-7xl col-span-8 overflow-hidden rounded-xl bg-gray-50 px-8 shadow-lg shadow-slate-400"
       >
         <app-accounts
           *ngIf="selectedSection === 'Accounts'"
