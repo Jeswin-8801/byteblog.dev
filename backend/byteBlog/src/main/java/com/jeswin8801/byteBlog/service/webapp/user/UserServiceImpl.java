@@ -19,6 +19,7 @@ import com.jeswin8801.byteBlog.security.jwt.JWTTokenProvider;
 import com.jeswin8801.byteBlog.security.jwt.TokenType;
 import com.jeswin8801.byteBlog.security.util.SecurityUtil;
 import com.jeswin8801.byteBlog.service.mail.EmailService;
+import com.jeswin8801.byteBlog.service.webapp.minio.ImageStorageService;
 import com.jeswin8801.byteBlog.service.webapp.user.abstracts.UserService;
 import com.jeswin8801.byteBlog.util.exceptions.ByteBlogException;
 import com.jeswin8801.byteBlog.util.exceptions.ResourceConflictException;
@@ -32,6 +33,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Objects;
 import java.util.Set;
@@ -43,6 +45,12 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private ImageStorageService imageStorageService;
+
+    @Autowired
+    private EmailService emailService;
 
     @Autowired
     private RefreshTokenRepository refreshTokenRepository;
@@ -60,9 +68,6 @@ public class UserServiceImpl implements UserService {
     private PasswordEncoder passwordEncoder;
 
     @Autowired
-    private EmailService emailService;
-
-    @Autowired
     private ApplicationProperties properties;
 
     @Override
@@ -77,6 +82,19 @@ public class UserServiceImpl implements UserService {
         return userRepository
                 .findById(id)
                 .orElse(null);
+    }
+
+    @Override
+    public GenericResponseDto<UserDto> getUser(String id) {
+        if (!userRepository.existsById(id))
+            throw new ResourceNotFoundException("User not found");
+
+        return GenericResponseDto.<UserDto>builder()
+                .message(
+                    userMapper.toDto(findUserById(id), UserDto.class)
+                )
+                .httpStatusCode(HttpStatus.OK)
+                .build();
     }
 
     @Override
@@ -115,13 +133,54 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void updateUser(UserDto userDTO) {
+    public GenericResponseDto<MessageResponseDto> updateUser(UserDto userDto, MultipartFile image) {
 
-        User userEntity = userRepository.findById(userDTO.getId())
+        User userEntity = userRepository.findById(userDto.getId())
                 .orElseThrow(() -> new ResourceNotFoundException(UserExceptions.USER_RECORD_NOT_FOUND.getMessage()));
-        userEntity.setFullName(userDTO.getFullName());
-        userEntity.setProfileImageUrl(userDTO.getProfileImageUrl());
+
+        if (!userDto.getUsername().equals(userEntity.getUsername())) {
+            if (userRepository.existsByUsername(userDto.getUsername()))
+                throw new ResourceConflictException(UserExceptions.USER_USERNAME_NOT_AVAILABLE.getMessage());
+            userEntity.setUsername(userDto.getUsername());
+        }
+
+        userEntity.setOnline(userDto.isOnline());
+
+        if (StringUtils.hasText(userDto.getFullName()))
+            userEntity.setFullName(userDto.getFullName());
+
+        if (StringUtils.hasText(userDto.getAbout()))
+            userEntity.setAbout(userDto.getAbout());
+
+        if (Objects.nonNull(image)) {
+            try {
+                String imageUrl = imageStorageService.uploadImage(image);
+                userEntity.setProfileImageUrl(imageUrl);
+                userEntity.setProfileImageUpdated(true);
+            } catch (Exception e) {
+                throw new RuntimeException("Failed to save Image", e);
+            }
+        }
+
         userRepository.save(userEntity);
+
+        return GenericResponseDto.<MessageResponseDto>builder()
+                .message(
+                        MessageResponseDto.builder()
+                                .message("Successfully updated user profile")
+                                .build()
+                ).httpStatusCode(HttpStatus.OK)
+                .build();
+    }
+
+    @Override
+    public void updateOauthUser(UserDto userDto) {
+        User userEntity = userRepository.findById(userDto.getId())
+                .orElseThrow(() -> new ResourceNotFoundException(UserExceptions.USER_RECORD_NOT_FOUND.getMessage()));
+        if (!userEntity.isProfileImageUpdated()) {
+            userEntity.setProfileImageUrl(userDto.getProfileImageUrl());
+            userRepository.save(userEntity);
+        }
     }
 
     @Override

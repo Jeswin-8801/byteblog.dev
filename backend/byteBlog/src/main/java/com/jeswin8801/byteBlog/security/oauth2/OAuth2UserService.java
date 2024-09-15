@@ -135,6 +135,7 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
         userDTO.setUsername(userInfo.getName().split(" ")[0] + "_" + AppUtil.generateAlphanumericString().substring(0, 4));
         userDTO.setEmail(userInfo.getEmail());
         userDTO.setProfileImageUrl(userInfo.getImageUrl());
+        userDTO.setProfileImageUpdated(false);
         userDTO.setAuthProvider(
                 oAuth2UserRequest
                         .getClientRegistration()
@@ -147,6 +148,7 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
                         )
                 )
         );
+        userDTO.setOnline(true);
         userDTO.setEmailVerified(true);
 
         log.info("Registering new OAuth user: {}", userDTO.getEmail());
@@ -173,7 +175,7 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
 
         if (update) {
             log.info("Found changes in OAuth user info (name | profile pic); updating user info in DB");
-            userService.updateUser(existingUserDTO);
+            userService.updateOauthUser(existingUserDTO);
         }
     }
 }

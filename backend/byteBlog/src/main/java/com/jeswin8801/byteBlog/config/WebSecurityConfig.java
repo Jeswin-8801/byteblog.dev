@@ -7,6 +7,7 @@ import com.jeswin8801.byteBlog.security.oauth2.OAuth2UserService;
 import com.jeswin8801.byteBlog.security.oauth2.dao.HttpCookieOAuth2AuthorizationRequestRepository;
 import com.jeswin8801.byteBlog.security.oauth2.dao.OAuth2AuthenticationFailureHandler;
 import com.jeswin8801.byteBlog.security.oauth2.dao.OAuth2AuthenticationSuccessHandler;
+import lombok.RequiredArgsConstructor;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,7 +18,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -27,6 +27,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import java.util.Arrays;
 
 @Configuration
+@RequiredArgsConstructor
 @EnableConfigurationProperties({ApplicationProperties.class})
 @EnableWebSecurity
 @EnableMethodSecurity(
@@ -52,17 +53,6 @@ public class WebSecurityConfig {
     private final HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
     private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
     private final OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler;
-
-    public WebSecurityConfig(ApplicationProperties properties, UserDetailsServiceImpl userDetailsService, OAuth2UserService oAuth2UserService, PasswordEncoder passwordEncoder, AuthenticationEntryPointImpl authenticationEntryPoint, JWTAuthenticationFilter jwtAuthenticationFilter, HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository, OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler, OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler) {
-        this.properties = properties;
-        this.userDetailsService = userDetailsService;
-        this.oAuth2UserService = oAuth2UserService;
-        this.authenticationEntryPoint = authenticationEntryPoint;
-        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
-        this.httpCookieOAuth2AuthorizationRequestRepository = httpCookieOAuth2AuthorizationRequestRepository;
-        this.oAuth2AuthenticationSuccessHandler = oAuth2AuthenticationSuccessHandler;
-        this.oAuth2AuthenticationFailureHandler = oAuth2AuthenticationFailureHandler;
-    }
 
 
     @Bean

@@ -63,7 +63,7 @@ public class UserDetailsImpl implements OAuth2User, UserDetails {
                 user.getPassword(),
                 user,
                 SecurityUtil
-                        .convertRolesSetToGrantedAuthorityList(user.getRoles()),
+                        .convertRolesToGrantedAuthorityList(SecurityUtil.setOfRolesToSetOfString(user.getRoles())),
                 new HashMap<>()
         );
     }

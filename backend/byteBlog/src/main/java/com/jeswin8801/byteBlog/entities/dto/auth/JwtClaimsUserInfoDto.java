@@ -25,6 +25,9 @@ public class JwtClaimsUserInfoDto {
     @JsonProperty("profile-image-url")
     private String profileImageUrl;
 
+    @JsonProperty("is-online")
+    private boolean isOnline;
+
     @JsonProperty("auth-provider")
     private String authProvider;
 

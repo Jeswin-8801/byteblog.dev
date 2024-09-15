@@ -1,14 +1,13 @@
 package com.jeswin8801.byteBlog.entities.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Table;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
-import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.annotations.*;
 
 import java.time.Instant;
 import java.util.Set;
@@ -48,6 +47,14 @@ public class User {
     @Column(name = "profile_image_url")
     private String profileImageUrl;
 
+    @Column(name = "is_profile_img_updated")
+    private boolean isProfileImageUpdated;
+
+    @Column(name = "is_online")
+    private boolean isOnline;
+
+    private String about;
+
     @Column(name = "auth_provider")
     private String authProvider;
 
@@ -75,11 +82,11 @@ public class User {
     private Instant verificationCodeExpiresAt;
 
     @CreationTimestamp
-    @Column(name = "created_on")
+    @Column(name = "created_on", nullable = false, updatable = false)
     private Instant createdOn;
 
     @UpdateTimestamp
-    @Column(name = "last_updated_on")
+    @Column(name = "last_updated_on", nullable = false)
     private Instant lastUpdatedOn;
 
     @OneToOne(

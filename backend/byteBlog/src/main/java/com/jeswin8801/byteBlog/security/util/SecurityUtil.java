@@ -22,12 +22,12 @@ public class SecurityUtil {
     /**
      * Converts list of roles into Collection of GrantedAuthority
      */
-    public Collection<? extends GrantedAuthority> convertRolesSetToGrantedAuthorityList(Set<Role> roles) {
+    public Collection<? extends GrantedAuthority> convertRolesToGrantedAuthorityList(Set<String> roles) {
         Collection<GrantedAuthority> authorities = new HashSet<>();
         if (ObjectUtils.isEmpty(roles))
                 return authorities;
-        for (Role role : roles) {
-            GrantedAuthority grantedAuthority = new SimpleGrantedAuthority(role.getPrivilege().name());
+        for (String role : roles) {
+            GrantedAuthority grantedAuthority = new SimpleGrantedAuthority(role);
             authorities.add(grantedAuthority);
         }
         return authorities;
@@ -49,15 +49,10 @@ public class SecurityUtil {
         }};
     }
 
-    public Set<Role> setOfStringToSetOfRoles(Set<Map<String, String>> roles) {
+    public Set<String> setOfStringAuthoritiesToSetOfRoles(Set<Map<String, String>> roles) {
         return new HashSet<>() {{
-            for (Map<String, String> role : roles) {
-                add(
-                        new Role(
-                                Enum.valueOf(UserPrivilege.class, role.get("authority"))
-                        )
-                );
-            }
+            for (Map<String, String> role : roles)
+                add(role.get("authority"));
         }};
     }
 

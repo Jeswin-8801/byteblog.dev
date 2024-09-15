@@ -75,6 +75,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         userDto.setEmail(registerUserRequestDto.getEmail());
         userDto.setPassword(registerUserRequestDto.getPassword());
         userDto.setAuthProvider(AuthProvider.LOCAL.getProvider());
+        userDto.setOnline(true);
+        userDto.setEmailVerified(false);
+        userDto.setProfileImageUpdated(false);
+        userDto.setRegisteredProviderId("0");
 
         userService.createUser(userDto);
 

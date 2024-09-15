@@ -4,7 +4,6 @@ import com.jeswin8801.byteBlog.config.ApplicationProperties;
 import com.jeswin8801.byteBlog.entities.converters.UserMapper;
 import com.jeswin8801.byteBlog.entities.dto.auth.JwtClaimsUserInfoDto;
 import com.jeswin8801.byteBlog.entities.dto.user.UserDto;
-import com.jeswin8801.byteBlog.entities.model.Role;
 import com.jeswin8801.byteBlog.entities.model.User;
 import com.jeswin8801.byteBlog.repository.TokenBlacklistRepository;
 import com.jeswin8801.byteBlog.repository.UserRepository;
@@ -84,6 +83,7 @@ public class JWTTokenProvider {
                 .add(
                         new HashMap<>() {{
                             put("user",
+
                                     jwtClaimsUserInfoDtoUserMapper.toDto(userPrincipal.getUser(), JwtClaimsUserInfoDto.class)
                             );
                             put("authorities", userPrincipal.getAuthorities());
@@ -138,10 +138,10 @@ public class JWTTokenProvider {
 
         User userEntity = userMapper.toEntity(userDto);
 
-        Set<Role> authoritiesSet;
+        Set<String> authoritiesSet;
 
         if (tokenType.equals(TokenType.ACCESS)) {
-            authoritiesSet = SecurityUtil.setOfStringToSetOfRoles(
+            authoritiesSet = SecurityUtil.setOfStringAuthoritiesToSetOfRoles(
                     AppUtil.fromJson(
                             AppUtil.toJson(body.get("authorities")),
                             (Class<Set<Map<String, String>>>) (Class<?>) Set.class
@@ -152,7 +152,7 @@ public class JWTTokenProvider {
                     .findByEmail(body.getSubject());
             if (user.isPresent()) {
                 userEntity = user.get();
-                authoritiesSet = user.get().getRoles();
+                authoritiesSet = SecurityUtil.setOfRolesToSetOfString(user.get().getRoles());
             } else
                 throw new ByteBlogException(
                         String.format("No user found with email: %s given in the subject of Refresh Token", body.getSubject()),
@@ -160,7 +160,7 @@ public class JWTTokenProvider {
                 );
         }
 
-        Collection<? extends GrantedAuthority> grantedAuthorities = SecurityUtil.convertRolesSetToGrantedAuthorityList(authoritiesSet);
+        Collection<? extends GrantedAuthority> grantedAuthorities = SecurityUtil.convertRolesToGrantedAuthorityList(authoritiesSet);
         Map<String, Object> attributes = AppUtil.fromJson(
                 tokenType.equals(TokenType.ACCESS) ?
                         AppUtil.toJson(body.get("attributes")) : """
@@ -225,8 +225,6 @@ public class JWTTokenProvider {
             throw new ByteBlogException(exception.getMessage(), HttpStatus.UNAUTHORIZED);
         } catch (ExpiredJwtException exception) {
             if (tokenType.equals(TokenType.REFRESH)) {
-                if (tokenBlacklistRepository.findByRefreshToken(token).isPresent())
-                    tokenBlacklistRepository.deleteByRefreshToken(token);
                 log.error("Refresh token expired {}", exception.getMessage());
                 return false;
             }

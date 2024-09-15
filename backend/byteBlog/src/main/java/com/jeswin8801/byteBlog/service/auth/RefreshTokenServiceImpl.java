@@ -15,11 +15,14 @@ import com.jeswin8801.byteBlog.util.exceptions.ByteBlogException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import java.time.Instant;
+import java.util.Date;
 import java.util.Optional;
 
 @Transactional
@@ -34,6 +37,12 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
 
     @Autowired
     private JWTTokenProvider jwtTokenProvider;
+
+    @Scheduled(cron = "0 */5 * * * ?") // Run every 5 minutes
+    public void purgeExpiredTokens() {
+        Instant now = new Date().toInstant();
+        tokenBlacklistRepository.deleteByExpiryLessThan(now);
+    }
 
     @Override
     public AuthResponseDto constructAuthResponseForLogin(Authentication authentication, User user) {

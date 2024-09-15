@@ -33,6 +33,14 @@ public class UserDto {
     @JsonProperty("profile-image-url")
     private String profileImageUrl;
 
+    @JsonProperty("is-online")
+    private boolean isOnline;
+
+    @JsonProperty("is-profile-img-updated")
+    private boolean isProfileImageUpdated;
+
+    private String about;
+
     @JsonProperty("auth-provider")
     private String authProvider;
 
