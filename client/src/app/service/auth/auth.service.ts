@@ -2,7 +2,7 @@ import { HttpBackend, HttpClient, HttpContext } from '@angular/common/http';
 import { inject, Injectable, signal, WritableSignal } from '@angular/core';
 import { Router } from '@angular/router';
 import { JwtHelperService } from '@auth0/angular-jwt';
-import { Observable, tap } from 'rxjs';
+import { Observable, tap, timeout } from 'rxjs';
 import { ObjectMapper } from 'json-object-mapper';
 
 import { IS_PUBLIC } from '../../auth/auth.interceptor';
@@ -17,6 +17,8 @@ import { AppConstants } from '../../common/app.constants';
 import { LoginSuccessDto } from '../../models/dtos/login-success-dto';
 import { StandardResponseDto } from '../../models/dtos/standard-response-dto';
 import { TokenClaimsUserDto } from '../../models/dtos/token-claims-user-dto';
+import { VerifyEmailDto } from '../../models/dtos/verify-email-dto';
+import { PasswordResetDto } from '../../models/dtos/password-reset-dto';
 
 @Injectable({
   providedIn: 'root',
@@ -85,9 +87,10 @@ export class AuthService {
         this.CONTEXT
       )
       .pipe(
+        timeout(5000),
         tap((data) => {
           const signUpSuccessData = data as SignUpSuccess;
-          console.log(signUpSuccessData.message);
+          console.log(signUpSuccessData);
         })
       );
   }
@@ -101,12 +104,6 @@ export class AuthService {
         headers: headers,
       }
     );
-  }
-
-  storeRefreshedToken(data: any) {
-    const accessTokenDto = ObjectMapper.deserialize(AccessTokenDto, data);
-    this.storeTokens(AppConstants.ACCESS_TOKEN, accessTokenDto.accessToken!);
-    console.log('Successfully refreshed token');
   }
 
   logout(type: string): Observable<StandardResponseDto> {
@@ -129,6 +126,34 @@ export class AuthService {
           });
         })
       );
+  }
+
+  verifyEmail(body: VerifyEmailDto): Observable<StandardResponseDto> {
+    return this.httpClient.post<StandardResponseDto>(
+      `${environment.apiUrl}/auth/verify-email`,
+      body,
+      this.CONTEXT
+    );
+  }
+
+  passwordReset(body: PasswordResetDto): Observable<StandardResponseDto> {
+    return this.httpClient.post<StandardResponseDto>(
+      `${environment.apiUrl}/auth/process-password-reset`,
+      body,
+      this.CONTEXT
+    );
+  }
+
+  sendPasswordResetMail(email: string): Observable<any> {
+    return this.httpClient.get(
+      `${environment.apiUrl}/auth/send-mail-password-reset?email=` + email
+    );
+  }
+
+  storeRefreshedToken(data: any) {
+    const accessTokenDto = ObjectMapper.deserialize(AccessTokenDto, data);
+    this.storeTokens(AppConstants.ACCESS_TOKEN, accessTokenDto.accessToken!);
+    console.log('Successfully refreshed token');
   }
 
   removeTokens() {

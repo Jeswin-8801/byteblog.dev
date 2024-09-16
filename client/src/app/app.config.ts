@@ -16,7 +16,6 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
-    provideAnimations(),
     provideHttpClient(withInterceptors([authInterceptor])),
     importProvidersFrom([
       JwtModule.forRoot({

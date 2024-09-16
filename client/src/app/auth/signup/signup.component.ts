@@ -105,8 +105,7 @@ export class SignupComponent {
       .signup(ObjectMapper.deserialize(SignUp, this.signUpForm.value))
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
-        next: (signUpResponse) => {
-          console.log(signUpResponse);
+        next: () => {
           this.router.navigate(['/auth/login'], {
             queryParams: { registered: this.username?.value },
           });
