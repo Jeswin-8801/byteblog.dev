@@ -1,11 +1,13 @@
 package com.jeswin8801.byteBlog.controller;
 
 import com.jeswin8801.byteBlog.entities.dto.GenericResponseDto;
-import com.jeswin8801.byteBlog.entities.dto.MessageResponseDto;
-import com.jeswin8801.byteBlog.entities.dto.auth.*;
+import com.jeswin8801.byteBlog.entities.dto.auth.requests.LoginRequestDto;
+import com.jeswin8801.byteBlog.entities.dto.auth.requests.RegisterUserRequestDto;
+import com.jeswin8801.byteBlog.entities.dto.auth.requests.ResetPasswordRequestDto;
+import com.jeswin8801.byteBlog.entities.dto.auth.requests.VerifyEmailRequestDto;
+import com.jeswin8801.byteBlog.entities.dto.auth.response.AuthResponseDto;
 import com.jeswin8801.byteBlog.service.auth.abstracts.AuthenticationService;
 import com.jeswin8801.byteBlog.service.auth.abstracts.RefreshTokenService;
-import com.jeswin8801.byteBlog.service.webapp.user.abstracts.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,9 +20,6 @@ public class AuthenticationController {
 
     @Autowired
     private AuthenticationService authenticationService;
-
-    @Autowired
-    private UserService userService;
 
     @Autowired
     private RefreshTokenService refreshTokenService;
@@ -43,18 +42,35 @@ public class AuthenticationController {
 
     @GetMapping("/sign-out")
     public ResponseEntity<?> logoutUser(@RequestParam String id) {
-        return GenericResponseDto.<MessageResponseDto>builder()
-                .message(
-                        authenticationService.logoutUser(id)
-                )
-                .httpStatusCode(HttpStatus.OK)
-                .build()
-                .getResponseEntity();
+        return authenticationService.logoutUser(id).getResponseEntity();
     }
 
     @GetMapping("/token/refresh")
     public ResponseEntity<?> refreshToken(HttpServletRequest request) {
         return refreshTokenService.refreshToken(request).getResponseEntity();
+    }
+
+    /**
+     * For resending verify email in case the verification code expires
+     */
+    @GetMapping("/send-mail-verify-email")
+    public void sendMailVerifyEmail(@RequestParam String email) {
+        authenticationService.sendMailVerifyEmail(email);
+    }
+
+    @GetMapping("/send-mail-password-reset")
+    public void sendMailPasswordReset(@RequestParam String email) {
+        authenticationService.sendMailPasswordReset(email);
+    }
+
+    @PostMapping("/verify-email")
+    public ResponseEntity<?> verifyEmailRequest(@RequestBody VerifyEmailRequestDto verifyEmailRequestDTO) {
+        return authenticationService.verifyEmailAddress(verifyEmailRequestDTO).getResponseEntity();
+    }
+
+    @PostMapping("/process-password-reset")
+    public ResponseEntity<?> verifyAndProcessPasswordResetRequest(@RequestBody ResetPasswordRequestDto resetPasswordRequestDTO) {
+        return authenticationService.verifyAndProcessPasswordResetRequest(resetPasswordRequestDTO).getResponseEntity();
     }
 
 }

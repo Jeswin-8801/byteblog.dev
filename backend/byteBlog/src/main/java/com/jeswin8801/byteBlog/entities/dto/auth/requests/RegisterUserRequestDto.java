@@ -1,4 +1,4 @@
-package com.jeswin8801.byteBlog.entities.dto.auth;
+package com.jeswin8801.byteBlog.entities.dto.auth.requests;
 
 import lombok.Data;
 

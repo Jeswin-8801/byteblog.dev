@@ -37,7 +37,20 @@ public interface UserRepository extends JpaRepository<User, String> {
      */
     boolean existsByUsername(String username);
 
+    /**
+     * Updates password
+     */
     @Modifying
     @Query("UPDATE User u SET u.password = :password WHERE u.id = :id")
-    void updatePassword(@Param("password") String password, @Param("id") String id);
+    void updatePassword(@Param("password") String password,
+                        @Param("id") String id);
+
+    /**
+     * Find user by id and check if verification code matches as well as if the code has expired
+     */
+    @Query("SELECT u FROM User u WHERE " +
+            "u.email = :email " +
+            "and u.verificationCodeExpiresAt >= current_timestamp and u.verificationCode = :verificationCode")
+    Optional<User> verifyCodeAndRetrieveUser(@Param("email") String email,
+                                             @Param("verificationCode") String verificationCode);
 }

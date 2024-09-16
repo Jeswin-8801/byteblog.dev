@@ -33,6 +33,6 @@ public class UserController {
 
     @PostMapping("/change-password")
     public ResponseEntity<?> changePassword(@RequestBody ChangePasswordRequestDto requestDto) {
-        return userService.updatePassword(requestDto).getResponseEntity();
+        return userService.processChangePassword(requestDto).getResponseEntity();
     }
 }

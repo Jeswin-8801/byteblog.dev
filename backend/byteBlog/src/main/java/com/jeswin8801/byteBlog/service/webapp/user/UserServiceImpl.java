@@ -17,8 +17,8 @@ import com.jeswin8801.byteBlog.repository.TokenBlacklistRepository;
 import com.jeswin8801.byteBlog.repository.UserRepository;
 import com.jeswin8801.byteBlog.security.jwt.JWTTokenProvider;
 import com.jeswin8801.byteBlog.security.jwt.TokenType;
-import com.jeswin8801.byteBlog.security.util.SecurityUtil;
-import com.jeswin8801.byteBlog.service.mail.EmailService;
+import com.jeswin8801.byteBlog.util.SecurityUtil;
+import com.jeswin8801.byteBlog.service.mail.EmailServiceImpl;
 import com.jeswin8801.byteBlog.service.webapp.minio.ImageStorageService;
 import com.jeswin8801.byteBlog.service.webapp.user.abstracts.UserService;
 import com.jeswin8801.byteBlog.util.exceptions.ByteBlogException;
@@ -47,16 +47,16 @@ public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
 
     @Autowired
-    private ImageStorageService imageStorageService;
-
-    @Autowired
-    private EmailService emailService;
-
-    @Autowired
     private RefreshTokenRepository refreshTokenRepository;
 
     @Autowired
     private TokenBlacklistRepository tokenBlacklistRepository;
+
+    @Autowired
+    private ImageStorageService imageStorageService;
+
+    @Autowired
+    private EmailServiceImpl emailService;
 
     @Autowired
     private JWTTokenProvider jwtTokenProvider;
@@ -133,6 +133,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public void saveUser(User user) {
+        userRepository.save(user);
+    }
+
+    @Override
     public GenericResponseDto<MessageResponseDto> updateUser(UserDto userDto, MultipartFile image) {
 
         User userEntity = userRepository.findById(userDto.getId())
@@ -184,7 +189,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public GenericResponseDto<MessageResponseDto> updatePassword(ChangePasswordRequestDto changePasswordRequestDto) {
+    public GenericResponseDto<MessageResponseDto> processChangePassword(ChangePasswordRequestDto changePasswordRequestDto) {
 
         User user = userRepository.findById(
                         changePasswordRequestDto.getId()
@@ -193,7 +198,7 @@ public class UserServiceImpl implements UserService {
 
         if (Objects.isNull(user)) {
             log.error("No user found with the id: {}", changePasswordRequestDto.getId());
-            throw new ByteBlogException(UserExceptions.INVALID_PASSWORD_RESET_REQUEST.getMessage(), HttpStatus.BAD_REQUEST);
+            throw new ByteBlogException(UserExceptions.INVALID_PASSWORD_UPDATE_REQUEST.getMessage(), HttpStatus.BAD_REQUEST);
         }
 
         // check if current password and the password provided match
@@ -204,12 +209,19 @@ public class UserServiceImpl implements UserService {
             throw new ByteBlogException(UserExceptions.PASSWORD_MISMATCH.getMessage(), HttpStatus.BAD_REQUEST);
         }
 
-        userRepository.updatePassword(
-                passwordEncoder.encode(changePasswordRequestDto.getNewPassword()),
+        updatePassword(
+                changePasswordRequestDto.getNewPassword(),
                 changePasswordRequestDto.getId()
         );
 
         return new GenericResponseDto<>(MessageResponseDto.builder().message("Password updated successfully").build(), HttpStatus.OK);
+    }
+
+    @Override
+    public void updatePassword(String password, String id) {
+        userRepository.updatePassword(
+                passwordEncoder.encode(password),
+                id);
     }
 
     @Override
@@ -237,5 +249,10 @@ public class UserServiceImpl implements UserService {
         userRepository.deleteById(id);
 
         return new GenericResponseDto<>(MessageResponseDto.builder().message("Account deleted successfully").build(), HttpStatus.OK);
+    }
+
+    @Override
+    public User getUserWithCodeVerified(String email, String verificationCode) {
+        return userRepository.verifyCodeAndRetrieveUser(email, verificationCode).orElse(null);
     }
 }

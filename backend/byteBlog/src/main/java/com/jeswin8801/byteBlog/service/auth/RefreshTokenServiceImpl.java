@@ -1,8 +1,8 @@
 package com.jeswin8801.byteBlog.service.auth;
 
 import com.jeswin8801.byteBlog.entities.dto.GenericResponseDto;
-import com.jeswin8801.byteBlog.entities.dto.auth.AccessTokenDto;
-import com.jeswin8801.byteBlog.entities.dto.auth.AuthResponseDto;
+import com.jeswin8801.byteBlog.entities.dto.auth.response.AccessTokenDto;
+import com.jeswin8801.byteBlog.entities.dto.auth.response.AuthResponseDto;
 import com.jeswin8801.byteBlog.entities.model.RefreshToken;
 import com.jeswin8801.byteBlog.entities.model.RefreshTokenBlacklist;
 import com.jeswin8801.byteBlog.entities.model.User;

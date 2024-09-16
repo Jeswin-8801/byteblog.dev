@@ -8,7 +8,7 @@ import com.jeswin8801.byteBlog.entities.model.User;
 import com.jeswin8801.byteBlog.repository.TokenBlacklistRepository;
 import com.jeswin8801.byteBlog.repository.UserRepository;
 import com.jeswin8801.byteBlog.security.entity.UserDetailsImpl;
-import com.jeswin8801.byteBlog.security.util.SecurityUtil;
+import com.jeswin8801.byteBlog.util.SecurityUtil;
 import com.jeswin8801.byteBlog.util.AppUtil;
 import com.jeswin8801.byteBlog.util.exceptions.ByteBlogException;
 import io.jsonwebtoken.*;

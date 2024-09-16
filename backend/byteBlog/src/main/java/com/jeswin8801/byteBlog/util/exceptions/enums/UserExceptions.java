@@ -9,8 +9,7 @@ public enum UserExceptions {
     USER_EMAIL_NOT_AVAILABLE("An account with the given email already exists"),
     USER_USERNAME_NOT_AVAILABLE("An account with the given username already exists"),
     PASSWORD_MISMATCH("Current password is incorrect"),
-    MATCHING_VERIFICATION_RECORD_NOT_FOUND("Provided verification request is incorrect"),
-    INVALID_PASSWORD_RESET_REQUEST("Provided Password reset request is incorrect");
+    INVALID_PASSWORD_UPDATE_REQUEST("Provided Password update request is incorrect");
 
     private final String message;
 

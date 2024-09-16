@@ -1,7 +1,7 @@
 package com.jeswin8801.byteBlog.security.entity;
 
 import com.jeswin8801.byteBlog.entities.model.User;
-import com.jeswin8801.byteBlog.security.util.SecurityUtil;
+import com.jeswin8801.byteBlog.util.SecurityUtil;
 import lombok.Data;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;

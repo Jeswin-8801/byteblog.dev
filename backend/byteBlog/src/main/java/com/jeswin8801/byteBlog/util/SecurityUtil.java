@@ -1,4 +1,4 @@
-package com.jeswin8801.byteBlog.security.util;
+package com.jeswin8801.byteBlog.util;
 
 import com.jeswin8801.byteBlog.entities.model.Role;
 import com.jeswin8801.byteBlog.entities.model.User;

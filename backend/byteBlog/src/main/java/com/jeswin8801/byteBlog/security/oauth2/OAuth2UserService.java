@@ -8,7 +8,7 @@ import com.jeswin8801.byteBlog.entities.model.enums.AuthProvider;
 import com.jeswin8801.byteBlog.entities.model.enums.UserPrivilege;
 import com.jeswin8801.byteBlog.security.entity.UserDetailsImpl;
 import com.jeswin8801.byteBlog.security.oauth2.providers.abstracts.OAuth2UserInfo;
-import com.jeswin8801.byteBlog.security.util.SecurityUtil;
+import com.jeswin8801.byteBlog.util.SecurityUtil;
 import com.jeswin8801.byteBlog.service.webapp.user.abstracts.UserService;
 import com.jeswin8801.byteBlog.util.AppUtil;
 import com.jeswin8801.byteBlog.util.OAuth2Util;
@@ -132,7 +132,7 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
 
         UserDto userDTO = new UserDto();
         userDTO.setFullName(userInfo.getName());
-        userDTO.setUsername(userInfo.getName().split(" ")[0] + "_" + AppUtil.generateAlphanumericString().substring(0, 4));
+        userDTO.setUsername(userInfo.getName().split(" ")[0] + "_" + AppUtil.generateUUID().substring(0, 4));
         userDTO.setEmail(userInfo.getEmail());
         userDTO.setProfileImageUrl(userInfo.getImageUrl());
         userDTO.setProfileImageUpdated(false);

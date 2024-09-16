@@ -34,7 +34,7 @@ public class ApplicationProperties {
 
     @Data
     public static class Mail {
-        private String defaultEmailAddress;
+        private String destinationUrl;
         private long verificationCodeExpirationSeconds = 300;   // 5 minutes
     }
 

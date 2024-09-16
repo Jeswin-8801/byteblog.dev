@@ -20,6 +20,28 @@ spring:
           lob:
             non_contextual_creation: true
 
+  # freemarker config - used for email templates
+  freemarker:
+    template-loader-path: classpath:/templates
+    suffix: .ftl
+
+  # Mail config
+
+  mail:
+    default-encoding: UTF-8
+    host: smtp.gmail.com
+    username: <your email>
+    password: <secret>
+    port: 587
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+    protocol: smtp
+    test-connection: false
+
   # Spring security oauth2 config
   security:
     oauth2:
@@ -61,7 +83,7 @@ web:
   issuer: http://localhost:${server.port}
 
   mail:
-    defaultEmailAddress: example@gmail.com
+    destination-url: http://localhost:4200/auth/verify
     verificationCodeExpirationSeconds: 1800 # 30 minutes
 
   jwt:

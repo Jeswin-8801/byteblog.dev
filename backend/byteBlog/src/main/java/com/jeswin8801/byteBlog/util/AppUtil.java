@@ -98,9 +98,20 @@ public class AppUtil {
         }
     }
 
-    public static String generateAlphanumericString() {
-        UUID uuid = UUID.randomUUID();
-        return uuid.toString().replaceAll("-", "");
+    public static String generateUUID() {
+        return UUID.randomUUID().toString();
+    }
+
+    public static String generateRandomAlphaNumericString(int n) {
+        String alphaNumericString = "ABCDEFGHIJKLMNOPQRSTUVWXYZ" + "0123456789" + "abcdefghijklmnopqrstuvxyz";
+
+        StringBuilder stringBuilder = new StringBuilder(n);
+        for (int i = 0; i < n; i++) {
+            int index = (int) (alphaNumericString.length() * Math.random());
+            stringBuilder.append(alphaNumericString.charAt(index));
+        }
+
+        return stringBuilder.toString();
     }
 
 }

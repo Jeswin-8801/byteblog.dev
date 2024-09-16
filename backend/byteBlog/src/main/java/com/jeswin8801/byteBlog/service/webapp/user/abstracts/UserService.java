@@ -17,11 +17,17 @@ public interface UserService {
 
     void createUser(UserDto userDto);
 
+    void saveUser(User user);
+
     GenericResponseDto<MessageResponseDto> updateUser(UserDto userDTO, MultipartFile image);
 
     void updateOauthUser(UserDto userDto);
 
-    GenericResponseDto<MessageResponseDto> updatePassword(ChangePasswordRequestDto changePasswordRequestDto);
+    GenericResponseDto<MessageResponseDto> processChangePassword(ChangePasswordRequestDto changePasswordRequestDto);
+
+    void updatePassword(String password, String id);
 
     GenericResponseDto<MessageResponseDto> deleteUser(String id);
+
+    User getUserWithCodeVerified(String email, String verificationCode);
 }

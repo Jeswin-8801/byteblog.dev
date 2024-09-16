@@ -13,7 +13,8 @@ public interface RefreshTokenRepository extends JpaRepository<RefreshToken, Long
 
     @Modifying(clearAutomatically = true)
     @Query("UPDATE RefreshToken r SET r.refreshToken = :refresh_token WHERE r.user = :user")
-    void updateRefreshToken(@Param("refresh_token") String refreshToken, @Param("user") User user);
+    void updateRefreshToken(@Param("refresh_token") String refreshToken,
+                            @Param("user") User user);
 
     boolean existsByUser(User user);
 
