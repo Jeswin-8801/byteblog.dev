@@ -1,2 +1,4 @@
-# byteBlog
-A full-stack blog web app built using Spring Boot and Angular
+# Byteblog
+A full-stack blogging web application built using Spring Boot and Angular.
+
+> Work in progress!!
