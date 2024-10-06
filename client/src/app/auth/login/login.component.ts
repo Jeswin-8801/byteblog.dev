@@ -40,11 +40,19 @@ export class LoginComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly location = inject(Location);
+
+  private readonly EMAIL = 'email';
+  private readonly IS_EMAIL_VERIFIED_QUERY_PARAM = 'isEmailVerified';
+  private readonly IS_PASSWORD_RESET_QUERY_PARAM = 'isPasswordReset';
+
   subscription!: Subscription;
   loginForm!: FormGroup;
 
   alertModal: AlertModal = new AlertModal();
   isAlertModalClosed: boolean = true;
+
+  passwordResetForm!: FormGroup;
+  isPasswordResetModalClosed: boolean = true;
 
   isRedirect!: boolean;
   params: string[] = [];
@@ -58,16 +66,60 @@ export class LoginComponent {
       (isClicked) => {
         if (isClicked && this.alertModal.isPrimaryButtonSubscribedToService) {
           if (this.isRedirect) this.redirectToSignUp();
-          else
+          else {
             for (const value of this.params)
               Utility.removeQueryParams(this.location, value);
+          }
         }
       }
     );
+
+    this.processQueryParams();
+    this.createLoginForm();
+    this.createPasswordResetForm();
+  }
+
+  private processQueryParams() {
+    this.processVerifyEndpointRedirects();
     this.processOauthRequestResponse();
     this.setSignUpSuccessMessage();
     this.setSignOutSuccessMessage();
-    this.createForm();
+  }
+
+  private processVerifyEndpointRedirects() {
+    this.route.queryParams.subscribe((params) => {
+      if (params[this.IS_EMAIL_VERIFIED_QUERY_PARAM] as boolean) {
+        this.params.push(this.IS_EMAIL_VERIFIED_QUERY_PARAM);
+        this.params.push(this.EMAIL);
+        this.alertModal.set(
+          false,
+          'Email Verified',
+          'The email ' +
+            Utility.getHighlightedText(params[this.EMAIL]) +
+            ' has been verified. You can now Sign-in to your account',
+          false,
+          true,
+          'OK',
+          true
+        );
+        if (this.isAlertModalClosed) this.toggleAlertModal();
+      } else if (params[this.IS_PASSWORD_RESET_QUERY_PARAM] as boolean) {
+        this.params.push(this.IS_PASSWORD_RESET_QUERY_PARAM);
+        this.params.push(this.EMAIL);
+        this.alertModal.set(
+          false,
+          'Password has been Reset',
+          'The password associated with the email ' +
+            Utility.getHighlightedText(params[this.EMAIL]) +
+            ' has been reset successfully',
+          false,
+          true,
+          'OK',
+          true
+        );
+        if (this.isAlertModalClosed) this.toggleAlertModal();
+      }
+    });
   }
 
   private processOauthRequestResponse() {
@@ -141,10 +193,19 @@ export class LoginComponent {
     });
   }
 
-  private createForm() {
+  private createLoginForm() {
     this.loginForm = new FormGroup({
       email: new FormControl('', [Validators.required, Validators.email]),
       password: new FormControl('', Validators.required),
+    });
+  }
+
+  private createPasswordResetForm() {
+    this.passwordResetForm = new FormGroup({
+      passwordResetEmail: new FormControl('', [
+        Validators.required,
+        Validators.email,
+      ]),
     });
   }
 
@@ -161,7 +222,7 @@ export class LoginComponent {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (loginResponse) => {
-          console.log('Login Successful');
+          console.log('Login Successful: ', loginResponse);
           // get return url from query parameters or default to home page
           const returnUrl =
             this.route.snapshot.queryParams['returnUrl'] || '/home';
@@ -185,14 +246,42 @@ export class LoginComponent {
                 true
               );
               this.isRedirect = true;
-              this.toggleAlertModal();
+              if (this.isAlertModalClosed) this.toggleAlertModal();
             } else {
               this.alertMessage = errorResponse.message;
-              this.toggleAlert();
+              if (this.isAlertClosed) this.toggleAlert();
             }
           }
         },
       });
+  }
+
+  onPasswordResetFormSubmitted() {
+    // stop here if form is invalid
+    if (!this.passwordResetForm.valid) {
+      this.passwordResetEmail?.markAsTouched();
+      return;
+    }
+
+    this.authService
+      .sendPasswordResetMail(this.passwordResetEmail?.value)
+      .subscribe();
+
+    // close if open
+    if (!this.isPasswordResetModalClosed) this.togglePasswordResetModal();
+
+    this.toggleAlertModal();
+    this.alertModal.set(
+      false,
+      'Password Reset Link Sent',
+      'A link to change your password has been sent to your mail ' +
+        Utility.getHighlightedText(this.passwordResetEmail?.value),
+      false,
+      true,
+      'OK',
+      false
+    );
+    if (this.isAlertModalClosed) this.toggleAlertModal();
   }
 
   private redirectToSignUp() {
@@ -211,6 +300,10 @@ export class LoginComponent {
     this.isAlertModalClosed = !this.isAlertModalClosed;
   }
 
+  togglePasswordResetModal() {
+    this.isPasswordResetModalClosed = !this.isPasswordResetModalClosed;
+  }
+
   toggleAlert() {
     this.isAlertClosed = !this.isAlertClosed;
   }
@@ -225,6 +318,10 @@ export class LoginComponent {
 
   get password() {
     return this.loginForm.get('password');
+  }
+
+  get passwordResetEmail() {
+    return this.passwordResetForm.get('passwordResetEmail');
   }
 
   ngOnDestroy() {

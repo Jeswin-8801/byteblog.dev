@@ -140,6 +140,17 @@ export class ProfileComponent {
           if (response.status === 409) {
             this.alertMessage = 'Username already in use';
             if (this.isAlertClosed) this.toggleAlert();
+          } else if (response.message === 'Maximum upload size exceeded') {
+            this.alertModal.set(
+              true,
+              'Warning',
+              response.message,
+              false,
+              true,
+              'OK',
+              false
+            );
+            if (this.isAlertModalClosed) this.toggleAlertModal();
           }
         },
       });

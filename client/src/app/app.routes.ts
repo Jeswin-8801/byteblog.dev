@@ -8,6 +8,8 @@ import { PageNotFoundComponent } from './pages/page-not-found/page-not-found.com
 import { LandingComponent } from './pages/landing/landing.component';
 import { SettingsComponent } from './pages/settings/settings.component';
 import { authGuard } from './auth/guard/auth.guard';
+import { VerifyEndpointComponent } from './components/verify-endpoint/verify-endpoint.component';
+import { PasswordResetComponent } from './pages/password-reset/password-reset.component';
 
 export const routes: Routes = [
   {
@@ -22,6 +24,16 @@ export const routes: Routes = [
   {
     path: 'auth/sign-up',
     component: SignupComponent,
+    canActivate: [accountGuard],
+  },
+  {
+    path: 'auth/verify',
+    component: VerifyEndpointComponent,
+    canActivate: [accountGuard],
+  },
+  {
+    path: 'auth/password-reset',
+    component: PasswordResetComponent,
     canActivate: [accountGuard],
   },
   {
