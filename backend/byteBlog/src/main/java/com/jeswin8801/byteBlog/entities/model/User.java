@@ -96,4 +96,10 @@ public class User {
             fetch = FetchType.LAZY
     )
     private RefreshToken refreshToken;
+
+    @OneToMany(
+            mappedBy = "user", // maps to the User variable in Comment.java
+            fetch = FetchType.LAZY
+    )
+    private Set<Comment> comments;
 }

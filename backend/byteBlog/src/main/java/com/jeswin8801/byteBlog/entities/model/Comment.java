@@ -8,6 +8,9 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 @Builder
@@ -18,7 +21,6 @@ import java.time.Instant;
 public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "comment_id")
     private long id;
 
     @Column(nullable = false)
@@ -28,21 +30,23 @@ public class Comment {
     @Column(name = "last_updated", nullable = false)
     private Instant lastUpdated;
 
-    @OneToOne(
-            mappedBy = "comments",
-            orphanRemoval = true,
-            cascade = CascadeType.ALL,
-            fetch = FetchType.LAZY
-    )
+    // User is the owing side
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "blog_id")
     private Blog blog;
 
-    @Column(name = "next_comment")
-    private Comment nextComment;
+    @OneToMany(
+            mappedBy = "parentComment",
+            cascade = CascadeType.ALL,
+            fetch = FetchType.LAZY
+    )
+    private Set<Comment> subThread = new HashSet<>();
 
-    @Column(name = "reply_comment")
-    private Comment replyComment;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "fk_parent_comment")
+    private Comment parentComment;
 }

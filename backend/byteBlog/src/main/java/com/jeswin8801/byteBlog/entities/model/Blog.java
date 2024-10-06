@@ -6,7 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 @Builder
@@ -22,20 +23,17 @@ public class Blog {
 
     @ElementCollection
     @CollectionTable(name = "blog_images")
-    private ArrayList<String> images;
+    private Set<String> images;
 
     @Column(nullable = false)
-    private ArrayList<String> tags;
+    private Set<String> tags;
 
     @Column(nullable = false)
     private String markdownFileUrl;
 
-    @OneToOne(
+    @OneToMany(
             mappedBy = "blog",
-            orphanRemoval = true,
-            cascade = CascadeType.ALL,
             fetch = FetchType.LAZY
     )
-    @Column(name = "first_comment")
-    private Comment firstComment;
+    private Set<Comment> comments = new HashSet<>();
 }
