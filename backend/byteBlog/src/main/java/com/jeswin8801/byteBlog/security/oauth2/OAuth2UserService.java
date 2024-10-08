@@ -169,7 +169,9 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
                 !StringUtils.hasText(existingUserDTO.getProfileImageUrl()) ||
                         !existingUserDTO.getProfileImageUrl().equals(oAuth2UserInfo.getImageUrl())
         ) {
-            existingUserDTO.setProfileImageUrl(oAuth2UserInfo.getImageUrl());
+            existingUserDTO.setProfileImageUrl(
+                    StringUtils.hasText(existingUserDTO.getProfileImageUrl()) ? existingUserDTO.getProfileImageUrl() : oAuth2UserInfo.getImageUrl()
+            );
             update = true;
         }
 
