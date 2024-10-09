@@ -18,18 +18,33 @@ import java.util.Set;
 public class Blog {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "blog_id")
     private long id;
+
+    @Column(nullable = false, unique = true)
+    private String heading;
+
+    @Column(nullable = false)
+    private String description;
+
+    @Column(nullable = false)
+    private Set<String> tags;
+
+    @Column(name = "primary-tag")
+    private String primaryTag;
+
+    @Column(nullable = false)
+    private String markdownFileUrl;
 
     @ElementCollection
     @CollectionTable(name = "blog_images")
     private Set<String> images;
 
-    @Column(nullable = false)
-    private Set<String> tags;
-
-    @Column(nullable = false)
-    private String markdownFileUrl;
+    @OneToOne(
+            mappedBy = "blog",
+            cascade = CascadeType.ALL,
+            fetch = FetchType.LAZY
+    )
+    private User user;
 
     @OneToMany(
             mappedBy = "blog",

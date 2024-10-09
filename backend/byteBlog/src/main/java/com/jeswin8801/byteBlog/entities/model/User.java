@@ -97,6 +97,10 @@ public class User {
     )
     private RefreshToken refreshToken;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "blog_id")
+    private Blog blog;
+
     @OneToMany(
             mappedBy = "user", // maps to the User variable in Comment.java
             fetch = FetchType.LAZY

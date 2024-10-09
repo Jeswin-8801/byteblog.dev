@@ -12,7 +12,7 @@ import java.util.Date;
 import java.util.Objects;
 
 @Service
-public class ImageStorageService {
+public class FileStorageService {
 
     @Autowired
     private MinioClient minioClient;
@@ -23,7 +23,7 @@ public class ImageStorageService {
     @Value("${minio.url}")
     private String minioUrl;
 
-    public String uploadImage(MultipartFile file) {
+    public String uploadFile(MultipartFile file) {
         String fileName = generateFileName(file);
         try (InputStream is = file.getInputStream()) {
             minioClient.putObject(
@@ -34,7 +34,7 @@ public class ImageStorageService {
                             .build());
             return minioUrl + "/" + bucketName + "/" + fileName;
         } catch (Exception e) {
-            throw new RuntimeException("Failed to store image file.", e);
+            throw new RuntimeException("Failed to upload file", e);
         }
     }
 

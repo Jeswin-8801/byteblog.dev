@@ -19,7 +19,7 @@ import com.jeswin8801.byteBlog.security.jwt.JWTTokenProvider;
 import com.jeswin8801.byteBlog.security.jwt.TokenType;
 import com.jeswin8801.byteBlog.util.SecurityUtil;
 import com.jeswin8801.byteBlog.service.mail.EmailServiceImpl;
-import com.jeswin8801.byteBlog.service.webapp.minio.ImageStorageService;
+import com.jeswin8801.byteBlog.service.webapp.minio.FileStorageService;
 import com.jeswin8801.byteBlog.service.webapp.user.abstracts.UserService;
 import com.jeswin8801.byteBlog.util.exceptions.ByteBlogException;
 import com.jeswin8801.byteBlog.util.exceptions.ResourceConflictException;
@@ -53,7 +53,7 @@ public class UserServiceImpl implements UserService {
     private TokenBlacklistRepository tokenBlacklistRepository;
 
     @Autowired
-    private ImageStorageService imageStorageService;
+    private FileStorageService fileStorageService;
 
     @Autowired
     private EmailServiceImpl emailService;
@@ -159,7 +159,7 @@ public class UserServiceImpl implements UserService {
 
         if (Objects.nonNull(image)) {
             try {
-                String imageUrl = imageStorageService.uploadImage(image);
+                String imageUrl = fileStorageService.uploadFile(image);
                 userEntity.setProfileImageUrl(imageUrl);
                 userEntity.setProfileImageUpdated(true);
             } catch (Exception e) {
