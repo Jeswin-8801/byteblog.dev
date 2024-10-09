@@ -55,10 +55,10 @@ export class SignupComponent {
           AppConstants.REFRESH_TOKEN,
           params[AppConstants.REFRESH_TOKEN]
         );
-        this.router.navigateByUrl('/home');
+        this.router.navigateByUrl('/blog/explore');
 
         const user = this.authService.user();
-        this.router.navigate(['/home'], {
+        this.router.navigate(['/blog/explore'], {
           queryParams: {
             registered: 'Success',
           },

@@ -65,24 +65,32 @@
           <div class="flex space-x-4">
             <!-- Current: "text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
             <a
-              href="/home"
-              class="rounded-md px-3 py-2 text-sm font-bold  {{
+              href="/blog/explore"
+              class="rounded-md px-3 py-2 text-sm font-bold {{
                 isThemeDark
                   ? 'text-gray-50 hover:bg-gray-700 hover:text-white'
                   : 'text-gray-800 hover:bg-blue-200 hover:text-black'
+              }} {{
+                currentPage === 'explore'
+                  ? 'bg-gradient-to-br from-violet-950 to-blue-900 cursor-default'
+                  : ''
               }}"
               aria-current="page"
               >Explore</a
             >
             <a
-              href="#"
+              href="/blog/activity"
               *ngIf="isLoggedIn"
               class="rounded-md px-3 py-2 text-sm font-bold {{
                 isThemeDark
                   ? 'text-gray-50 hover:bg-gray-700 hover:text-white'
                   : 'text-gray-800 hover:bg-blue-200 hover:text-black'
+              }} {{
+                currentPage === 'activity'
+                  ? 'bg-gradient-to-br from-violet-950 to-blue-900 cursor-default'
+                  : ''
               }}"
-              >My Blogs</a
+              >Activity</a
             >
           </div>
         </div>
@@ -209,24 +217,32 @@
     <div class="space-y-1 px-2 pb-3 pt-2">
       <!-- Current: "text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
       <a
-        href="/home"
+        href="/blog/explore"
         class="rounded-md px-3 py-2 text-sm font-bold {{
           isThemeDark
             ? 'text-gray-300 hover:bg-gray-700 hover:text-white'
             : 'text-gray-800 hover:bg-blue-200 hover:text-black'
+        }} {{
+          currentPage === 'explore'
+            ? 'bg-gradient-to-br from-violet-950 to-blue-900 cursor-default'
+            : ''
         }}"
         aria-current="page"
         >Explore</a
       >
       <a
-        href="#"
+        href="/blog/activity"
         *ngIf="isLoggedIn"
         class="rounded-md px-3 py-2 text-sm font-bold {{
           isThemeDark
             ? 'text-gray-300 hover:bg-gray-700 hover:text-white'
             : 'text-gray-800 hover:bg-blue-200 hover:text-black'
+        }} {{
+          currentPage === 'activity'
+            ? 'bg-gradient-to-br from-violet-950 to-blue-900 cursor-default'
+            : ''
         }}"
-        >My Blogs</a
+        >Activity</a
       >
     </div>
   </div>

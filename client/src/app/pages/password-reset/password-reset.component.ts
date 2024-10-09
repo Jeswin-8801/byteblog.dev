@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { AuthService } from '../../service/auth/auth.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { PasswordResetDto } from '../../models/dtos/password-reset-dto';
+import { PasswordResetDto } from '../../models/dtos/auth/password-reset-dto';
 import {
   FormControl,
   FormGroup,

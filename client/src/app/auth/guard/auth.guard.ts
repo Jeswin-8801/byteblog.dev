@@ -4,7 +4,7 @@ import { CanActivateFn, Router } from '@angular/router';
 import { AuthService } from '../../service/auth/auth.service';
 import { AppConstants } from '../../common/app.constants';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { StandardResponseDto } from '../../models/dtos/standard-response-dto';
+import { StandardResponseDto } from '../../models/dtos/user/standard-response-dto';
 
 // Users not logged in, cannot access specific pages; Once refresh-token expires, they are redirected to "auth/login"
 export const authGuard: CanActivateFn = (route, state) => {

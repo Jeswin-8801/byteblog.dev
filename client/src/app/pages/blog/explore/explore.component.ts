@@ -10,12 +10,12 @@ import { AlertModalService } from '../../../components/alert-modal/alert-modal.s
 import { Subscription } from 'rxjs';
 
 @Component({
-  selector: 'app-home',
+  selector: 'app-explore',
   standalone: true,
   imports: [AlertModalComponent, NavbarComponent],
-  templateUrl: './home.component.html',
+  templateUrl: './explore.component.html',
 })
-export class HomeComponent {
+export class ExploreComponent {
   private readonly authService = inject(AuthService);
   private readonly route = inject(ActivatedRoute);
   private readonly location = inject(Location);

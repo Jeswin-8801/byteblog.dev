@@ -3,13 +3,15 @@ import { Routes } from '@angular/router';
 import { LoginComponent } from './auth/login/login.component';
 import { accountGuard } from './auth/guard/account.guard';
 import { SignupComponent } from './auth/signup/signup.component';
-import { HomeComponent } from './pages/blog/home/home.component';
+import { ExploreComponent } from './pages/blog/explore/explore.component';
 import { PageNotFoundComponent } from './pages/page-not-found/page-not-found.component';
 import { LandingComponent } from './pages/landing/landing.component';
 import { SettingsComponent } from './pages/settings/settings.component';
 import { authGuard } from './auth/guard/auth.guard';
 import { VerifyEndpointComponent } from './components/verify-endpoint/verify-endpoint.component';
 import { PasswordResetComponent } from './pages/password-reset/password-reset.component';
+import { ActivityComponent } from './pages/blog/activity/activity.component';
+import { AddBlogComponent } from './pages/blog/add-blog/add-blog.component';
 
 export const routes: Routes = [
   {
@@ -37,8 +39,18 @@ export const routes: Routes = [
     canActivate: [accountGuard],
   },
   {
-    path: 'home',
-    component: HomeComponent,
+    path: 'blog/explore',
+    component: ExploreComponent,
+  },
+  {
+    path: 'blog/activity',
+    component: ActivityComponent,
+    canActivate: [authGuard],
+  },
+  {
+    path: 'blog/post-blog',
+    component: AddBlogComponent,
+    canActivate: [authGuard],
   },
   {
     path: 'settings',

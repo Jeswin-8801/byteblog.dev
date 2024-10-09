@@ -12,13 +12,13 @@ import { SignUp } from '../../auth/signup/interfaces/sign-up.interface';
 import { SignUpResponse } from '../../auth/signup/types/sign-up-response.type';
 import { SignUpSuccess } from '../../auth/signup/interfaces/sign-up-success.interface';
 import { environment } from '../../../environments/environment';
-import { AccessTokenDto } from '../../models/dtos/access-token-dto';
+import { AccessTokenDto } from '../../models/dtos/auth/access-token-dto';
 import { AppConstants } from '../../common/app.constants';
-import { LoginSuccessDto } from '../../models/dtos/login-success-dto';
-import { StandardResponseDto } from '../../models/dtos/standard-response-dto';
-import { TokenClaimsUserDto } from '../../models/dtos/token-claims-user-dto';
-import { VerifyEmailDto } from '../../models/dtos/verify-email-dto';
-import { PasswordResetDto } from '../../models/dtos/password-reset-dto';
+import { LoginSuccessDto } from '../../models/dtos/auth/login-success-dto';
+import { StandardResponseDto } from '../../models/dtos/user/standard-response-dto';
+import { TokenClaimsUserDto } from '../../models/dtos/user/token-claims-user-dto';
+import { VerifyEmailDto } from '../../models/dtos/user/verify-email-dto';
+import { PasswordResetDto } from '../../models/dtos/auth/password-reset-dto';
 
 @Injectable({
   providedIn: 'root',
@@ -74,7 +74,7 @@ export class AuthService {
             AppConstants.REFRESH_TOKEN,
             loginSuccessData.refreshToken!
           );
-          this.router.navigate(['/home']);
+          this.router.navigate(['/blog/explore']);
         })
       );
   }

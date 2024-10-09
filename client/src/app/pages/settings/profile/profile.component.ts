@@ -12,7 +12,6 @@ import {
   FormsModule,
   ReactiveFormsModule,
 } from '@angular/forms';
-import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-profile',
@@ -28,7 +27,6 @@ import { Router } from '@angular/router';
 export class ProfileComponent {
   private readonly authService = inject(AuthService);
   private readonly userService = inject(UserService);
-  private readonly router = inject(Router);
 
   isDataLoaded = false;
 
@@ -38,8 +36,8 @@ export class ProfileComponent {
 
   alertModal: AlertModal = new AlertModal();
   isAlertModalClosed: boolean = true;
-  isAlertClosed: boolean = true;
   alertMessage: string = '';
+  isAlertClosed: boolean = true;
 
   @ViewChild('changeAvatarInput')
   changeAvatarElement!: ElementRef;

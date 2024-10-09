@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { AuthService } from '../../service/auth/auth.service';
 import { AccountsComponent } from './accounts/accounts.component';
 import { ProfileComponent } from './profile/profile.component';
-import { TokenClaimsUserDto } from '../../models/dtos/token-claims-user-dto';
+import { TokenClaimsUserDto } from '../../models/dtos/user/token-claims-user-dto';
 
 @Component({
   selector: 'app-settings',

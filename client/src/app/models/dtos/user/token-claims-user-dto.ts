@@ -1,5 +1,5 @@
 import { JsonProperty } from 'json-object-mapper';
-import { Role, RoleDeserializer } from '../role';
+import { Role, RoleDeserializer } from '../../role';
 
 export class TokenClaimsUserDto {
   id?: string;

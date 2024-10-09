@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable, tap } from 'rxjs';
 
-import { StandardResponseDto } from '../../models/dtos/standard-response-dto';
+import { StandardResponseDto } from '../../models/dtos/user/standard-response-dto';
 import { environment } from '../../../environments/environment';
 import { AuthService } from '../auth/auth.service';
 import { Router } from '@angular/router';

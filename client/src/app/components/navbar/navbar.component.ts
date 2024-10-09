@@ -11,7 +11,7 @@ import { CommonModule } from '@angular/common';
 import { UtilitiesService } from '../../service/utilities/utilities.service';
 import { AppConstants } from '../../common/app.constants';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { StandardResponseDto } from '../../models/dtos/standard-response-dto';
+import { StandardResponseDto } from '../../models/dtos/user/standard-response-dto';
 
 @Component({
   selector: 'app-navbar',
@@ -29,6 +29,7 @@ export class NavbarComponent {
   @Input() isAuthPage: boolean = false;
   @Input() isNavbarFixed: boolean = true;
   @Input() isThemeDark: boolean = true;
+  @Input() currentPage: string = '';
   isLoggedIn: boolean = false;
   isOnline!: boolean;
   showUserIconDropdown: boolean = false;

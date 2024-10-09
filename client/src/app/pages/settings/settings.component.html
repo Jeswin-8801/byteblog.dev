@@ -5,10 +5,11 @@
   }}"
 >
   <div class="mx-4 pb-14 max-w-7xl sm:mx-8 xl:mx-auto text-gray-900">
-    <h1 class="border-b border-stone-300 text-gray-700 p-5 text-4xl font-light">
+    <h1 class="border-b border-stone-50 text-gray-700 p-5 text-4xl font-light">
       Settings
     </h1>
     <div class="grid grid-cols-8 pt-3 sm:grid-cols-10">
+      <!-- MOBILE phone layout-->
       <div class="relative my-4 w-56 sm:hidden">
         <input
           class="peer hidden"
@@ -19,7 +20,8 @@
         <label
           for="select-1"
           class="flex w-full cursor-pointer select-none rounded-lg border p-2 px-3 text-sm text-gray-700 ring-blue-700 peer-checked:ring"
-          >Accounts
+        >
+          {{ selectedSection === "Accounts" ? "Accounts" : "Profile" }}
         </label>
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -86,7 +88,7 @@
         </ul>
       </div>
       <div
-        class="min-w-7xl col-span-8 overflow-hidden rounded-xl bg-gray-50 px-8 shadow-lg shadow-slate-400"
+        class="min-w-7xl col-span-8 overflow-hidden rounded-xl bg-gray-50 px-8 my-4 shadow-lg shadow-slate-400"
       >
         <app-accounts
           *ngIf="selectedSection === 'Accounts'"

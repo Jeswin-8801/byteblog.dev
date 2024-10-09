@@ -136,7 +136,7 @@ export class LoginComponent {
           AppConstants.REFRESH_TOKEN,
           params[AppConstants.REFRESH_TOKEN]
         );
-        this.router.navigateByUrl('/home');
+        this.router.navigateByUrl('/blog/explore');
       } else if (params['error'] !== undefined) {
         console.error(
           'OAuth authentication failed with error: ',
@@ -223,9 +223,9 @@ export class LoginComponent {
       .subscribe({
         next: (loginResponse) => {
           console.log('Login Successful: ', loginResponse);
-          // get return url from query parameters or default to home page
+          // get return url from query parameters or default to explore page
           const returnUrl =
-            this.route.snapshot.queryParams['returnUrl'] || '/home';
+            this.route.snapshot.queryParams['returnUrl'] || '/blog/explore';
           this.router.navigateByUrl(returnUrl);
         },
         error: (response) => {

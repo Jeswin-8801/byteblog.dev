@@ -2,7 +2,7 @@ import { Component, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { AuthService } from '../../service/auth/auth.service';
-import { VerifyEmailDto } from '../../models/dtos/verify-email-dto';
+import { VerifyEmailDto } from '../../models/dtos/user/verify-email-dto';
 import { ObjectMapper } from 'json-object-mapper';
 
 @Component({

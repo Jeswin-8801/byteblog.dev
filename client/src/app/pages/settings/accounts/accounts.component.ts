@@ -20,12 +20,12 @@ import { Utility } from '../../../utility/utility';
 import { AlertModalComponent } from '../../../components/alert-modal/alert-modal.component';
 import { UserService } from '../../../service/user/user.service';
 import { ObjectMapper } from 'json-object-mapper';
-import { ChangePasswordDto } from '../../../models/dtos/change-password-dto';
+import { ChangePasswordDto } from '../../../models/dtos/user/change-password-dto';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { StandardResponseDto } from '../../../models/dtos/standard-response-dto';
+import { StandardResponseDto } from '../../../models/dtos/user/standard-response-dto';
 import { AlertModalService } from '../../../components/alert-modal/alert-modal.service';
 import { Subscription } from 'rxjs';
-import { TokenClaimsUserDto } from '../../../models/dtos/token-claims-user-dto';
+import { TokenClaimsUserDto } from '../../../models/dtos/user/token-claims-user-dto';
 
 @Component({
   selector: 'app-accounts',
