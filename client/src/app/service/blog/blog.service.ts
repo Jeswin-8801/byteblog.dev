@@ -6,6 +6,7 @@ import { TagsDto } from '../../models/dtos/blog/tags-dto';
 import { PostBlogDto } from '../../models/dtos/blog/post-blog-dto';
 import { StandardResponseDto } from '../../models/dtos/user/standard-response-dto';
 import { ObjectMapper } from 'json-object-mapper';
+import { BlogsCompactDto } from '../../models/dtos/blog/blogs-compact-dto';
 
 @Injectable({
   providedIn: 'root',
@@ -46,6 +47,12 @@ export class BlogService {
     return this.http.post<StandardResponseDto>(
       `${environment.apiUrl}/blog`,
       formData
+    );
+  }
+
+  getAllBlogsByUserId(userId: string): Observable<any[]> {
+    return this.http.get<any[]>(
+      `${environment.apiUrl}/blog/user/get-all-blogs?id=` + userId
     );
   }
 }
