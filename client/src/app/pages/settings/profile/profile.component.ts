@@ -101,7 +101,7 @@ export class ProfileComponent {
     if (!this.firstName?.value && this.lastName?.value) return;
 
     if (
-      this.userProfilePicUri.match(this.selectedImage?.name as string) ||
+      !this.userProfilePicUri.match(this.selectedImage?.name as string) ||
       this.status?.value !== this.user.isOnline ||
       this.username?.value !== this.user.username ||
       (this.user.fullName &&
