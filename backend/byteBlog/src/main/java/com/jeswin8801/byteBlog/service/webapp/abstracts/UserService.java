@@ -1,4 +1,4 @@
-package com.jeswin8801.byteBlog.service.webapp.user.abstracts;
+package com.jeswin8801.byteBlog.service.webapp.abstracts;
 
 import com.jeswin8801.byteBlog.entities.dto.GenericResponseDto;
 import com.jeswin8801.byteBlog.entities.dto.MessageResponseDto;

@@ -1,20 +1,28 @@
 package com.jeswin8801.byteBlog.entities.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Table;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.*;
+import lombok.ToString;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+import org.hibernate.annotations.UpdateTimestamp;
 
+import java.io.Serializable;
 import java.time.Instant;
 import java.util.Set;
 
 @Data
 @Entity
 @NoArgsConstructor
+@EqualsAndHashCode(exclude = { "blog", "comments", "refreshToken" })
+@ToString(exclude = { "blog", "comments", "refreshToken" })
 @Table(
         name = "users",
         uniqueConstraints = {
@@ -22,7 +30,7 @@ import java.util.Set;
                 @UniqueConstraint(columnNames = "username")
         }
 )
-public class User {
+public class User implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -89,6 +97,7 @@ public class User {
     @Column(name = "last_updated_on", nullable = false)
     private Instant lastUpdatedOn;
 
+    @JsonManagedReference
     @OneToOne(
             mappedBy = "user",
             orphanRemoval = true,
@@ -97,10 +106,14 @@ public class User {
     )
     private RefreshToken refreshToken;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "blog_id")
-    private Blog blog;
+    @JsonManagedReference
+    @OneToMany(
+            mappedBy = "user", // maps to the User variable in Blog.java
+            fetch = FetchType.LAZY
+    )
+    private Set<Blog> blog;
 
+    @JsonManagedReference
     @OneToMany(
             mappedBy = "user", // maps to the User variable in Comment.java
             fetch = FetchType.LAZY

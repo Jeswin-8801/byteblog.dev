@@ -5,7 +5,7 @@ import com.jeswin8801.byteBlog.entities.model.User;
 import com.jeswin8801.byteBlog.security.jwt.JWTTokenProvider;
 import com.jeswin8801.byteBlog.security.jwt.TokenType;
 import com.jeswin8801.byteBlog.service.auth.abstracts.RefreshTokenService;
-import com.jeswin8801.byteBlog.service.webapp.user.abstracts.UserService;
+import com.jeswin8801.byteBlog.service.webapp.abstracts.UserService;
 import com.jeswin8801.byteBlog.util.WebUtil;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;

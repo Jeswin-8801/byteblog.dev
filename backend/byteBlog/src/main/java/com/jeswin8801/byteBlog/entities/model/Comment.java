@@ -1,15 +1,12 @@
 package com.jeswin8801.byteBlog.entities.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.io.Serializable;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Set;
 
 @Data
@@ -17,8 +14,10 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@EqualsAndHashCode(exclude = { "user", "blog" })
+@ToString(exclude = { "user", "blog" })
 @Table(name = "comments")
-public class Comment {
+public class Comment implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -31,10 +30,13 @@ public class Comment {
     private Instant lastUpdated;
 
     // User is the owing side
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    // Blog is the owing side
+    @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "blog_id")
     private Blog blog;
@@ -44,7 +46,7 @@ public class Comment {
             cascade = CascadeType.ALL,
             fetch = FetchType.LAZY
     )
-    private Set<Comment> subThread = new HashSet<>();
+    private Set<Comment> childReplyComments;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "fk_parent_comment")

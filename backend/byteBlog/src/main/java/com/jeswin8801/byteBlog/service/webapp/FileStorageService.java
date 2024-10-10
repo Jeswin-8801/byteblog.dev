@@ -1,4 +1,4 @@
-package com.jeswin8801.byteBlog.service.webapp.minio;
+package com.jeswin8801.byteBlog.service.webapp;
 
 import io.minio.MinioClient;
 import io.minio.PutObjectArgs;
@@ -24,21 +24,23 @@ public class FileStorageService {
     private String minioUrl;
 
     public String uploadFile(MultipartFile file) {
-        String fileName = generateFileName(file);
+        String filePath = generateFilePath(file);
         try (InputStream is = file.getInputStream()) {
             minioClient.putObject(
                     PutObjectArgs.builder()
                             .bucket(bucketName)
-                            .object(fileName).stream(is, file.getSize(), -1)
+                            .object(filePath).stream(is, file.getSize(), -1)
                             .contentType(file.getContentType())
                             .build());
-            return minioUrl + "/" + bucketName + "/" + fileName;
+            return minioUrl + "/" + bucketName + "/" + filePath;
         } catch (Exception e) {
             throw new RuntimeException("Failed to upload file", e);
         }
     }
 
-    private String generateFileName(MultipartFile file) {
-        return new Date().getTime() + "-" + Objects.requireNonNull(file.getOriginalFilename()).replace(" ", "_");
+    private String generateFilePath(MultipartFile file) {
+        String fileName = Objects.requireNonNull(file.getOriginalFilename());
+        return ((fileName.endsWith("md") || fileName.endsWith("mdx")) ? "markdown/" : "images/")
+                + (new Date().getTime() + "-" + fileName.replace(" ", "_"));
     }
 }

@@ -35,13 +35,13 @@ fi
 echo "\nConverting all images to .jpg ...\n"
 
 for file in ./images/*; do
-  filename=$(echo $file | cut -d '/' -f 3 | egrep -o '[a-z0-9_]+\.' | tr -d '.')
+  filename=$(echo "$file" | cut -d '/' -f 3 | grep -E -o '[a-z0-9_]+\.' | tr -d '.')
   
   if echo "$file" | grep -q "jpg$"; then
-    cp $file $convertedImagesDirectory
+    cp "$file" $convertedImagesDirectory
     echo "$filename.jpg exists"
   else
-    magick $file "./$convertedImagesDirectory/$filename.jpg"
+    magick "$file" "./$convertedImagesDirectory/$filename.jpg"
     echo "converting to > $filename.jpg"
   fi
 done

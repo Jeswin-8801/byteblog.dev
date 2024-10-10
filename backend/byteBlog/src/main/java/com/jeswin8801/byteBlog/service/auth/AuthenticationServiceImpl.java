@@ -15,7 +15,7 @@ import com.jeswin8801.byteBlog.service.auth.abstracts.AuthenticationService;
 import com.jeswin8801.byteBlog.service.auth.abstracts.RefreshTokenService;
 import com.jeswin8801.byteBlog.service.mail.MailType;
 import com.jeswin8801.byteBlog.service.mail.abstracts.EmailService;
-import com.jeswin8801.byteBlog.service.webapp.user.abstracts.UserService;
+import com.jeswin8801.byteBlog.service.webapp.abstracts.UserService;
 import com.jeswin8801.byteBlog.util.AppUtil;
 import com.jeswin8801.byteBlog.util.exceptions.ByteBlogException;
 import com.jeswin8801.byteBlog.util.exceptions.ResourceNotFoundException;

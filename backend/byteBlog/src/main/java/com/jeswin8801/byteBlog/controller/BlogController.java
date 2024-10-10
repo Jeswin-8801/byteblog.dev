@@ -1,7 +1,7 @@
 package com.jeswin8801.byteBlog.controller;
 
 import com.jeswin8801.byteBlog.entities.dto.blog.PostBlogRequestDto;
-import com.jeswin8801.byteBlog.service.webapp.blog.abstracts.BlogService;
+import com.jeswin8801.byteBlog.service.webapp.abstracts.BlogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -29,5 +29,15 @@ public class BlogController {
         return blogService
                 .addNewBlog(postBlogRequestDto, markdownFile, images)
                 .getResponseEntity();
+    }
+
+    @GetMapping("/user/get-all-blogs")
+    public ResponseEntity<?> getAllBlogsByUserId(@RequestParam String id) {
+        return blogService.getAllBlogsByUserId(id).getResponseEntity();
+    }
+
+    @GetMapping
+    public ResponseEntity<?> getBlog(@RequestParam String heading) {
+        return blogService.getBlogByHeading(heading).getResponseEntity();
     }
 }

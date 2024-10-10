@@ -2,7 +2,7 @@ package com.jeswin8801.byteBlog.controller;
 
 import com.jeswin8801.byteBlog.entities.dto.user.ChangePasswordRequestDto;
 import com.jeswin8801.byteBlog.entities.dto.user.UserDto;
-import com.jeswin8801.byteBlog.service.webapp.user.abstracts.UserService;
+import com.jeswin8801.byteBlog.service.webapp.abstracts.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;

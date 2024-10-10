@@ -1,18 +1,22 @@
-package com.jeswin8801.byteBlog.service.webapp.blog;
+package com.jeswin8801.byteBlog.service.webapp;
 
+import com.jeswin8801.byteBlog.entities.converters.BlogMapper;
+import com.jeswin8801.byteBlog.entities.converters.CommentMapper;
+import com.jeswin8801.byteBlog.entities.converters.UserMapper;
 import com.jeswin8801.byteBlog.entities.dto.GenericResponseDto;
 import com.jeswin8801.byteBlog.entities.dto.MessageResponseDto;
-import com.jeswin8801.byteBlog.entities.dto.blog.PostBlogRequestDto;
-import com.jeswin8801.byteBlog.entities.dto.blog.TagsDto;
+import com.jeswin8801.byteBlog.entities.dto.blog.*;
 import com.jeswin8801.byteBlog.entities.model.Blog;
 import com.jeswin8801.byteBlog.entities.model.User;
 import com.jeswin8801.byteBlog.entities.model.enums.BlogTags;
 import com.jeswin8801.byteBlog.repository.BlogRepository;
-import com.jeswin8801.byteBlog.service.webapp.blog.abstracts.BlogService;
-import com.jeswin8801.byteBlog.service.webapp.minio.FileStorageService;
-import com.jeswin8801.byteBlog.service.webapp.user.abstracts.UserService;
+import com.jeswin8801.byteBlog.service.webapp.abstracts.BlogService;
+import com.jeswin8801.byteBlog.service.webapp.abstracts.UserService;
+import com.jeswin8801.byteBlog.util.AppUtil;
 import com.jeswin8801.byteBlog.util.exceptions.ResourceConflictException;
+import com.jeswin8801.byteBlog.util.exceptions.ResourceNotFoundException;
 import com.jeswin8801.byteBlog.util.exceptions.enums.BlogExceptions;
+import com.jeswin8801.byteBlog.util.exceptions.enums.UserExceptions;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -35,6 +39,18 @@ public class BlogServiceImpl implements BlogService {
 
     @Autowired
     private BlogRepository blogRepository;
+
+    @Autowired
+    private BlogMapper<BlogsCompactResponseDto> compactResponseDtoBlogMapper;
+
+    @Autowired
+    private BlogMapper<BlogDto> blogDtoBlogMapper;
+
+    @Autowired
+    private UserMapper<AuthorCompactDto> authorCompactDtoUserMapper;
+
+    @Autowired
+    private CommentMapper commentMapper;
 
     @Override
     public GenericResponseDto<TagsDto> getAllTags() {
@@ -99,6 +115,47 @@ public class BlogServiceImpl implements BlogService {
                                 .message("Successfully added Blog")
                                 .build()
                 ).httpStatusCode(HttpStatus.OK)
+                .build();
+    }
+
+    @Override
+    public GenericResponseDto<Set<BlogsCompactResponseDto>> getAllBlogsByUserId(String userId) {
+        User user = userService.findUserById(userId);
+        if (Objects.isNull(user))
+            throw new ResourceNotFoundException(UserExceptions.USER_RECORD_NOT_FOUND.getMessage());
+
+        List<Blog> blogList = blogRepository.findByUser(user);
+        if (CollectionUtils.isEmpty(blogList))
+            throw new ResourceNotFoundException(BlogExceptions.NO_BLOGS_FOUND.getMessage());
+
+        return GenericResponseDto.<Set<BlogsCompactResponseDto>>builder()
+                .message(
+                        new HashSet<>() {{
+                            for (Blog blog : blogList) {
+                                log.info(AppUtil.toJson(blog));
+                                BlogsCompactResponseDto compactResponseDto = compactResponseDtoBlogMapper.toDto(blog, BlogsCompactResponseDto.class);
+                                compactResponseDto.setAuthor(authorCompactDtoUserMapper.toDto(user, AuthorCompactDto.class));
+                                add(compactResponseDto);
+                            }
+                        }}
+                ).httpStatusCode(HttpStatus.OK)
+                .build();
+    }
+
+    @Override
+    public GenericResponseDto<BlogDto> getBlogByHeading(String heading) {
+        Blog blog = blogRepository.findByHeading(heading);
+        if (Objects.isNull(blog))
+            throw new ResourceNotFoundException(BlogExceptions.NO_BLOGS_FOUND.getMessage());
+
+        BlogDto blogDto = blogDtoBlogMapper.toDto(blog, BlogDto.class);
+
+        log.info("---- {}", AppUtil.toJson(blog));
+        log.info("---- {}", AppUtil.toJson(blogDto));
+
+        return GenericResponseDto.<BlogDto>builder()
+                .message(blogDto)
+                .httpStatusCode(HttpStatus.OK)
                 .build();
     }
 }

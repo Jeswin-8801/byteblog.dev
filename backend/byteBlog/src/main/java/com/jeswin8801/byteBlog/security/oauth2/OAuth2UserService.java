@@ -9,7 +9,7 @@ import com.jeswin8801.byteBlog.entities.model.enums.UserPrivilege;
 import com.jeswin8801.byteBlog.security.entity.UserDetailsImpl;
 import com.jeswin8801.byteBlog.security.oauth2.providers.abstracts.OAuth2UserInfo;
 import com.jeswin8801.byteBlog.util.SecurityUtil;
-import com.jeswin8801.byteBlog.service.webapp.user.abstracts.UserService;
+import com.jeswin8801.byteBlog.service.webapp.abstracts.UserService;
 import com.jeswin8801.byteBlog.util.AppUtil;
 import com.jeswin8801.byteBlog.util.OAuth2Util;
 import com.jeswin8801.byteBlog.util.exceptions.ByteBlogException;

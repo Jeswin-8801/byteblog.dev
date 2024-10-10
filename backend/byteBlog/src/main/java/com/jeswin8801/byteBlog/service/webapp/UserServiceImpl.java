@@ -1,4 +1,4 @@
-package com.jeswin8801.byteBlog.service.webapp.user;
+package com.jeswin8801.byteBlog.service.webapp;
 
 import com.jeswin8801.byteBlog.config.ApplicationProperties;
 import com.jeswin8801.byteBlog.entities.converters.UserMapper;
@@ -19,8 +19,7 @@ import com.jeswin8801.byteBlog.security.jwt.JWTTokenProvider;
 import com.jeswin8801.byteBlog.security.jwt.TokenType;
 import com.jeswin8801.byteBlog.util.SecurityUtil;
 import com.jeswin8801.byteBlog.service.mail.EmailServiceImpl;
-import com.jeswin8801.byteBlog.service.webapp.minio.FileStorageService;
-import com.jeswin8801.byteBlog.service.webapp.user.abstracts.UserService;
+import com.jeswin8801.byteBlog.service.webapp.abstracts.UserService;
 import com.jeswin8801.byteBlog.util.exceptions.ByteBlogException;
 import com.jeswin8801.byteBlog.util.exceptions.ResourceConflictException;
 import com.jeswin8801.byteBlog.util.exceptions.ResourceNotFoundException;
@@ -87,7 +86,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public GenericResponseDto<UserDto> getUser(String id) {
         if (!userRepository.existsById(id))
-            throw new ResourceNotFoundException("User not found");
+            throw new ResourceNotFoundException(UserExceptions.USER_RECORD_NOT_FOUND.getMessage());
 
         return GenericResponseDto.<UserDto>builder()
                 .message(

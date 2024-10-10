@@ -19,7 +19,7 @@
               <tr>
                 <td style="padding: 40px 0px 0px;">
                   <div style="text-align: left;">
-                    <div style="padding-bottom: 20px;"><img src="https://i.ibb.co/Qbnj4mz/logo.png" alt="Company" style="width: 84px;"></div>
+                    <div style="padding-bottom: 20px;"><img src="http://localhost:9000/byte-blog-bucket/images/byteblog.svg" alt="Company" style="width: 84px;"></div>
                   </div>
                   <div style="padding: 20px; background-color: rgb(246, 245, 255);">
                     <div style="color: rgb(0, 0, 0); text-align: left;">
