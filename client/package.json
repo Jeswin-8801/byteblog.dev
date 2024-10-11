@@ -20,6 +20,8 @@
     "@angular/platform-browser-dynamic": "^18.2.0",
     "@angular/router": "^18.2.0",
     "@auth0/angular-jwt": "^5.2.0",
+    "@fontsource/jetbrains-mono": "^5.1.1",
+    "@types/prismjs": "^1.26.4",
     "clipboard": "^2.0.11",
     "date-fns": "^4.1.0",
     "json-object-mapper": "^1.7.2",

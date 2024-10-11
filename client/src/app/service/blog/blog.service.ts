@@ -50,9 +50,29 @@ export class BlogService {
     );
   }
 
-  getAllBlogsByUserId(userId: string): Observable<any[]> {
+  getAllBlogsByUsername(username: string): Observable<any[]> {
     return this.http.get<any[]>(
-      `${environment.apiUrl}/blog/user/get-all-blogs?id=` + userId
+      `${environment.apiUrl}/blog/unrestricted/author/get-all-blogs?username=` +
+        username
+    );
+  }
+
+  getBlogByHeading(headingUri: string): Observable<any> {
+    return this.http.get<any[]>(
+      `${environment.apiUrl}/blog/unrestricted/get-blog?headingUri=` +
+        headingUri
+    );
+  }
+
+  getMarkdownFileFromUrl(url: string): Observable<string> {
+    return this.http.get(url, {
+      responseType: 'text',
+    });
+  }
+
+  getAuthorDetails(username: string): Observable<any> {
+    return this.http.get<any>(
+      `${environment.apiUrl}/blog/unrestricted/author?username=` + username
     );
   }
 }

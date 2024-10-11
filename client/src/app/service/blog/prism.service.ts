@@ -1,6 +1,8 @@
 import { isPlatformBrowser } from '@angular/common';
 import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
 
+import * as Prism from 'prismjs';
+
 import 'prismjs/components/prism-csharp';
 import 'prismjs/components/prism-css';
 import 'prismjs/components/prism-java';
@@ -26,8 +28,14 @@ import 'prismjs/components/prism-markdown';
 import 'prismjs/components/prism-diff';
 import 'prismjs/components/prism-cshtml';
 
+import 'prismjs/plugins/toolbar/prism-toolbar';
+import 'prismjs/plugins/data-uri-highlight/prism-data-uri-highlight';
+import 'prismjs/plugins/line-numbers/prism-line-numbers';
+import 'prismjs/plugins/line-highlight/prism-line-highlight';
+import 'prismjs/plugins/copy-to-clipboard/prism-copy-to-clipboard';
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-declare const Prism: any;
+// declare const Prism: any;
 
 @Injectable({
   providedIn: 'root', // can inject anywahere

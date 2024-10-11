@@ -10,10 +10,10 @@ module.exports = {
     "./src/**/*.{html,ts}", // add this line
   ],
   theme: {
-    // fontFamily: {
-    //   sans: ["Helvetica", ...fontFamily.sans],
-    // },
     extend: {
+      fontFamily: {
+        jetbrains: ["JetBrains Mono", ...fontFamily.sans],
+      },
       textShadow: {
         sm: "0 1px 2px var(--tw-shadow-color)",
         DEFAULT: "0 2px 4px var(--tw-shadow-color)",

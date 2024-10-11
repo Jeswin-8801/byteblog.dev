@@ -1,10 +1,14 @@
 import { JsonProperty } from 'json-object-mapper';
 
-export class AuthorCompactDto {
+export class AuthorDto {
+  email?: string;
+
+  username?: string;
+
   @JsonProperty({ name: 'full-name' })
   fullName?: string;
 
-  username?: string;
+  about?: string;
 
   @JsonProperty({ name: 'profile-image-url' })
   profileImageUrl?: string;
