@@ -17,12 +17,15 @@ public class BlogDto {
     // Is sent only when the requesting user is the author of the blog
     private String id;
 
-    private AuthorDto author;
+    private AuthorCompactDto author;
 
-    @JsonProperty("time-since-creation")
-    private Instant timeSinceCreation; // will be sorted by client
+    @JsonProperty("created-on")
+    private Instant createdOn; // will be sorted by client
 
     private String heading;
+
+    @JsonProperty("heading-uri")
+    private String headingUri;
 
     private String description;
 

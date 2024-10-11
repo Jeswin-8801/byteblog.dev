@@ -23,8 +23,11 @@ public class Blog implements Serializable {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String heading;
+
+    @Column(name = "heading-uri", nullable = false, unique = true)
+    private String headingUri;
 
     @CreationTimestamp
     @Column(name = "created_on", nullable = false, updatable = false)

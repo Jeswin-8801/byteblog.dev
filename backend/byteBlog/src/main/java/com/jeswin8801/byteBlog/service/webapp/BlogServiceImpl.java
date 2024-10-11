@@ -50,6 +50,9 @@ public class BlogServiceImpl implements BlogService {
     private UserMapper<AuthorCompactDto> authorCompactDtoUserMapper;
 
     @Autowired
+    private UserMapper<AuthorDto> authorDtoUserMapper;
+
+    @Autowired
     private CommentMapper commentMapper;
 
     @Override
@@ -70,9 +73,9 @@ public class BlogServiceImpl implements BlogService {
     public GenericResponseDto<MessageResponseDto> addNewBlog(PostBlogRequestDto postBlogRequestDto, MultipartFile markdownFile, List<MultipartFile> images) {
         User user = userService.findUserById(postBlogRequestDto.getUserId());
 
-        log.info(String.valueOf(postBlogRequestDto));
+        String headingUri = postBlogRequestDto.getHeader().replaceAll("[^a-zA-Z\\s]", "").replaceAll("\\s+", "-").toLowerCase();
 
-        if (blogRepository.existsByHeading(postBlogRequestDto.getHeader()))
+        if (blogRepository.existsByHeadingUri(headingUri))
             throw new ResourceConflictException(BlogExceptions.BLOG_WITH_HEADER_ALREADY_EXISTS.getMessage());
 
         String markdownFileUrl = null;
@@ -100,6 +103,7 @@ public class BlogServiceImpl implements BlogService {
         blogRepository.save(
                 Blog.builder()
                         .heading(postBlogRequestDto.getHeader())
+                        .headingUri(headingUri)
                         .description(postBlogRequestDto.getDescription())
                         .tags(postBlogRequestDto.getTags())
                         .primaryTag(postBlogRequestDto.getPrimaryTag())
@@ -119,8 +123,8 @@ public class BlogServiceImpl implements BlogService {
     }
 
     @Override
-    public GenericResponseDto<Set<BlogsCompactResponseDto>> getAllBlogsByUserId(String userId) {
-        User user = userService.findUserById(userId);
+    public GenericResponseDto<Set<BlogsCompactResponseDto>> getAllBlogsByAuthor(String username) {
+        User user = userService.findUserByUsername(username);
         if (Objects.isNull(user))
             throw new ResourceNotFoundException(UserExceptions.USER_RECORD_NOT_FOUND.getMessage());
 
@@ -143,19 +147,30 @@ public class BlogServiceImpl implements BlogService {
     }
 
     @Override
-    public GenericResponseDto<BlogDto> getBlogByHeading(String heading) {
-        Blog blog = blogRepository.findByHeading(heading);
+    public GenericResponseDto<BlogDto> getBlogByHeading(String headingUri) {
+        Blog blog = blogRepository.findByHeadingUri(headingUri);
         if (Objects.isNull(blog))
             throw new ResourceNotFoundException(BlogExceptions.NO_BLOGS_FOUND.getMessage());
 
         BlogDto blogDto = blogDtoBlogMapper.toDto(blog, BlogDto.class);
-
-        log.info("---- {}", AppUtil.toJson(blog));
-        log.info("---- {}", AppUtil.toJson(blogDto));
+        blogDto.setAuthor(authorCompactDtoUserMapper.toDto(blog.getUser(), AuthorCompactDto.class));
 
         return GenericResponseDto.<BlogDto>builder()
                 .message(blogDto)
                 .httpStatusCode(HttpStatus.OK)
+                .build();
+    }
+
+    @Override
+    public GenericResponseDto<AuthorDto> getBlogAuthorDetails(String username) {
+        User user = userService.findUserByUsername(username);
+        if (Objects.isNull(user))
+            throw new ResourceNotFoundException(UserExceptions.USER_RECORD_NOT_FOUND.getMessage());
+
+        return GenericResponseDto.<AuthorDto>builder()
+                .message(
+                        authorDtoUserMapper.toDto(user, AuthorDto.class)
+                ).httpStatusCode(HttpStatus.OK)
                 .build();
     }
 }

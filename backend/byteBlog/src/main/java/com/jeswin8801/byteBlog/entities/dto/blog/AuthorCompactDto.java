@@ -12,7 +12,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class AuthorCompactDto {
 
-    private String email;
+    @JsonProperty("full-name")
+    private String fullName;
 
     private String username;
 

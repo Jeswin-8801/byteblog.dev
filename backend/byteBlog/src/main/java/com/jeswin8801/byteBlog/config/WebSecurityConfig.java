@@ -72,7 +72,11 @@ public class WebSecurityConfig {
                         .authenticationEntryPoint(authenticationEntryPoint)
                 )
                 .authorizeHttpRequests((authorize) -> authorize
-                        .requestMatchers("/auth/**", "/oauth2/**").permitAll()
+                        .requestMatchers(
+                                "/auth/**",
+                                "/oauth2/**",
+                                "/blog/unrestricted/**"
+                        ).permitAll()
                         .anyRequest().authenticated()
                 )
                 .oauth2Login((oauth2) -> oauth2

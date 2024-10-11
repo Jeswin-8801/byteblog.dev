@@ -2,10 +2,7 @@ package com.jeswin8801.byteBlog.service.webapp.abstracts;
 
 import com.jeswin8801.byteBlog.entities.dto.GenericResponseDto;
 import com.jeswin8801.byteBlog.entities.dto.MessageResponseDto;
-import com.jeswin8801.byteBlog.entities.dto.blog.BlogDto;
-import com.jeswin8801.byteBlog.entities.dto.blog.BlogsCompactResponseDto;
-import com.jeswin8801.byteBlog.entities.dto.blog.PostBlogRequestDto;
-import com.jeswin8801.byteBlog.entities.dto.blog.TagsDto;
+import com.jeswin8801.byteBlog.entities.dto.blog.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -20,7 +17,9 @@ public interface BlogService {
             List<MultipartFile> images
     );
 
-    GenericResponseDto<Set<BlogsCompactResponseDto>> getAllBlogsByUserId(String userId);
+    GenericResponseDto<Set<BlogsCompactResponseDto>> getAllBlogsByAuthor(String username);
 
-    GenericResponseDto<BlogDto> getBlogByHeading(String heading);
+    GenericResponseDto<BlogDto> getBlogByHeading(String headingUri);
+
+    GenericResponseDto<AuthorDto> getBlogAuthorDetails(String username);
 }

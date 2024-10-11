@@ -13,6 +13,8 @@ public interface UserService {
 
     User findUserById(String id);
 
+    User findUserByUsername(String username);
+
     GenericResponseDto<UserDto> getUser(String id);
 
     void createUser(UserDto userDto);

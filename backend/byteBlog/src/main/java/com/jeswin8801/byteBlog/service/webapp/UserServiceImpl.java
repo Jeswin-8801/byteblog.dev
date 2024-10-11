@@ -84,6 +84,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User findUserByUsername(String username) {
+        return userRepository
+                .findByUsername(username)
+                .orElse(null);
+    }
+
+    @Override
     public GenericResponseDto<UserDto> getUser(String id) {
         if (!userRepository.existsById(id))
             throw new ResourceNotFoundException(UserExceptions.USER_RECORD_NOT_FOUND.getMessage());

@@ -31,13 +31,20 @@ public class BlogController {
                 .getResponseEntity();
     }
 
-    @GetMapping("/user/get-all-blogs")
-    public ResponseEntity<?> getAllBlogsByUserId(@RequestParam String id) {
-        return blogService.getAllBlogsByUserId(id).getResponseEntity();
+    // unrestricted access
+    @GetMapping("/unrestricted/author/get-all-blogs")
+    public ResponseEntity<?> getAllBlogsByUsername(@RequestParam String username) {
+        return blogService.getAllBlogsByAuthor(username).getResponseEntity();
     }
 
-    @GetMapping
-    public ResponseEntity<?> getBlog(@RequestParam String heading) {
-        return blogService.getBlogByHeading(heading).getResponseEntity();
+    // unrestricted access
+    @GetMapping("/unrestricted/get-blog")
+    public ResponseEntity<?> getBlog(@RequestParam String headingUri) {
+        return blogService.getBlogByHeading(headingUri).getResponseEntity();
+    }
+
+    @GetMapping("/unrestricted/author")
+    public ResponseEntity<?> getAuthorDetails(@RequestParam String username) {
+        return blogService.getBlogAuthorDetails(username).getResponseEntity();
     }
 }

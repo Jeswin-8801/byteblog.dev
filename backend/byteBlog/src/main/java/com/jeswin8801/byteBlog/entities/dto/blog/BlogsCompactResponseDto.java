@@ -14,13 +14,14 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BlogsCompactResponseDto {
-    // Is sent only when the requesting user is the author of the blog
-    private String id;
 
-    @JsonProperty("time-since-creation")
-    private Instant createdOn; // mapping to same value as Blog.createdOn
+    @JsonProperty("created-on")
+    private Instant createdOn;
 
     private String heading;
+
+    @JsonProperty("heading-uri")
+    private String headingUri;
 
     private String description;
 

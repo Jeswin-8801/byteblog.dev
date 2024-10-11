@@ -11,7 +11,7 @@ public interface BlogRepository extends JpaRepository<Blog, String> {
     /**
      * Checks for if a blog exists with the given heading
      */
-    boolean existsByHeading(String heading);
+    boolean existsByHeadingUri(String headingUri);
 
     /**
      * Find all Blog entries where the blog was authored by the given User
@@ -21,5 +21,5 @@ public interface BlogRepository extends JpaRepository<Blog, String> {
     /**
      * Find Blog by Heading
      */
-    Blog findByHeading(String heading);
+    Blog findByHeadingUri(String headingUri);
 }
