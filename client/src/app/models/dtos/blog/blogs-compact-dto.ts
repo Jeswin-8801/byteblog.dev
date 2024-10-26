@@ -7,12 +7,13 @@ import {
 import { AuthorCompactDto } from './author-compact-dto';
 
 export class BlogsCompactDto {
-  id?: string;
-
-  @JsonProperty({ name: 'time-since-creation' })
+  @JsonProperty({ name: 'created-on' }) // mapped property from server response object
   timeSinceCreation?: string;
 
   heading?: string;
+
+  @JsonProperty({ name: 'heading-uri' })
+  headingUri?: string;
 
   description?: string;
 

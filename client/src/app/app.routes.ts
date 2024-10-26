@@ -12,6 +12,8 @@ import { VerifyEndpointComponent } from './components/verify-endpoint/verify-end
 import { PasswordResetComponent } from './pages/password-reset/password-reset.component';
 import { ActivityComponent } from './pages/blog/activity/activity.component';
 import { AddBlogComponent } from './pages/blog/add-blog/add-blog.component';
+import { BlogComponent } from './pages/blog/blog/blog.component';
+import { UserComponent } from './pages/blog/user/user.component';
 
 export const routes: Routes = [
   {
@@ -51,6 +53,14 @@ export const routes: Routes = [
     path: 'blog/post-blog',
     component: AddBlogComponent,
     canActivate: [authGuard],
+  },
+  {
+    path: 'blog/:headingUri',
+    component: BlogComponent,
+  },
+  {
+    path: 'blog/author/:username',
+    component: UserComponent,
   },
   {
     path: 'settings',

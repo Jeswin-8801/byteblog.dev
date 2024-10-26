@@ -29,7 +29,7 @@
 </div>
 
 <div *ngIf="isDataLoaded">
-  <div class="pt-4 flex sm:flex-row sm:items-center sm:justify-between">
+  <div class="pt-8 flex sm:flex-row sm:items-center sm:justify-between">
     <div class="flex">
       <img
         class="my-4 ml-3 mr-2 w-7 h-7"
@@ -89,15 +89,17 @@
       ></a>
     </button>
   </div>
-  <hr class="mt-4 mb-8" />
-  <div class="grid mx-auto mt-8 ml-3">
+  <hr class="my-4" />
+  <div
+    class="grid mx-auto p-6 mt-4 mb-10 ml-3 mr-2 bg-gradient-to-br from-stone-100 to-slate-50 rounded-lg"
+  >
     <form [formGroup]="userForm" (ngSubmit)="onUpdateFormSubmitted()">
       <p class="py-2 mb-4 text-2xl font-light">Change avatar</p>
       <div
         class="flex flex-col items-center space-y-5 sm:flex-row sm:space-y-0 mb-10"
       >
         <img
-          class="object-cover w-36 h-36 p-1 rounded-full ring-2 ring-indigo-300 dark:ring-indigo-200"
+          class="object-cover w-40 h-40 p-1 rounded-full ring-2 ring-indigo-300 dark:ring-indigo-200 shadow-md"
           src="{{ userProfilePicUri }}"
           alt="Bordered avatar"
         />
@@ -110,7 +112,7 @@
                 #changeAvatarInput
                 type="file"
                 (change)="onImageSelected($event)"
-                class="block w-full border border-spacing-2 border-blue-500 rounded-xl file:cursor-pointer text-base text-gray-500 file:me-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-base file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-700 file:disabled:opacity-50 file:disabled:pointer-events-none"
+                class="block w-full border border-spacing-2 border-indigo-400 rounded-xl file:cursor-pointer text-base text-gray-500 file:me-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-base file:font-semibold file:bg-indigo-900 file:text-white hover:file:bg-blue-500 file:disabled:opacity-50 file:disabled:pointer-events-none"
               />
             </label>
           </div>
@@ -141,10 +143,10 @@
               formControlName="status"
             />
             <div
-              class="h-5 transition rounded-full bg-rose-100 peer-checked:bg-[#9cff75] shadow-inner box bg-dark w-14 text-white"
+              class="h-5 transition rounded-full bg-rose-100 peer-checked:bg-[#d7ffc7] shadow-inner box bg-dark w-14 text-white"
             ></div>
             <div
-              class="absolute left-0 flex items-center justify-center transition bg-rose-500 rounded-full dot shadow-switch-1 -top-1 h-7 w-7 dark:bg-dark-3 peer-checked:translate-x-full peer-checked:bg-[#5fdd46] text-dark peer-checked:text-white"
+              class="absolute left-0 flex items-center justify-center transition bg-rose-500 rounded-full dot shadow-switch-1 -top-1 h-7 w-7 dark:bg-dark-3 peer-checked:translate-x-full peer-checked:bg-[#58cb41] text-dark peer-checked:text-white"
             >
               <span
                 class="w-4 h-4 border border-current rounded-full bg-inherit active"

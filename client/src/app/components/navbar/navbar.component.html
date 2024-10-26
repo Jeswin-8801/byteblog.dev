@@ -159,7 +159,7 @@
                 <span class="absolute -inset-1.5"></span>
                 <span class="sr-only">Open user menu</span>
                 <img
-                  class="h-8 w-8 rounded-full"
+                  class="h-8 w-8 rounded-full object-cover"
                   src="{{ userProfilePicUri }}"
                   alt=""
                 />
@@ -169,14 +169,14 @@
             <div
               class="absolute {{
                 showUserIconDropdown ? '' : 'hidden'
-              }} right-0 z-10 mt-2 w-auto origin-top-right rounded-md backdrop-filter backdrop-blur-md bg-gray-100/85 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+              }} right-0 z-10 mt-2 w-auto origin-top-right rounded-md bg-gradient-to-tr from-violet-50 to-stone-200 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
               role="menu"
               aria-orientation="vertical"
               aria-labelledby="user-menu-button"
               tabindex="-1"
             >
               <div
-                class="px-4 pt-2 pb-3 text-sm text-gray-900 border-b-2 border-slate-400/50"
+                class="px-4 pt-2 pb-3 text-sm text-gray-900 border-b border-stone-300/50"
               >
                 <div *ngIf="userFullName">{{ userFullName }}</div>
                 <div *ngIf="userEmail" class="font-medium truncate">

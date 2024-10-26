@@ -2,18 +2,10 @@
 @import "prismjs/themes/prism-okaidia.css";
 @import "prismjs/plugins/toolbar/prism-toolbar.css";
 @import "prismjs/plugins/line-numbers/prism-line-numbers.css";
-@import "prismjs/plugins/command-line/prism-command-line.css";
-@import "katex/dist/katex.min.css";
-/* Available themes */
-/*
-@import "prismjs/themes/prism.css";
-@import "prismjs/themes/prism-coy.css";
-@import "prismjs/themes/prism-dark.css";
-@import "prismjs/themes/prism-funky.css";
-@import "prismjs/themes/prism-solarizedlight.css";
-@import "prismjs/themes/prism-tomorrow.css";
-@import "prismjs/themes/prism-twilight.css";
-*/
+@import "prismjs/plugins/line-highlight/prism-line-highlight.css";
+@import "katex/dist/katex.css";
+
+@import "@fontsource/jetbrains-mono/400.css";
 
 @tailwind base;
 @tailwind components;
@@ -21,26 +13,22 @@
 
 /* Prism.js line numbers plugin */
 .line-numbers .line-numbers-rows {
-  position: absolute;
-  pointer-events: none;
-  top: 15px;
-  font-size: 100%;
-  left: 0;
-  width: 3em;
-  letter-spacing: -1px;
-  border-right: 1px solid rgb(179, 179, 179);
-  user-select: none;
-}
-
-.line-numbers-rows > span {
-  display: block;
-  counter-increment: linenumber;
+  border-right: transparent;
 }
 
 .line-numbers-rows > span:before {
-  content: counter(linenumber);
-  color: rgb(219, 219, 219);
-  display: block;
-  padding-right: 0.8em;
-  text-align: right;
+  color: rgb(73, 90, 110);
+}
+
+/* Prism.js line toolbar plugin */
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: #4c00ff;
+  font-size: 0.8em;
+  font-weight: bold;
+  padding: 0.5em 0.4em;
+  margin-right: 0.2em;
+  background: rgba(213, 235, 255, 0.9);
+  border-radius: 0.2em;
 }

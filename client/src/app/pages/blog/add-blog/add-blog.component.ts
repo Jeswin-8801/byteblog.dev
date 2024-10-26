@@ -71,7 +71,13 @@ export class AddBlogComponent {
     this.subscription = this.alertModalService.clickPrimary$.subscribe(
       (isClicked) => {
         if (isClicked && this.alertModal.isPrimaryButtonSubscribedToService) {
-          this.router.navigateByUrl('/blog/activity');
+          this.router.navigateByUrl(
+            '/blog/' +
+              this.header?.value
+                .replace(/[^a-zA-Z\s]/g, '')
+                .replace(/\s+/g, '-')
+                .toLowerCase()
+          );
         }
       }
     );
@@ -352,6 +358,7 @@ export class AddBlogComponent {
   onClickDeleteMarkdownFile() {
     this.selectedMarkdownFile = undefined;
     this.markdown = '';
+    this.highlighted = false;
   }
 
   onPrimaryTagSelected(index: number) {

@@ -8,11 +8,12 @@ import { CommonModule } from '@angular/common';
 import { ObjectMapper } from 'json-object-mapper';
 import { AuthorCompactDto } from '../../../models/dtos/blog/author-compact-dto';
 import { formatDistanceToNow } from 'date-fns';
+import { BlogCardComponent } from '../../../components/blog-card/blog-card.component';
 
 @Component({
   selector: 'app-activity',
   standalone: true,
-  imports: [CommonModule, NavbarComponent],
+  imports: [CommonModule, NavbarComponent, BlogCardComponent],
   templateUrl: './activity.component.html',
 })
 export class ActivityComponent {
@@ -21,6 +22,7 @@ export class ActivityComponent {
   private readonly router = inject(Router);
 
   blogs: BlogsCompactDto[] = [];
+  blogsFound: boolean = true;
 
   ngOnInit() {
     this.getAllBlogsAuthoredByUser();
@@ -28,7 +30,7 @@ export class ActivityComponent {
 
   private getAllBlogsAuthoredByUser() {
     this.blogService
-      .getAllBlogsByUserId(this.authService.user()?.id as string)
+      .getAllBlogsByUsername(this.authService.user()?.username as string)
       .subscribe({
         next: (responseDto) => {
           console.log('Successfully retreived all blogs authored by user');
@@ -46,7 +48,8 @@ export class ActivityComponent {
           });
         },
         error: (response) => {
-          console.log('Error on post blog:', response.error);
+          console.log('Error on retriving blogs: ', response.error);
+          this.blogsFound = false;
         },
       });
   }
