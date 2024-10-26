@@ -9,20 +9,32 @@ import { ObjectMapper } from 'json-object-mapper';
 import { AuthorCompactDto } from '../../../models/dtos/blog/author-compact-dto';
 import { formatDistanceToNow } from 'date-fns';
 import { BlogCardComponent } from '../../../components/blog-card/blog-card.component';
+import { CommentsComponent } from '../../../components/comments/comments.component';
+import { CommentsService } from '../../../service/comments/comments.service';
+import { Utility } from '../../../utility/utility';
+import { Comment } from '../../../models/comment';
 
 @Component({
   selector: 'app-activity',
   standalone: true,
-  imports: [CommonModule, NavbarComponent, BlogCardComponent],
+  imports: [
+    CommonModule,
+    NavbarComponent,
+    BlogCardComponent,
+    CommentsComponent,
+  ],
   templateUrl: './activity.component.html',
 })
 export class ActivityComponent {
   private readonly blogService = inject(BlogService);
   private readonly authService = inject(AuthService);
+  private readonly commentsService = inject(CommentsService);
   private readonly router = inject(Router);
 
   blogs: BlogsCompactDto[] = [];
   blogsFound: boolean = true;
+
+  comments!: Comment[];
 
   ngOnInit() {
     this.getAllBlogsAuthoredByUser();
@@ -46,10 +58,25 @@ export class ActivityComponent {
             );
             this.blogs.push(blogsDto);
           });
+
+          // get all comments
+          this.getComments();
         },
         error: (response) => {
           console.log('Error on retriving blogs: ', response.error);
           this.blogsFound = false;
+        },
+      });
+  }
+
+  private getComments() {
+    this.commentsService
+      .getCommentsByUser(this.authService.user()?.username as string)
+      .subscribe({
+        next: (comments) =>
+          (this.comments = Utility.deserializeComments(comments)),
+        error: (response) => {
+          console.log('Error on get comments for blog: ', response.error);
         },
       });
   }

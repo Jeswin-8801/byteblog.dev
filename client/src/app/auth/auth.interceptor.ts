@@ -7,15 +7,7 @@ import {
 } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { AuthService } from '../service/auth/auth.service';
-import {
-  catchError,
-  EMPTY,
-  from,
-  NEVER,
-  Observable,
-  switchMap,
-  timeout,
-} from 'rxjs';
+import { catchError, from, NEVER, Observable, switchMap, timeout } from 'rxjs';
 import { ErrorService } from '../service/error/error.service';
 import { AlertModal } from '../components/alert-modal/alert-modal';
 
@@ -31,7 +23,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   ) {
     return from(authService.refreshToken()).pipe(
       switchMap((data) => {
-        authService.storeRefreshedToken(data);
+        authService.storeAccessToken(data);
         return next(addAuthorizationHeader(req, authService.getAccessToken()!));
       })
     );

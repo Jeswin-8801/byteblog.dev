@@ -232,7 +232,7 @@ export class AddBlogComponent {
           if (this.isAlertModalClosed) this.toggleAlertModal();
           this.authService.refreshToken().subscribe({
             next: (tokenDto) => {
-              this.authService.storeRefreshedToken(tokenDto);
+              this.authService.storeAccessToken(tokenDto);
             },
           });
         },

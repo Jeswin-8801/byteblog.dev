@@ -6,7 +6,6 @@ import { TagsDto } from '../../models/dtos/blog/tags-dto';
 import { PostBlogDto } from '../../models/dtos/blog/post-blog-dto';
 import { StandardResponseDto } from '../../models/dtos/user/standard-response-dto';
 import { ObjectMapper } from 'json-object-mapper';
-import { BlogsCompactDto } from '../../models/dtos/blog/blogs-compact-dto';
 
 @Injectable({
   providedIn: 'root',
