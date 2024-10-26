@@ -3,6 +3,7 @@ package com.jeswin8801.byteBlog.service.webapp.abstracts;
 import com.jeswin8801.byteBlog.entities.dto.GenericResponseDto;
 import com.jeswin8801.byteBlog.entities.dto.MessageResponseDto;
 import com.jeswin8801.byteBlog.entities.dto.blog.*;
+import com.jeswin8801.byteBlog.entities.model.Blog;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -22,4 +23,8 @@ public interface BlogService {
     GenericResponseDto<BlogDto> getBlogByHeading(String headingUri);
 
     GenericResponseDto<AuthorDto> getBlogAuthorDetails(String username);
+
+    Blog getBlogById(String blogId);
+
+    void saveOrUpdateBlog(Blog blog);
 }

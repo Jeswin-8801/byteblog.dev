@@ -6,6 +6,7 @@ import lombok.Getter;
 public enum UserExceptions {
 
     USER_RECORD_NOT_FOUND("User not found"),
+    INVALID_USER_ID("Invalid User Id"),
     USER_EMAIL_NOT_AVAILABLE("An account with the given email already exists"),
     USER_USERNAME_NOT_AVAILABLE("An account with the given username already exists"),
     PASSWORD_MISMATCH("Current password is incorrect"),

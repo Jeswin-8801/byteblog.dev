@@ -1,6 +1,7 @@
 package com.jeswin8801.byteBlog.entities.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -14,7 +15,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@EqualsAndHashCode(exclude = { "user", "blog" })
+@EqualsAndHashCode(exclude = { "user", "blog", "parentComment" })
 @ToString(exclude = { "user", "blog" })
 @Table(name = "comments")
 public class Comment implements Serializable {
@@ -41,6 +42,7 @@ public class Comment implements Serializable {
     @JoinColumn(name = "blog_id")
     private Blog blog;
 
+    @JsonManagedReference
     @OneToMany(
             mappedBy = "parentComment",
             cascade = CascadeType.ALL,
@@ -48,6 +50,7 @@ public class Comment implements Serializable {
     )
     private Set<Comment> childReplyComments;
 
+    @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "fk_parent_comment")
     private Comment parentComment;

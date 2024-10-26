@@ -43,6 +43,7 @@ public class BlogController {
         return blogService.getBlogByHeading(headingUri).getResponseEntity();
     }
 
+    // unrestricted access
     @GetMapping("/unrestricted/author")
     public ResponseEntity<?> getAuthorDetails(@RequestParam String username) {
         return blogService.getBlogAuthorDetails(username).getResponseEntity();

@@ -52,9 +52,6 @@ public class BlogServiceImpl implements BlogService {
     @Autowired
     private UserMapper<AuthorDto> authorDtoUserMapper;
 
-    @Autowired
-    private CommentMapper commentMapper;
-
     @Override
     public GenericResponseDto<TagsDto> getAllTags() {
         return GenericResponseDto.<TagsDto>builder()
@@ -172,5 +169,15 @@ public class BlogServiceImpl implements BlogService {
                         authorDtoUserMapper.toDto(user, AuthorDto.class)
                 ).httpStatusCode(HttpStatus.OK)
                 .build();
+    }
+
+    @Override
+    public Blog getBlogById(String blogId) {
+        return blogRepository.findById(blogId).orElse(null);
+    }
+
+    @Override
+    public void saveOrUpdateBlog(Blog blog) {
+        blogRepository.save(blog);
     }
 }

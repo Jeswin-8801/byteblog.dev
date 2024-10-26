@@ -1,6 +1,7 @@
 package com.jeswin8801.byteBlog.entities.dto.blog;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.jeswin8801.byteBlog.entities.dto.comment.CommentDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
