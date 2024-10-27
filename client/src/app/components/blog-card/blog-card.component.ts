@@ -15,6 +15,7 @@ export class BlogCardComponent {
 
   @Input() blog!: Blog;
   @Input() showAuthorAsYou!: boolean;
+  @Input() smallerCards: boolean = false;
 
   redirectToAuthorPage() {
     console.log(`/blog/author/` + this.blog.author?.username);

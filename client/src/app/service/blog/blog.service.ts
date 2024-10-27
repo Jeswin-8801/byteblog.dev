@@ -6,6 +6,7 @@ import { TagsDto } from '../../models/dtos/blog/tags-dto';
 import { PostBlogDto } from '../../models/dtos/blog/post-blog-dto';
 import { StandardResponseDto } from '../../models/dtos/user/standard-response-dto';
 import { ObjectMapper } from 'json-object-mapper';
+import { AppConstants } from '../../common/app.constants';
 
 @Injectable({
   providedIn: 'root',
@@ -51,14 +52,14 @@ export class BlogService {
 
   getAllBlogsByUsername(username: string): Observable<any[]> {
     return this.http.get<any[]>(
-      `${environment.apiUrl}/blog/unrestricted/author/get-all-blogs?username=` +
+      `${environment.apiUrl}/unrestricted/blog/author/get-all-blogs?username=` +
         username
     );
   }
 
   getBlogByHeading(headingUri: string): Observable<any> {
     return this.http.get<any[]>(
-      `${environment.apiUrl}/blog/unrestricted/get-blog?headingUri=` +
+      `${environment.apiUrl}/unrestricted/blog/get-blog?heading-uri=` +
         headingUri
     );
   }
@@ -71,7 +72,34 @@ export class BlogService {
 
   getAuthorDetails(username: string): Observable<any> {
     return this.http.get<any>(
-      `${environment.apiUrl}/blog/unrestricted/author?username=` + username
+      `${environment.apiUrl}/unrestricted/blog/author?username=` + username
+    );
+  }
+
+  getAllUsedTags(): Observable<any> {
+    return this.http.get<any>(
+      `${environment.apiUrl}/unrestricted/blog/used-tags`
+    );
+  }
+
+  getAllBlogsWithTag(tag: string): Observable<any> {
+    return this.http.get<any>(
+      `${environment.apiUrl}/unrestricted/blog/get-by-tag?tag=` + tag
+    );
+  }
+
+  getFeaturedBlog(): Observable<any> {
+    return this.http.get<any>(
+      `${environment.apiUrl}/unrestricted/blog/featured`
+    );
+  }
+
+  getLatestBlogsAsPageable(pageNumber: number): Observable<any> {
+    return this.http.get<any>(
+      `${environment.apiUrl}/unrestricted/blog/latest?page-number=` +
+        pageNumber +
+        `&page-size=` +
+        AppConstants.PAGE_SIZE
     );
   }
 }

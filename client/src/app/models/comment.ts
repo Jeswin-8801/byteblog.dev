@@ -9,7 +9,7 @@ export class Comment {
   author?: AuthorCompactDto;
 
   @JsonProperty({ name: 'last-updated' })
-  lastUpdated?: string; // will be sorted by client
+  lastUpdated?: string;
 
   @JsonProperty({ name: 'child-reply-comments' })
   childReplyComments?: Comment[];

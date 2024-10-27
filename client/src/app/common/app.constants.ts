@@ -21,4 +21,6 @@ export class AppConstants {
 
   public static LOGOUT = 'logout';
   public static REFRESH_TOKEN_EXPIRY_REDIRECT = 'refresh-token-expired';
+
+  public static PAGE_SIZE = 6;
 }

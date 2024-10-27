@@ -2,28 +2,46 @@ import { Component, inject } from '@angular/core';
 import { AuthService } from '../../../service/auth/auth.service';
 import { NavbarComponent } from '../../../components/navbar/navbar.component';
 import { AlertModal } from '../../../components/alert-modal/alert-modal';
-import { ActivatedRoute, Params } from '@angular/router';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 import { AlertModalComponent } from '../../../components/alert-modal/alert-modal.component';
 import { Utility } from '../../../utility/utility';
-import { Location } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import { AlertModalService } from '../../../components/alert-modal/alert-modal.service';
 import { Subscription } from 'rxjs';
+import { BlogService } from '../../../service/blog/blog.service';
+import { BlogsCompactDto } from '../../../models/dtos/blog/blogs-compact-dto';
+import { ObjectMapper } from 'json-object-mapper';
+import { BlogCardComponent } from '../../../components/blog-card/blog-card.component';
+import { AuthorCompactDto } from '../../../models/dtos/blog/author-compact-dto';
 
 @Component({
   selector: 'app-explore',
   standalone: true,
-  imports: [AlertModalComponent, NavbarComponent],
+  imports: [
+    CommonModule,
+    AlertModalComponent,
+    NavbarComponent,
+    BlogCardComponent,
+  ],
   templateUrl: './explore.component.html',
 })
 export class ExploreComponent {
   private readonly authService = inject(AuthService);
+  private readonly blogService = inject(BlogService);
   private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
   private readonly location = inject(Location);
+
   private readonly alertModalService = inject(AlertModalService);
   subscription!: Subscription;
 
   alertModal: AlertModal = new AlertModal();
   isAlertModalClosed: boolean = true;
+
+  featuredBlog!: BlogsCompactDto;
+  latestBlogs: BlogsCompactDto[] = [];
+  page = 0;
+  loading = false;
 
   param!: string;
 
@@ -35,6 +53,7 @@ export class ExploreComponent {
       }
     );
     this.handleQueryParams();
+    this.getFeaturedBlog();
   }
 
   private handleQueryParams() {
@@ -65,8 +84,58 @@ export class ExploreComponent {
       );
   }
 
+  private getFeaturedBlog() {
+    this.blogService.getFeaturedBlog().subscribe({
+      next: (response) => {
+        this.featuredBlog = ObjectMapper.deserialize(BlogsCompactDto, response);
+        this.loadLatestBlogs();
+      },
+      error: (response) => console.log(response),
+    });
+  }
+
+  private loadLatestBlogs() {
+    this.loading = true;
+    this.blogService.getLatestBlogsAsPageable(this.page).subscribe({
+      next: (data) => {
+        console.log('Successfully retreived all blogs authored by user');
+        let retrievedBlogs: BlogsCompactDto[] = [];
+        data.forEach((blog: any) => {
+          let blogsDto = ObjectMapper.deserialize(BlogsCompactDto, blog);
+          blogsDto.author = ObjectMapper.deserialize(
+            AuthorCompactDto,
+            blog.author
+          );
+          if (this.featuredBlog.heading !== blogsDto.heading)
+            retrievedBlogs.push(blogsDto);
+        });
+
+        // sort by latest
+        retrievedBlogs.sort(
+          (a, b) =>
+            new Date(b.timeSinceCreation as string).getTime() -
+            new Date(a.timeSinceCreation as string).getTime()
+        );
+
+        this.latestBlogs = [...this.latestBlogs, ...retrievedBlogs];
+        this.loading = false;
+        this.page++;
+        console.log(this.latestBlogs);
+      },
+      error: (response) => console.log(response),
+    });
+  }
+
+  onScroll() {
+    if (!this.loading) this.loadLatestBlogs;
+  }
+
   toggleAlertModal() {
     this.isAlertModalClosed = !this.isAlertModalClosed;
+  }
+
+  redirectToBlogPost(uri: string) {
+    this.router.navigateByUrl(`/blog/` + uri);
   }
 
   ngOnDestroy() {

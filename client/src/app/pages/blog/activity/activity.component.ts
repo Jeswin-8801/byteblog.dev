@@ -11,7 +11,8 @@ import { BlogCardComponent } from '../../../components/blog-card/blog-card.compo
 import { CommentsComponent } from '../../../components/comments/comments.component';
 import { CommentsService } from '../../../service/comments/comments.service';
 import { Utility } from '../../../utility/utility';
-import { Comment } from '../../../models/comment';
+import { formatDistanceToNow } from 'date-fns';
+import { CommentCompactDto } from '../../../models/dtos/comment/comment-compact-dto';
 
 @Component({
   selector: 'app-activity',
@@ -32,11 +33,13 @@ export class ActivityComponent {
 
   blogs: BlogsCompactDto[] = [];
   blogsFound: boolean = true;
+  profileImageUrl!: string;
 
-  comments!: Comment[];
+  comments!: CommentCompactDto[];
 
   ngOnInit() {
     this.getAllBlogsAuthoredByUser();
+    this.profileImageUrl = this.authService.user()?.profileImageUrl as string;
   }
 
   private getAllBlogsAuthoredByUser() {
@@ -75,8 +78,19 @@ export class ActivityComponent {
     this.commentsService
       .getCommentsByUser(this.authService.user()?.username as string)
       .subscribe({
-        next: (comments) =>
-          (this.comments = Utility.deserializeComments(comments)),
+        next: (comments) => {
+          this.comments = ObjectMapper.deserializeArray(
+            CommentCompactDto,
+            comments
+          );
+          // sort by latest
+          this.comments.sort(
+            (a, b) =>
+              new Date(b.lastUpdated as string).getTime() -
+              new Date(a.lastUpdated as string).getTime()
+          );
+          console.log(this.comments);
+        },
         error: (response) => {
           console.log('Error on get comments for blog: ', response.error);
         },
@@ -85,5 +99,13 @@ export class ActivityComponent {
 
   redirectToPostBlog() {
     this.router.navigateByUrl('/blog/post-blog');
+  }
+
+  redirectToBlogPage(uri: string) {
+    this.router.navigateByUrl(`/blog/` + uri);
+  }
+
+  formatHumanReadableDate(date: string) {
+    return formatDistanceToNow(new Date(date), { addSuffix: true });
   }
 }

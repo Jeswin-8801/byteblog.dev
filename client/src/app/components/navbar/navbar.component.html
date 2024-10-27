@@ -176,10 +176,14 @@
               tabindex="-1"
             >
               <div
-                class="px-4 pt-2 pb-3 text-sm text-gray-900 border-b border-stone-300/50"
+                (click)="redirectToUserPage()"
+                class="px-4 pt-2 pb-3 text-sm text-gray-900 border-b border-stone-300/50 cursor-pointer"
               >
                 <div *ngIf="userFullName">{{ userFullName }}</div>
-                <div *ngIf="userEmail" class="font-medium truncate">
+                <div
+                  *ngIf="userEmail"
+                  class="font-medium truncate hover:text-indigo-500"
+                >
                   {{ userEmail }}
                 </div>
               </div>

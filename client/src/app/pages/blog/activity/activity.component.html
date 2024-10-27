@@ -1,6 +1,6 @@
 <app-navbar currentPage="activity" />
 <div
-  class="min-h-screen min-w-full bg-gradient-to-br from-slate-100 to-stone-50"
+  class="min-h-screen min-w-full bg-gradient-to-br from-slate-700 via-gray-600 to-stone-400"
 >
   <div class="p-10"></div>
   <div class="flex-col p-5 w-full">
@@ -41,7 +41,7 @@
 
     <!-- Blogs and Comments Section -->
     <section
-      class="flex lg:flex-row md:mx-10 md:px-4 flex-col justify-center my-5 bg-gradient-to-b from-inherit to-stone-200 rounded-xl shadow-lg shadow-violet-300"
+      class="flex lg:mx-32 lg:flex-row md:mx-10 md:px-4 flex-col justify-center my-5 bg-gradient-to-b from-stone-200 via-slate-200 to-indigo-100 rounded-3xl shadow-lg"
     >
       <!-- Blogs -->
       <div
@@ -49,7 +49,7 @@
       >
         <div class="ml-2 max-w-screen-sm lg:mb-8 mb-4">
           <h2
-            class="mb-4 text-3xl lg:text-4xl tracking-tight font-extrabold text-gray-900"
+            class="mb-4 text-3xl lg:text-4xl tracking-tight font-extrabold text-indigo-800"
           >
             My Blogs
           </h2>
@@ -87,21 +87,79 @@
         </div>
       </div>
 
+      <!-- Comments -->
       <div
-        class="flex-col py-8 px-4 ml-5 max-w-screen-xl lg:px-6 xl:w-1/2 lg:w-2/5 w-5/6 md:border-l border-t border-gray-200"
+        class="flex-col py-8 px-4 ml-5 max-w-screen-xl lg:px-6 xl:w-1/2 lg:w-2/5 w-5/6 md:border-l border-opacity-25 border-indigo-400"
       >
-        <div class="ml-2 max-w-screen-sm lg:mb-16 mb-8">
+        <div class="ml-2 max-w-screen-sm lg:mb-12 mb-6">
           <h2
-            class="mb-4 text-3xl lg:text-4xl tracking-tight font-extrabold text-gray-900"
+            class="text-3xl lg:text-4xl tracking-tight font-extrabold text-stone-700"
           >
             My Comments
           </h2>
         </div>
-        <app-comments
-          *ngIf="comments"
-          [comments]="comments"
-          [showReplyOption]="false"
-        ></app-comments>
+        <div *ngFor="let comment of comments" class="flex my-5">
+          <div class="flex-shrink-0 mr-3">
+            <img
+              class="mt-2 rounded-full w-8 h-8 sm:w-10 sm:h-10 shadow-xl"
+              src="{{ profileImageUrl }}"
+            />
+          </div>
+          <div
+            class="flex-1 border shadow-lg rounded-md px-4 py-2 sm:px-6 sm:py-4 leading-relaxed bg-violet-50"
+          >
+            <div
+              (click)="redirectToBlogPage(comment.blogHeadingUri!)"
+              class="flex justify-between font-jetbrains"
+            >
+              <div
+                class="flex space-x-1 text-blue-500 hover:stroke-blue-400 cursor-pointer"
+              >
+                <strong>Blog</strong>
+                <svg
+                  class="size-5"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                >
+                  <g fill="none" fill-rule="evenodd">
+                    <path d="M0 0h24v24H0z" />
+                    <path
+                      stroke="#0C7FFF"
+                      stroke-linecap="round"
+                      stroke-width="2"
+                      d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h6M16 4h3a1 1 0 0 1 1 1v3M11 13l8-8"
+                    />
+                  </g>
+                </svg>
+              </div>
+
+              <span class="text-xs font-light text-gray-500">{{
+                formatHumanReadableDate(comment.lastUpdated!)
+              }}</span>
+            </div>
+            <p class="text-sm font-medium pt-2">
+              {{ comment.comment }}
+            </p>
+            <!-- Replies -->
+            <div
+              *ngIf="comment.replyCommentAuthorProfileImageUris?.length! > 0"
+              class="mt-4 flex items-center"
+            >
+              <div class="flex -space-x-2 mr-2">
+                <img
+                  *ngFor="
+                    let profileImageUrl of comment.replyCommentAuthorProfileImageUris
+                  "
+                  class="rounded-full size-7 border border-white"
+                  src="{{ profileImageUrl }}"
+                />
+              </div>
+              <div class="text-sm text-gray-500 font-semibold">
+                {{ comment.replyCommentAuthorProfileImageUris?.length }}
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
   </div>

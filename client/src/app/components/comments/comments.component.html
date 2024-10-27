@@ -1,6 +1,6 @@
 <div *ngFor="let comment of comments; let i = index">
   <article
-    class="py-3 px-5 m-3 text-base shadow-md shadow-stone-200 rounded-lg bg-gradient-to-tr from-stone-100 to-violet-100 hover:ring-2 hover:ring-violet-300 hover:ring-offset-2 transition duration-300"
+    class="py-3 px-5 m-3 text-base shadow-md rounded-lg bg-gradient-to-tr from-stone-100 to-violet-100 hover:ring-2 hover:ring-violet-300 hover:ring-offset-2 hover:ring-offset-violet-100 transition duration-300"
   >
     <footer class="flex justify-between items-center mb-2">
       <div class="flex items-center space-x-2">
@@ -31,14 +31,12 @@
         <button
           *ngIf="this.currentUser === comment.author?.username && isLoggedIn()"
           (click)="toggleCloseCommentsOptionsDropdown(i)"
-          class="items-center p-2 text-sm font-medium text-center text-gray-500 bg-white rounded-lg hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-violet-100"
+          class="items-center p-2 text-sm font-medium text-center text-gray-500 bg-black rounded-lg hover:bg-violet-300 focus:ring-4 focus:outline-none focus:ring-violet-100"
           type="button"
         >
           <svg
-            class="w-4 h-4"
-            aria-hidden="true"
+            class="size-4 fill-white"
             xmlns="http://www.w3.org/2000/svg"
-            fill="currentColor"
             viewBox="0 0 16 3"
           >
             <path

@@ -6,7 +6,6 @@ import { BlogService } from '../../../service/blog/blog.service';
 import { ObjectMapper } from 'json-object-mapper';
 import { BlogsCompactDto } from '../../../models/dtos/blog/blogs-compact-dto';
 import { AuthorCompactDto } from '../../../models/dtos/blog/author-compact-dto';
-import { formatDistanceToNow } from 'date-fns';
 import { Blog } from '../../../models/blog';
 import { AuthorDto } from '../../../models/dtos/blog/author-dto';
 import { BlogCardComponent } from '../../../components/blog-card/blog-card.component';

@@ -12,6 +12,7 @@ import { UtilitiesService } from '../../service/utilities/utilities.service';
 import { AppConstants } from '../../common/app.constants';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { StandardResponseDto } from '../../models/dtos/user/standard-response-dto';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-navbar',
@@ -23,6 +24,7 @@ export class NavbarComponent {
   private readonly authService = inject(AuthService);
   private readonly utilitiesService = inject(UtilitiesService);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly router = inject(Router);
 
   @ViewChild('userIconButton') userIconButton!: ElementRef;
 
@@ -73,6 +75,11 @@ export class NavbarComponent {
 
   toggleMobileMenu() {
     this.showMobileMenu = !this.showMobileMenu;
+  }
+
+  redirectToUserPage() {
+    let username = this.authService.user()?.username;
+    if (username) this.router.navigateByUrl(`/blog/author/` + username);
   }
 
   logout() {

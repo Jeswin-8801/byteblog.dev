@@ -15,7 +15,9 @@ export class CommentsService {
 
   getBlogComments(blogId: string): Observable<any[]> {
     return this.http
-      .get<any[]>(`${environment.apiUrl}/comments/blog?blog-id=` + blogId)
+      .get<any[]>(
+        `${environment.apiUrl}/unrestricted/comments?blog-id=` + blogId
+      )
       .pipe(
         tap(() => {
           console.log('successfully retrieved comments for blogId ' + blogId);
