@@ -56,6 +56,13 @@ export class CommentsComponent {
   ngOnChanges(changes: SimpleChanges) {
     if (changes['comments']) {
       if (this.comments) {
+        // sort by latest
+        this.comments.sort(
+          (a, b) =>
+            new Date(b.lastUpdated as string).getTime() -
+            new Date(a.lastUpdated as string).getTime()
+        );
+
         // initialize showCommentsOptionsDropdownList
         this.showCommentsOptionsDropdownList = new Array(
           this.comments.length

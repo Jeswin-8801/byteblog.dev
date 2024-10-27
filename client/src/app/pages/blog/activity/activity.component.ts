@@ -7,7 +7,6 @@ import { BlogsCompactDto } from '../../../models/dtos/blog/blogs-compact-dto';
 import { CommonModule } from '@angular/common';
 import { ObjectMapper } from 'json-object-mapper';
 import { AuthorCompactDto } from '../../../models/dtos/blog/author-compact-dto';
-import { formatDistanceToNow } from 'date-fns';
 import { BlogCardComponent } from '../../../components/blog-card/blog-card.component';
 import { CommentsComponent } from '../../../components/comments/comments.component';
 import { CommentsService } from '../../../service/comments/comments.service';
@@ -52,12 +51,15 @@ export class ActivityComponent {
               AuthorCompactDto,
               blog.author
             );
-            blogsDto.timeSinceCreation = formatDistanceToNow(
-              new Date(blogsDto.timeSinceCreation as string),
-              { addSuffix: true }
-            );
             this.blogs.push(blogsDto);
           });
+
+          // sort by latest
+          this.blogs.sort(
+            (a, b) =>
+              new Date(b.timeSinceCreation as string).getTime() -
+              new Date(a.timeSinceCreation as string).getTime()
+          );
 
           // get all comments
           this.getComments();

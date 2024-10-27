@@ -73,7 +73,7 @@ export class AddBlogComponent {
         if (isClicked && this.alertModal.isPrimaryButtonSubscribedToService) {
           this.router.navigateByUrl(
             '/blog/' +
-              this.header?.value
+              this.stripEdgeCharacters(this.header?.value)
                 .replace(/[^a-zA-Z\s]/g, '')
                 .replace(/\s+/g, '-')
                 .toLowerCase()
