@@ -3,6 +3,7 @@ package com.jeswin8801.byteBlog.service.webapp;
 import com.jeswin8801.byteBlog.entities.converters.CommentMapper;
 import com.jeswin8801.byteBlog.entities.dto.GenericResponseDto;
 import com.jeswin8801.byteBlog.entities.dto.MessageResponseDto;
+import com.jeswin8801.byteBlog.entities.dto.comment.CommentCompactDto;
 import com.jeswin8801.byteBlog.entities.dto.comment.CommentDto;
 import com.jeswin8801.byteBlog.entities.dto.comment.PostCommentDto;
 import com.jeswin8801.byteBlog.entities.model.Blog;
@@ -55,7 +56,7 @@ public class CommentsServiceImpl implements CommentsService {
                         blog.getComments()
                                 .stream()
                                 .filter(comment -> Objects.isNull(comment.getParentComment())) // filter out nested comments
-                                .map(comment -> commentMapper.toDto(comment))
+                                .map(comment -> commentMapper.toCommentDto(comment))
                                 .collect(Collectors.toSet())
                 ).httpStatusCode(HttpStatus.OK)
                 .build();
@@ -102,7 +103,7 @@ public class CommentsServiceImpl implements CommentsService {
     }
 
     @Override
-    public GenericResponseDto<Set<CommentDto>> getCommentsByUser(String username) {
+    public GenericResponseDto<Set<CommentCompactDto>> getCommentsByUser(String username) {
         User user = userService.findUserByUsername(username);
         if (Objects.isNull(user))
             throw new ResourceNotFoundException(UserExceptions.USER_RECORD_NOT_FOUND.getMessage());
@@ -110,15 +111,11 @@ public class CommentsServiceImpl implements CommentsService {
         if (CollectionUtils.isEmpty(user.getComments()))
             throw new ResourceNotFoundException(BlogExceptions.NO_COMMENTS_FOUND.getMessage());
 
-        return GenericResponseDto.<Set<CommentDto>>builder()
+        return GenericResponseDto.<Set<CommentCompactDto>>builder()
                 .message(
                         user.getComments()
                                 .stream()
-                                .map(comment -> {
-                                    CommentDto commentDto = commentMapper.toDto(comment);
-                                    commentDto.setChildReplyComments(null);
-                                    return commentDto;
-                                })
+                                .map(comment -> commentMapper.toCommentCompactDto(comment))
                                 .collect(Collectors.toSet())
                 ).httpStatusCode(HttpStatus.OK)
                 .build();

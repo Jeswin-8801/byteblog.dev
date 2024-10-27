@@ -1,7 +1,6 @@
 package com.jeswin8801.byteBlog.entities.dto.comment;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.jeswin8801.byteBlog.entities.dto.blog.AuthorCompactDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,20 +13,15 @@ import java.util.Set;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CommentDto {
-
-    private Long id;
-
+public class CommentCompactDto {
     @JsonProperty("blog-heading-uri")
     private String blogHeadingUri;
 
     private String comment;
 
-    private AuthorCompactDto author;
-
     @JsonProperty("last-updated")
     private Instant lastUpdated; // will be sorted by client
 
-    @JsonProperty("child-reply-comments")
-    private Set<CommentDto> childReplyComments;
+    @JsonProperty("reply-comments-author-profile-image-uris")
+    private Set<String> replyCommentAuthorProfileImageUris;
 }
