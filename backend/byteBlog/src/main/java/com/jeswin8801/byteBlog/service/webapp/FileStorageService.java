@@ -32,7 +32,7 @@ public class FileStorageService {
                             .object(filePath).stream(is, file.getSize(), -1)
                             .contentType(file.getContentType())
                             .build());
-            return minioUrl + "/" + bucketName + "/" + filePath;
+            return minioUrl.replaceFirst("minio", "localhost") + "/" + bucketName + "/" + filePath;
         } catch (Exception e) {
             throw new RuntimeException("Failed to upload file", e);
         }

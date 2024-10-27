@@ -73,6 +73,7 @@ public class WebSecurityConfig {
                 )
                 .authorizeHttpRequests((authorize) -> authorize
                         .requestMatchers(
+                                "/actuator/**",
                                 "/auth/**",
                                 "/oauth2/**",
                                 "/unrestricted/**"

@@ -20,18 +20,7 @@ public class ApplicationConfiguration {
 
     @Bean
     public ModelMapper modelMapper() {
-        ModelMapper modelMapper = new ModelMapper();
-//        modelMapper.addMappings(new PropertyMap<Object, Blog>() {
-//            @Override
-//            protected void configure() {
-//                skip(destination.getUser());
-//                skip(destination.getComments());
-//            }
-//        });
-//        TypeMap<Blog, BlogsCompactResponseDto> propertyMapper = modelMapper.createTypeMap(Blog.class, BlogsCompactResponseDto.class);
-//        propertyMapper.addMappings(mapper -> mapper.skip(BlogsCompactResponseDto::setId));
-
-        return modelMapper;
+        return new ModelMapper();
     }
 
     @Bean

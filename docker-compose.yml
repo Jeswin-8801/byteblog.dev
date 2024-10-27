@@ -1,16 +1,18 @@
 services:
   postgres-db:
     image: postgres
+    container_name: postgres
     restart: unless-stopped
     env_file: ./.env
-    ports:
-      - "$POSTGRES_DB_LOCAL_PORT:$POSTGRES_DB_DOCKER_PORT"
+    expose:
+      - "$POSTGRES_DB_DOCKER_PORT"
     environment:
       POSTGRES_USER: $USER
       POSTGRES_PASSWORD: $PASSWORD
 
   pg-admin:
     image: dpage/pgadmin4
+    container_name: pg-admin
     restart: unless-stopped
     depends_on:
       - postgres-db
@@ -36,6 +38,7 @@ services:
 
   minio:
     image: minio/minio
+    container_name: minio
     restart: unless-stopped
     depends_on:
       - postgres-db
@@ -53,8 +56,9 @@ services:
 
   minio-setup:
     image: minio/minio
+    container_name: minio-startup
     depends_on:
-        - minio
+      - minio
     restart: no
     volumes:
       - ./backend/minio/config:/tmp
@@ -69,6 +73,55 @@ services:
         /usr/bin/mc admin user svcacct add --access-key "${MINIO_ACCESS_KEY_0}" --secret-key "${MINIO_SECRET_KEY_0}" minio ${USER}          # add access and secret key
         exit 0;
       '
+  spring-boot:
+    build: ./backend/byteBlog
+    container_name: spring-boot
+    depends_on:
+      - postgres-db
+      - minio-setup
+    restart: on-failure
+    env_file: ./.env
+    ports:
+      - "$SPRING_LOCAL_PORT:$SPRING_DOCKER_PORT"
+    environment:
+      SPRING_APPLICATION_JSON: '{
+                    "server.port": $SPRING_DOCKER_PORT,
+                    "client.port": $ANGULAR_LOCAL_PORT,
+                    "minio.url": "http://minio:$MINIO_SERVER_PORT",
+                    "minio.credentials.username": "$USER",
+                    "minio.credentials.password": "$PASSWORD",
+                    "minio.bucket.name": "$MINIO_BUCKET",
+                    "spring.datasource.url" : "jdbc:postgresql://postgres:$POSTGRES_DB_DOCKER_PORT/byte-blog-db",
+                    "spring.datasource.username" : "$USER",
+                    "spring.datasource.password" : "$PASSWORD"
+                    }'
+    stdin_open: true
+    tty: true
+
+  run-populate-scripts:
+    image: alpine/curl
+    container_name: populate
+    depends_on:
+      - spring-boot
+    restart: no
+    volumes:
+      - ./backend/populate:/data/populate
+    entrypoint: >
+      /bin/sh -c '
+          isAlive() { curl --silent --request GET http://spring-boot:${SPRING_DOCKER_PORT}/actuator/health | grep UP; }
+          while ! isAlive; do sleep 1; done
+          cd /data/populate
+          sh uploadToMinio.sh
+          exit 0;
+      '
+
+  angular:
+    build: ./client
+    container_name: angular-nginx
+    depends_on:
+      - run-populate-scripts
+    ports:
+      - $ANGULAR_LOCAL_PORT:$ANGULAR_DOCKER_PORT
 
 configs:
   pgpass:

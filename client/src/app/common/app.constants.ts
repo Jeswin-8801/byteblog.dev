@@ -6,7 +6,7 @@ export class AppConstants {
   private static PROVIDER_GOOGLE = '/google';
   private static PROVIDER_GITHUB = '/github';
 
-  private static REDIRECT_URL = `?redirect_uri=http://localhost:4200`;
+  private static REDIRECT_URL = `?redirect_uri=http://localhost:11001`;
 
   public static LOGIN = '/auth/login';
   public static SIGNUP = '/auth/sign-up';
