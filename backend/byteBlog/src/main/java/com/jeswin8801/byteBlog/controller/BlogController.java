@@ -32,20 +32,43 @@ public class BlogController {
     }
 
     // unrestricted access
-    @GetMapping("/unrestricted/author/get-all-blogs")
-    public ResponseEntity<?> getAllBlogsByUsername(@RequestParam String username) {
-        return blogService.getAllBlogsByAuthor(username).getResponseEntity();
-    }
+    @RestController
+    @RequestMapping("/unrestricted/blog")
+    public class UnrestrictedController {
 
-    // unrestricted access
-    @GetMapping("/unrestricted/get-blog")
-    public ResponseEntity<?> getBlog(@RequestParam String headingUri) {
-        return blogService.getBlogByHeading(headingUri).getResponseEntity();
-    }
+        @GetMapping("/author/get-all-blogs")
+        public ResponseEntity<?> getAllBlogsByUsername(@RequestParam String username) {
+            return blogService.getAllBlogsByAuthor(username).getResponseEntity();
+        }
 
-    // unrestricted access
-    @GetMapping("/unrestricted/author")
-    public ResponseEntity<?> getAuthorDetails(@RequestParam String username) {
-        return blogService.getBlogAuthorDetails(username).getResponseEntity();
+        @GetMapping("/get-blog")
+        public ResponseEntity<?> getBlog(@RequestParam("heading-uri") String headingUri) {
+            return blogService.getBlogByHeading(headingUri).getResponseEntity();
+        }
+
+        @GetMapping("/author")
+        public ResponseEntity<?> getAuthorDetails(@RequestParam String username) {
+            return blogService.getBlogAuthorDetails(username).getResponseEntity();
+        }
+
+        @GetMapping("/used-tags")
+        public ResponseEntity<?> getAllUsedTags() {
+            return blogService.getAllUsedTags().getResponseEntity();
+        }
+
+        @GetMapping("/get-by-tag")
+        public ResponseEntity<?> getAllBlogsByTag(@RequestParam String tag) {
+            return blogService.getAllBlogsByTag(tag).getResponseEntity();
+        }
+
+        @GetMapping("/featured")
+        public ResponseEntity<?> getFeaturedBlog() {
+            return blogService.getFeaturedBlog().getResponseEntity();
+        }
+
+        @GetMapping("/latest")
+        public ResponseEntity<?> getLatestBlogsAsPageable(@RequestParam("page-number") Integer pageNumber, @RequestParam("page-size") Integer pageSize) {
+            return blogService.getLatestBlogsAsPageable(pageNumber, pageSize).getResponseEntity();
+        }
     }
 }

@@ -36,7 +36,9 @@ public class Blog implements Serializable {
     @Column(nullable = false, length = 500)
     private String description;
 
-    @Column(nullable = false)
+    @ElementCollection
+    @CollectionTable(name = "blog_tags")
+    @Column(name = "tag", nullable = false)
     private Set<String> tags;
 
     @Column(name = "primary-tag")

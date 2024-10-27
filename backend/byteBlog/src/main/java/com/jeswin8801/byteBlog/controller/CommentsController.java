@@ -13,11 +13,6 @@ public class CommentsController {
     @Autowired
     private CommentsService commentsService;
 
-    @GetMapping("/blog")
-    public ResponseEntity<?> getCommentsForBlog(@RequestParam("blog-id") String blogId) {
-        return commentsService.getCommentsForBlog(blogId).getResponseEntity();
-    }
-
     @PostMapping
     public ResponseEntity<?> postComment(@RequestBody PostCommentDto postCommentDto) {
         return commentsService.postComment(postCommentDto).getResponseEntity();
@@ -28,4 +23,15 @@ public class CommentsController {
         return commentsService.getCommentsByUser(username).getResponseEntity();
     }
 
+    // unrestricted access
+    @RestController
+    @RequestMapping("/unrestricted/comments")
+    public class UnrestrictedController {
+
+        @GetMapping
+        public ResponseEntity<?> getCommentsForBlog(@RequestParam("blog-id") String blogId) {
+            return commentsService.getCommentsForBlog(blogId).getResponseEntity();
+        }
+
+    }
 }

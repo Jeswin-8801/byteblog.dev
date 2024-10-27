@@ -75,8 +75,7 @@ public class WebSecurityConfig {
                         .requestMatchers(
                                 "/auth/**",
                                 "/oauth2/**",
-                                "/blog/unrestricted/**",
-                                "/comments/blog"
+                                "/unrestricted/**"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )

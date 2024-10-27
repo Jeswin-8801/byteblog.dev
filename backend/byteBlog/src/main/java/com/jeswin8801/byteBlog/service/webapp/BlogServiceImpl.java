@@ -19,11 +19,14 @@ import com.jeswin8801.byteBlog.util.exceptions.enums.BlogExceptions;
 import com.jeswin8801.byteBlog.util.exceptions.enums.UserExceptions;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
+import java.time.temporal.WeekFields;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -177,7 +180,83 @@ public class BlogServiceImpl implements BlogService {
     }
 
     @Override
-    public void saveOrUpdateBlog(Blog blog) {
-        blogRepository.save(blog);
+    public GenericResponseDto<Map<String, Integer>> getAllUsedTags() {
+        List<Set<String>> tagsList = blogRepository.getAllUsedTags();
+
+        if (CollectionUtils.isEmpty(tagsList))
+            throw new ResourceNotFoundException(BlogExceptions.NO_USED_TAGS_FOUND.getMessage());
+
+        return GenericResponseDto.<Map<String, Integer>>builder()
+                .message(
+                        tagsList.stream()
+                                .flatMap(Set::stream)
+                                .collect(Collectors.toMap(
+                                        tag -> tag,
+                                        tag -> 1,
+                                        Integer::sum
+                                ))
+                ).httpStatusCode(HttpStatus.OK)
+                .build();
+    }
+
+    @Override
+    public GenericResponseDto<Set<BlogsCompactResponseDto>> getAllBlogsByTag(String tag) {
+        List<Blog> blogsList = blogRepository.findByTag(tag);
+
+        if (CollectionUtils.isEmpty(blogsList))
+            throw new ResourceNotFoundException(BlogExceptions.NO_BLOGS_FOUND.getMessage());
+
+        return GenericResponseDto.<Set<BlogsCompactResponseDto>>builder()
+                .message(
+                        blogsList.stream()
+                                .map(blog -> {
+                                    BlogsCompactResponseDto dto = compactResponseDtoBlogMapper.toDto(blog, BlogsCompactResponseDto.class);
+                                    dto.setAuthor(authorCompactDtoUserMapper.toDto(blog.getUser(), AuthorCompactDto.class));
+                                    return dto;
+                                })
+                                .collect(Collectors.toSet())
+                ).httpStatusCode(HttpStatus.OK)
+                .build();
+    }
+
+    @Override
+    public GenericResponseDto<BlogsCompactResponseDto> getFeaturedBlog() {
+        List<String> ids = blogRepository.getAllIds();
+
+        if (CollectionUtils.isEmpty(ids))
+            throw new ResourceNotFoundException(BlogExceptions.NO_BLOGS_FOUND.getMessage());
+
+        int weekOfYear = LocalDate.now().get(WeekFields.of(Locale.getDefault()).weekOfWeekBasedYear());
+        int index = Math.abs(Objects.hash(weekOfYear)) % ids.size();
+
+        Blog blog = blogRepository.findById(ids.get(index)).orElse(null);
+        BlogsCompactResponseDto dto = compactResponseDtoBlogMapper.toDto(blog, BlogsCompactResponseDto.class);
+        assert blog != null;
+        dto.setAuthor(authorCompactDtoUserMapper.toDto(blog.getUser(), AuthorCompactDto.class));
+
+        return GenericResponseDto.<BlogsCompactResponseDto>builder()
+                .message(dto)
+                .httpStatusCode(HttpStatus.OK)
+                .build();
+    }
+
+    @Override
+    public GenericResponseDto<Set<BlogsCompactResponseDto>> getLatestBlogsAsPageable(int pageNumber, int pageSize) {
+        List<Blog> blogsList = blogRepository.findLatestBlogs(PageRequest.of(pageNumber, pageSize));
+
+        if (CollectionUtils.isEmpty(blogsList))
+            throw new ResourceNotFoundException(BlogExceptions.NO_BLOGS_FOUND.getMessage());
+
+        return GenericResponseDto.<Set<BlogsCompactResponseDto>>builder()
+                .message(
+                        blogsList.stream()
+                                .map(blog -> {
+                                    BlogsCompactResponseDto dto = compactResponseDtoBlogMapper.toDto(blog, BlogsCompactResponseDto.class);
+                                    dto.setAuthor(authorCompactDtoUserMapper.toDto(blog.getUser(), AuthorCompactDto.class));
+                                    return dto;
+                                })
+                                .collect(Collectors.toSet())
+                ).httpStatusCode(HttpStatus.OK)
+                .build();
     }
 }

@@ -7,6 +7,7 @@ import com.jeswin8801.byteBlog.entities.model.Blog;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public interface BlogService {
@@ -26,5 +27,11 @@ public interface BlogService {
 
     Blog getBlogById(String blogId);
 
-    void saveOrUpdateBlog(Blog blog);
+    GenericResponseDto<Map<String, Integer>> getAllUsedTags();
+
+    GenericResponseDto<Set<BlogsCompactResponseDto>> getAllBlogsByTag(String tag);
+
+    GenericResponseDto<BlogsCompactResponseDto> getFeaturedBlog();
+
+    GenericResponseDto<Set<BlogsCompactResponseDto>> getLatestBlogsAsPageable(int pageNumber, int pageSize);
 }

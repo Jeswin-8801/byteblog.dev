@@ -6,6 +6,7 @@ import lombok.Getter;
 public enum BlogExceptions {
     BLOG_WITH_HEADER_ALREADY_EXISTS("A blog with the given header already exists"),
     NO_BLOGS_FOUND("No blogs found"),
+    NO_USED_TAGS_FOUND("No tags have been used in a blog (No blogs added)"),
     INVALID_BLOG_ID("No blog found with given ID"),
     NO_COMMENTS_FOUND("No comments Found"),
     INVALID_COMMENT_ID("Invalid comment Id provided");
