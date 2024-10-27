@@ -150,7 +150,7 @@ export class AuthService {
     );
   }
 
-  storeRefreshedToken(data: any) {
+  storeAccessToken(data: any) {
     const accessTokenDto = ObjectMapper.deserialize(AccessTokenDto, data);
     this.storeTokens(AppConstants.ACCESS_TOKEN, accessTokenDto.accessToken!);
     console.log('Successfully refreshed token');

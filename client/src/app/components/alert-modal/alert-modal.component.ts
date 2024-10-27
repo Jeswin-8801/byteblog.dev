@@ -1,8 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { AlertModal } from './alert-modal';
-import { Router } from '@angular/router';
-import { Subscription } from 'rxjs';
 import { AlertModalService } from './alert-modal.service';
 
 @Component({
@@ -12,7 +10,6 @@ import { AlertModalService } from './alert-modal.service';
   templateUrl: './alert-modal.component.html',
 })
 export class AlertModalComponent {
-  private readonly router = inject(Router);
   private readonly alertModalService = inject(AlertModalService);
 
   @Input() isClosed: boolean = true;

@@ -29,7 +29,7 @@ export const authGuard: CanActivateFn = (route, state) => {
       .pipe(takeUntilDestroyed(destroyRef))
       .subscribe({
         next: (data) => {
-          authService.storeRefreshedToken(data);
+          authService.storeAccessToken(data);
         },
         error: (response) => {
           console.log(response.error as StandardResponseDto);

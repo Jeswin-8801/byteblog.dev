@@ -13,7 +13,6 @@ export class LineNumberDirective implements AfterViewInit {
 
   addLineNumbers(element: HTMLElement): void {
     const codeBlocks = element.querySelectorAll('pre code');
-    console.log(codeBlocks);
     codeBlocks.forEach((block) => {
       const lines = block.innerHTML.split('\n');
       if (lines.length == 1) {

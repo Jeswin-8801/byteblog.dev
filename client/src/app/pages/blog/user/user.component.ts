@@ -58,11 +58,14 @@ export class UserComponent {
             AuthorCompactDto,
             blog.author
           );
-          blogsDto.timeSinceCreation = formatDistanceToNow(
-            new Date(blogsDto.timeSinceCreation as string),
-            { addSuffix: true }
-          );
           this.blogs.push(blogsDto);
+
+          // sort by latest
+          this.blogs.sort(
+            (a, b) =>
+              new Date(b.timeSinceCreation as string).getTime() -
+              new Date(a.timeSinceCreation as string).getTime()
+          );
         });
       },
       error: (response) => {

@@ -1,7 +1,9 @@
 import { Location } from '@angular/common';
 import { HttpParams } from '@angular/common/http';
 import { AbstractControl, ValidatorFn } from '@angular/forms';
-import { CacheKey, Deserializer } from 'json-object-mapper';
+import { ObjectMapper } from 'json-object-mapper';
+import { Comment } from '../models/comment';
+import { AuthorCompactDto } from '../models/dtos/blog/author-compact-dto';
 
 export class Utility {
   public static matchValidator(
@@ -43,5 +45,18 @@ export class Utility {
     let params = new HttpParams({ fromString: query });
     params = params.delete(paramName);
     location.replaceState(path, params.toString());
+  }
+
+  public static deserializeComments(comments: any[]): Comment[] {
+    let commentsList: Comment[] = [];
+    comments.forEach((comment) => {
+      let c = ObjectMapper.deserialize(Comment, comment);
+      c.author = ObjectMapper.deserialize(AuthorCompactDto, c.author as JSON);
+      if (c.childReplyComments)
+        c.childReplyComments = this.deserializeComments(c.childReplyComments);
+      commentsList.push(c);
+    });
+
+    return commentsList;
   }
 }

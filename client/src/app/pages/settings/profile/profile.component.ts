@@ -129,7 +129,7 @@ export class ProfileComponent {
           if (this.isAlertModalClosed) this.toggleAlertModal();
           this.authService.refreshToken().subscribe({
             next: (tokenDto) => {
-              this.authService.storeRefreshedToken(tokenDto);
+              this.authService.storeAccessToken(tokenDto);
             },
           });
         },

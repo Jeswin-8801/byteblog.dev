@@ -37,7 +37,9 @@
       </svg>
       Article
     </span>
-    <span class="text-sm">{{ blog.timeSinceCreation }}</span>
+    <span class="text-sm">{{
+      formatHumanReadableTime(blog.timeSinceCreation!)
+    }}</span>
   </div>
 
   <div class="flex">
