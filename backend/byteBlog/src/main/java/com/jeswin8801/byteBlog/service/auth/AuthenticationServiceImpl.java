@@ -9,8 +9,10 @@ import com.jeswin8801.byteBlog.entities.dto.auth.requests.ResetPasswordRequestDt
 import com.jeswin8801.byteBlog.entities.dto.auth.requests.VerifyEmailRequestDto;
 import com.jeswin8801.byteBlog.entities.dto.auth.response.AuthResponseDto;
 import com.jeswin8801.byteBlog.entities.dto.user.UserDto;
+import com.jeswin8801.byteBlog.entities.model.Role;
 import com.jeswin8801.byteBlog.entities.model.User;
 import com.jeswin8801.byteBlog.entities.model.enums.AuthProvider;
+import com.jeswin8801.byteBlog.entities.model.enums.UserPrivilege;
 import com.jeswin8801.byteBlog.service.auth.abstracts.AuthenticationService;
 import com.jeswin8801.byteBlog.service.auth.abstracts.RefreshTokenService;
 import com.jeswin8801.byteBlog.service.mail.MailType;
@@ -35,7 +37,9 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
 
 import java.time.Instant;
+import java.util.Arrays;
 import java.util.Objects;
+import java.util.Set;
 
 @Slf4j
 @Service
@@ -98,8 +102,21 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         userDto.setProfileImageUpdated(false);
         userDto.setRegisteredProviderId("0");
 
+        boolean isAdmin = Arrays.asList(applicationProperties.getAdmin()).contains(registerUserRequestDto.getEmail());
+        if (isAdmin) {
+            userDto.setRoles(
+                    Set.of(
+                            new Role(UserPrivilege.ROLE_ADMIN),
+                            new Role(UserPrivilege.ROLE_USER)
+                    )
+            );
+            userDto.setEmailVerified(true);
+        }
+
         userService.createUser(userDto);
-        sendMailVerifyEmail(userDto.getEmail());
+
+        if (!isAdmin)
+            sendMailVerifyEmail(userDto.getEmail());
 
         return GenericResponseDto.<MessageResponseDto>builder()
                 .message(

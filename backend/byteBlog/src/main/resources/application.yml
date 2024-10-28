@@ -71,6 +71,8 @@ logging:
 web:
   issuer: docker-spring-boot-container
 
+  admin: shaneon_monte@byteblog.dev,polly_prissy_pants@byteblog.dev
+
   mail:
     destination-url: http://localhost:${client.port}/auth/verify
     verificationCodeExpirationSeconds: 1800 # 30 minutes

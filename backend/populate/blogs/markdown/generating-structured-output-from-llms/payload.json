@@ -1,0 +1,10 @@
+{
+  "header": "Generating Structured Output from LLMs",
+  "description": "A survey on the different methodologies used to generate structured output from LLMs, from model fine-tuning, to domain specific language, and schema engineering.",
+  "tags": [
+    "Generative Ai",
+    "Ai",
+    "Llm"
+  ],
+  "primary-tag": "Llm"
+}

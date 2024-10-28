@@ -17,6 +17,8 @@ public class ApplicationProperties {
 
     private String issuer;
 
+    private String[] admin;
+
     // Mail config
     private Mail mail = new Mail();
 

@@ -99,7 +99,7 @@ services:
     tty: true
 
   run-populate-scripts:
-    image: alpine/curl
+    build: ./backend/populate
     container_name: populate
     depends_on:
       - spring-boot
@@ -107,11 +107,13 @@ services:
     volumes:
       - ./backend/populate:/data/populate
     entrypoint: >
-      /bin/sh -c '
+      /bin/bash -c '
           isAlive() { curl --silent --request GET http://spring-boot:${SPRING_DOCKER_PORT}/actuator/health | grep UP; }
           while ! isAlive; do sleep 1; done
+          apk add --no-cache jq
           cd /data/populate
-          sh uploadToMinio.sh
+          ./uploadToMinio.sh
+          ./populateBlogs.sh
           exit 0;
       '
 
