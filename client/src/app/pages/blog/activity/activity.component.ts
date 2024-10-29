@@ -40,6 +40,7 @@ export class ActivityComponent {
   ngOnInit() {
     this.getAllBlogsAuthoredByUser();
     this.profileImageUrl = this.authService.user()?.profileImageUrl as string;
+    this.getComments();
   }
 
   private getAllBlogsAuthoredByUser() {
@@ -63,9 +64,6 @@ export class ActivityComponent {
               new Date(b.timeSinceCreation as string).getTime() -
               new Date(a.timeSinceCreation as string).getTime()
           );
-
-          // get all comments
-          this.getComments();
         },
         error: (response) => {
           console.log('Error on retriving blogs: ', response.error);
