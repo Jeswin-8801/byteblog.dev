@@ -37,13 +37,15 @@ This is a list of the various technologies used to build this website:
 - Adds support for hosting static content on an object storage server (`minio`) hosted locally.
 - Support for posting blogs as `.mdx` files along with support for markdown rendering.
 - Containerization of services for instant setup and easy CI/CD.
-- Adds support for posting blog comments and also allows for infinite nesting of comments.
+- Posting of comments with infinite nesting.
 
 # Setup
 
 In the base directory run
 
-`docker-compose up -d`
+```bash
+docker-compose up -d
+```
 
 > Wait a few minutes until all the containers are up and running
 
@@ -56,4 +58,4 @@ In the base directory run
 </br>
 
 > [!Note]
-> Make sure you update all secrets for mail and oauth2 to enable these services
+> Make sure you update all secrets for mail and oauth2 *(in [.env](.env))* to enable these services
