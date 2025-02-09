@@ -55,7 +55,7 @@ docker-compose up -d
 
 > http://localhost/pgadmin4 for `pgadmin`
 > </br>
-> http://localhost:9000/browser/byte-blog-bucket for accessing all static files stored in `minio`
+> http://localhost:9090/browser/byte-blog-bucket for accessing all static files stored in `minio`
 
 </br>
 
