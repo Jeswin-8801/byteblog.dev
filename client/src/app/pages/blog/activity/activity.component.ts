@@ -8,9 +8,7 @@ import { CommonModule } from '@angular/common';
 import { ObjectMapper } from 'json-object-mapper';
 import { AuthorCompactDto } from '../../../models/dtos/blog/author-compact-dto';
 import { BlogCardComponent } from '../../../components/blog-card/blog-card.component';
-import { CommentsComponent } from '../../../components/comments/comments.component';
 import { CommentsService } from '../../../service/comments/comments.service';
-import { Utility } from '../../../utility/utility';
 import { formatDistanceToNow } from 'date-fns';
 import { CommentCompactDto } from '../../../models/dtos/comment/comment-compact-dto';
 
@@ -21,7 +19,6 @@ import { CommentCompactDto } from '../../../models/dtos/comment/comment-compact-
     CommonModule,
     NavbarComponent,
     BlogCardComponent,
-    CommentsComponent,
   ],
   templateUrl: './activity.component.html',
 })
@@ -96,11 +93,11 @@ export class ActivityComponent {
   }
 
   redirectToPostBlog() {
-    this.router.navigateByUrl('/blog/post-blog');
+    this.router.navigateByUrl('blog/post-blog');
   }
 
   redirectToBlogPage(uri: string) {
-    this.router.navigateByUrl(`/blog/` + uri);
+    this.router.navigateByUrl(`blog/` + uri);
   }
 
   formatHumanReadableDate(date: string) {

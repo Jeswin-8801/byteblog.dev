@@ -36,7 +36,7 @@ export class NavbarComponent {
   isOnline!: boolean;
   showUserIconDropdown: boolean = false;
   showMobileMenu: boolean = false;
-  userProfilePicUri: string = '/defaults/default-user-profile-pic.png';
+  userProfilePicUri: string = 'defaults/default-user-profile-pic.png';
   userFullName!: string;
   userEmail!: string;
 
@@ -79,7 +79,7 @@ export class NavbarComponent {
 
   redirectToUserPage() {
     let username = this.authService.user()?.username;
-    if (username) this.router.navigateByUrl(`/blog/author/` + username);
+    if (username) this.router.navigateByUrl(`blog/author/` + username);
   }
 
   logout() {

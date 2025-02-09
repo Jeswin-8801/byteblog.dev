@@ -168,7 +168,7 @@ export class BlogComponent {
   }
 
   redirectToAuthorPage() {
-    this.router.navigateByUrl('/blog/author/' + this.blog.author?.username);
+    this.router.navigateByUrl('blog/author/' + this.blog.author?.username);
   }
 
   toggleAlert() {

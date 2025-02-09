@@ -1,0 +1,43 @@
+server {
+    listen 80;
+
+    server_name byteblog;
+
+    root /var/www/html;
+    index index.html;
+
+    # Redirect all / requests to /byteblog
+    location / {
+        rewrite ^/$ /byteblog permanent;
+    }
+
+    location /byteblog {
+        proxy_pass http://angular:${ANGULAR_DOCKER_PORT}/byteblog;
+    }
+
+    # Proxy backend requests
+    location /api {
+        rewrite ^/api/(.*)$ /$1 break; # remove /api/
+    	proxy_pass http://spring-boot:${SPRING_DOCKER_PORT};
+
+        # Increase buffer sizes to handle large headers (access tokens)
+        proxy_buffer_size 16k;
+        proxy_buffers 4 32k;
+        proxy_busy_buffers_size 32k;
+        
+        # configure for upstream requests (oauth2)
+        proxy_set_header Host ${DOLLAR}host;
+        proxy_set_header X-Forwarded-For ${DOLLAR}proxy_add_x_forwarded_for;
+        proxy_set_header User-Agent ${DOLLAR}http_user_agent;
+    }
+
+    # Proxy pgadmin
+    location /pgadmin4 {
+        proxy_pass http://pgadmin4:${PGADMIN_DOCKER_PORT}/pgadmin4;
+    }
+
+    error_page 500 502 503 504 /50x.html;
+    location = /50x.html {
+        root /usr/share/nginx/html;
+    }
+}

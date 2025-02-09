@@ -41,7 +41,7 @@ export class ProfileComponent {
 
   @ViewChild('changeAvatarInput')
   changeAvatarElement!: ElementRef;
-  userProfilePicUri: string = '/defaults/default-user-profile-pic.png';
+  userProfilePicUri: string = 'defaults/default-user-profile-pic.png';
 
   ngOnInit() {
     this.getUserDetails();
@@ -167,7 +167,7 @@ export class ProfileComponent {
   }
 
   onClickDeletePicture() {
-    this.userProfilePicUri = '/defaults/default-user-profile-pic.png';
+    this.userProfilePicUri = 'defaults/default-user-profile-pic.png';
     this.changeAvatarElement.nativeElement.value = '';
     this.selectedImage = undefined;
   }

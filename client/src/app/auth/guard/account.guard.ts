@@ -8,7 +8,7 @@ import { AppConstants } from '../../common/app.constants';
 export const accountGuard: CanActivateFn = (route, state) => {
   const authService = inject(AuthService);
   if (authService.isAuthenticated()) {
-    inject(Router).navigate(['/']);
+    inject(Router).navigate(['']);
     return false;
   }
   return true;

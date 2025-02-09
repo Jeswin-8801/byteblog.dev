@@ -74,7 +74,7 @@ export class AuthService {
             AppConstants.REFRESH_TOKEN,
             loginSuccessData.refreshToken!
           );
-          this.router.navigate(['/blog/explore']);
+          this.router.navigate(['blog/explore']);
         })
       );
   }
@@ -121,7 +121,7 @@ export class AuthService {
           let params = {};
           if (type === AppConstants.LOGOUT)
             params = { loggedOut: 'Success', user: email };
-          this.router.navigate(['/auth/login'], {
+          this.router.navigate(['auth/login'], {
             queryParams: params,
           });
         })

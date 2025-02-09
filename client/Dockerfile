@@ -1,20 +1,17 @@
-# Stage 1
-FROM node:20 AS build
+FROM node:22-alpine
+
+RUN npm install -g pnpm serve
+
 WORKDIR /app
+COPY package.json pnpm-lock.yaml .
+
+RUN --mount=type=cache,id=pnpm,target=/root/.local/share/pnpm/store pnpm fetch --frozen-lockfile
+RUN --mount=type=cache,id=pnpm,target=/root/.local/share/pnpm/store pnpm install --frozen-lockfile
+
 COPY . .
-RUN npm ci
-RUN npm run build
+RUN pnpm build
+RUN mv dist/browser/index.html dist/
+RUN mv dist/browser dist/byteblog
 
-# Stage 2
-FROM nginx:1.27.2-alpine
-
-# Copies the custom NGINX configuration file you've written in your project to the right location in your Docker image.
-COPY nginx.conf /etc/nginx/nginx.conf
-
-COPY --from=build /app/dist/client/browser /usr/share/nginx/html
-
-# This makes port 8080 available to your host machine.
-EXPOSE 8080
-
-# This is starting NGINX and making sure it stays running. The "-g 'daemon off;'" part is grabbing the global configuration to modify it.
-CMD ["nginx", "-g", "daemon off;"]
+# Run application
+ENTRYPOINT ["sh", "-c", "serve -s dist -l $ANGULAR_DOCKER_PORT"]

@@ -19,7 +19,7 @@ export class BlogCardComponent {
 
   redirectToAuthorPage() {
     console.log(`/blog/author/` + this.blog.author?.username);
-    this.router.navigateByUrl(`/blog/author/` + this.blog.author?.username);
+    this.router.navigateByUrl(`blog/author/` + this.blog.author?.username);
   }
 
   formatHumanReadableTime(time: string) {

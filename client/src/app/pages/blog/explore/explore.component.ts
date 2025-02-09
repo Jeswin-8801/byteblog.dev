@@ -120,7 +120,6 @@ export class ExploreComponent {
         this.latestBlogs = [...this.latestBlogs, ...retrievedBlogs];
         this.loading = false;
         this.page++;
-        console.log(this.latestBlogs);
       },
       error: (response) => console.log(response),
     });
@@ -135,7 +134,7 @@ export class ExploreComponent {
   }
 
   redirectToBlogPost(uri: string) {
-    this.router.navigateByUrl(`/blog/` + uri);
+    this.router.navigateByUrl(`blog/` + uri);
   }
 
   ngOnDestroy() {

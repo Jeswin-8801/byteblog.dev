@@ -20,3 +20,4 @@ byte-blog-bucket
 node_modules/
 .angular/
 .vscode/
+dist/

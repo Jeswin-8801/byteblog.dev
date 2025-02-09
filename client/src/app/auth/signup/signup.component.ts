@@ -55,10 +55,10 @@ export class SignupComponent {
           AppConstants.REFRESH_TOKEN,
           params[AppConstants.REFRESH_TOKEN]
         );
-        this.router.navigateByUrl('/blog/explore');
+        this.router.navigateByUrl('blog/explore');
 
         const user = this.authService.user();
-        this.router.navigate(['/blog/explore'], {
+        this.router.navigate(['blog/explore'], {
           queryParams: {
             registered: 'Success',
           },
@@ -106,7 +106,7 @@ export class SignupComponent {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {
-          this.router.navigate(['/auth/login'], {
+          this.router.navigate(['auth/login'], {
             queryParams: { registered: this.username?.value },
           });
         },

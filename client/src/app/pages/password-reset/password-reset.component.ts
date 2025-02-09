@@ -80,7 +80,7 @@ export class PasswordResetComponent {
     this.authService.passwordReset(this.passwordResetDto).subscribe({
       next: (responseDto) => {
         console.log('password reset sussceesful: ', responseDto);
-        this.router.navigate(['/auth/login'], {
+        this.router.navigate(['auth/login'], {
           queryParams: {
             isPasswordReset: true,
             email: this.passwordResetDto.email,
