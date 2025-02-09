@@ -91,7 +91,7 @@ web:
 
     oauth2:
         authorizedRedirectOrigins: http://localhost
-        cookieExpireSeconds: 120
+        cookieExpireSeconds: 1
 
     defaults:
         defaultPageStart: 0
