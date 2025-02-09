@@ -3,7 +3,8 @@
 > Goto: https://myaccount.google.com/apppasswords
 
 - Once created, it will show up like so:
-![app_password](image-3.png)
+![app_password](https://github.com/user-attachments/assets/8dac396f-d45b-4624-8f0d-bbe381c9675c)
+
 
 # Setting up Oauth2 Credentials
 
@@ -13,11 +14,11 @@ Follow the below steps for setting up Oauth2 credentials for *`GitHub`* and *`Go
 
 > Goto: https://github.com/settings/developers
 
-![select_project](image.png)
+![select_project](https://github.com/user-attachments/assets/688c39d3-04b9-440e-8762-e035f65c541b)
 
-![configure](image-1.png)
+![configure](https://github.com/user-attachments/assets/936276e1-4b1f-43eb-ad86-f9c3cf68e375)
 
-![additional_configure](image-4.png)
+![additional_configure](https://github.com/user-attachments/assets/10c5388c-1827-4eba-b83e-0d6fa6f3b537)
 
 ## Google
 
@@ -25,9 +26,9 @@ Follow the below steps for setting up Oauth2 credentials for *`GitHub`* and *`Go
 
 - create client and setup the required configs
 
-![configure](image-2.png)
+![configure](https://github.com/user-attachments/assets/a7cda509-6d4a-41df-ae91-91e6a90241bf)
 
 ---
 
 > [!Note]
-> Modify [](client/src/app/common/app.constants.ts) only if needed
+> Modify [client/src/app/common/app.constants.ts](client/src/app/common/app.constants.ts) only if needed
