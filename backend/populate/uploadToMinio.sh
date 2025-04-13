@@ -2,9 +2,9 @@
 
 uploadFile() {
     filename=$(echo "$1" | cut -d '/' -f 3)
-    url="http://minio:9000/byte-blog-bucket/images/tags/$filename"
+    url="http://minio:${MINIO_SERVER_PORT}/byte-blog-bucket/images/tags/${filename}"
     if "$2"; then
-        url="http://minio:9000/byte-blog-bucket/images/$filename"
+        url="http://minio:${MINIO_SERVER_PORT}/byte-blog-bucket/images/${filename}"
     fi
     curl -s -X PUT -T "$file" \
      -H "Host: minio" \

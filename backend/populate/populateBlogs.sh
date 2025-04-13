@@ -1,6 +1,6 @@
 #!/bin/bash
 
-URL="http://spring-boot:8989"
+URL="http://spring-boot:${SPRING_DOCKER_PORT}"
 requestJsonPath="./blogs/users/register*.json"
 storeTokenDirPath="./blogs/users/tokens"
 blogsDirPath="./blogs/markdown"

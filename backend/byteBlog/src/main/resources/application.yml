@@ -44,11 +44,11 @@ spring:
             client:
                 registration:
                     google:
-                        redirectUri: "{baseUrl}/oauth2/callback/{registrationId}"
+                        redirectUri: "{baseUrl}/api/oauth2/callback/{registrationId}"
                         scope: email, profile
 
                     github:
-                        redirectUri: "{baseUrl}/oauth2/callback/{registrationId}"
+                        redirectUri: "{baseUrl}/api/oauth2/callback/{registrationId}"
                         scope: user, user:email
 
 management:
@@ -72,7 +72,7 @@ web:
     admin: shaneon_monte@byteblog.dev,polly_prissy_pants@byteblog.dev
 
     mail:
-        destination-url: http://localhost:${client.port}/auth/verify
+        destination-url: http://localhost/byteblog/auth/verify
         verificationCodeExpirationSeconds: 1800 # 30 minutes
 
     jwt:
@@ -84,14 +84,14 @@ web:
         shortLivedMillis: 120000 # 2 minutes
 
     cors:
-        allowed-origins: http://localhost:${server.port},http://localhost:${client.port},http://127.0.0.1:${client.port}
+        allowed-origins: http://localhost
         allowed-methods: GET, POST, PUT, DELETE
         allowed-headers: "*"
         exposed-headers: "*"
 
     oauth2:
-        authorizedRedirectOrigins: http://localhost:${server.port},http://localhost:${client.port}
-        cookieExpireSeconds: 120
+        authorizedRedirectOrigins: http://localhost
+        cookieExpireSeconds: 1
 
     defaults:
         defaultPageStart: 0

@@ -28,6 +28,7 @@ This is a list of the various technologies used to build this website:
 | Static File Storage    | [Minio](https://min.io/)                                                                           |
 | Content                | [MDX](https://mdxjs.com/)                                                                          |
 | Packaging & Deployment | [Docker](https://www.docker.com/)                                                                  |
+| Reverse Proxy          | [Nginx](https://www.nginx.com/)                                                                  |
 
 # Features
 
@@ -38,6 +39,7 @@ This is a list of the various technologies used to build this website:
 - Support for posting blogs as `.mdx` files along with support for markdown rendering.
 - Containerization of services for instant setup and easy CI/CD.
 - Posting of comments with infinite nesting.
+- Reverse proxy set up using Nginx for easy deployment setup. (frontend, api endpoint, pgadmin)
 
 # Setup
 
@@ -49,13 +51,15 @@ docker-compose up -d
 
 > Wait a few minutes until all the containers are up and running
 
-### Access the website at http://localhost:11001/ once `nginx` is up
+#### Access the website at http://localhost once `nginx` is up
 
-> http://localhost:8001/ for `pgadmin`
+> http://localhost/pgadmin4 for `pgadmin`
 > </br>
-> http://localhost:9001/browser/byte-blog-bucket for accessing all static files stored in `minio`
+> http://localhost:9090/browser/byte-blog-bucket for accessing all static files stored in `minio`
 
 </br>
 
 > [!Note]
 > Make sure you update all secrets for mail and oauth2 *(in [.env](.env))* to enable these services
+> </br>
+> Refer *[README.md](backend\byteBlog\README.md)* on how to configure Oauth2 and Email providers.
