@@ -136,7 +136,7 @@ services:
       '
   
   angular:
-    build: ./client
+    build: ./frontend
     container_name: angular
     depends_on:
       - run-populate-scripts
