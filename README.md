@@ -62,4 +62,4 @@ docker-compose up -d
 > [!Note]
 > Make sure you update all secrets for mail and oauth2 *(in [.env](.env))* to enable these services
 > </br>
-> Refer *[README.md](backend\byteBlog\README.md)* on how to configure Oauth2 and Email providers.
+> Refer *[README.md](backend/byteBlog/README.md)* on how to configure Oauth2 and Email providers.
